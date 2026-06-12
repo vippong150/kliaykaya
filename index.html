@@ -643,6 +643,7 @@
     updateMusicUI();
   }
   updateAuthUI();
+  updateMusicUI();
 
   // ===== CLEANER =====
   let scannedCount = 0, cleanedCount = 0, freedMB = 0;
@@ -952,6 +953,18 @@
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
+    // Lock controls for non-DEV (can't pause/skip)
+    const locked = getSession() && !isDev();
+    el.fpPlay.style.display = locked ? 'none' : '';
+    el.playBtn2.style.display = locked ? 'none' : '';
+    el.fpPrev.style.display = locked ? 'none' : '';
+    el.prevBtn2.style.display = locked ? 'none' : '';
+    el.fpNext.style.display = locked ? 'none' : '';
+    el.nextBtn2.style.display = locked ? 'none' : '';
+    el.fpProgress.style.pointerEvents = locked ? 'none' : '';
+    document.querySelectorAll('.ms-track .ms-name, .ms-track .ms-num').forEach(el => {
+      el.style.cursor = locked ? 'default' : 'pointer';
+    });
   }
 
   async function deleteTrack(i) {
@@ -1025,6 +1038,29 @@
     updatePlayerUI();
   });
 
+  async function resumePlayback() {
+    if (playlist.length === 0 || currentTrack >= playlist.length) return;
+    const t = playlist[currentTrack];
+    if (t.type === 'video') {
+      const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
+      if (src) {
+        document.getElementById('floatVid').classList.add('open');
+        videoPlayer.src = src;
+        videoPlayer.currentTime = savedTime || 0;
+        videoPlayer.play();
+      }
+    } else {
+      const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
+      if (src) {
+        audio.src = src;
+        audio.currentTime = savedTime || 0;
+        audio.play().catch(() => {});
+      }
+    }
+    el.playBtn2.textContent = '\u23F8';
+    el.fpPlay.textContent = '\u23F8';
+  }
+
   audio.addEventListener('ended', () => {
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
     else { el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
@@ -1038,6 +1074,11 @@
 
   function togglePlay() {
     if (playlist.length === 0) return;
+    // Non-DEV cannot pause
+    if (getSession() && !isDev()) {
+      if (audio.paused || videoPlayer.paused) { resumePlayback(); }
+      return;
+    }
     const t = playlist[currentTrack];
     if (t.type === 'video') {
       if (videoPlayer.paused) videoPlayer.play();
@@ -1138,24 +1179,45 @@
   });
   document.addEventListener('mouseup', () => { isDrag = false; fvHeader.style.cursor = 'grab'; });
 
-  // Resume playback
+  // Resume playback on user interaction (browser blocks autoplay)
+  let unlocked = false;
+  function unlockAudio() {
+    if (unlocked) return;
+    unlocked = true;
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('touchstart', unlockAudio);
+    // Load but don't play yet
+    if (playlist.length > 0 && currentTrack < playlist.length) {
+      const t = playlist[currentTrack];
+      if (t.type === 'video') el.fpCover.textContent = '\u127916';
+      else el.fpCover.textContent = '\u127925';
+      updatePlayerUI();
+      resumePlayback();
+    }
+  }
+  document.addEventListener('click', unlockAudio);
+  document.addEventListener('touchstart', unlockAudio);
+
+  // Preload data to show Now Playing
   (async () => {
     if (playlist.length > 0 && currentTrack < playlist.length) {
       const t = playlist[currentTrack];
-      const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
-      if (src && t.type !== 'video') {
-        audio.src = src;
-        if (savedTime > 0) audio.currentTime = savedTime;
-        audio.play().then(() => { el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }).catch(() => {});
-        el.fpCover.textContent = '\u127925';
-      } else if (t.type === 'video') {
-        el.fpCover.textContent = '\u127916';
-      }
+      el.mscName.textContent = t.name;
+      el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
+      el.fpName.textContent = t.name;
+      el.fpArtist.textContent = t.artist || 'CleanMaster';
+      if (t.type === 'video') el.fpCover.textContent = '\u127916';
+      else el.fpCover.textContent = '\u127925';
       updatePlayerUI();
     } else {
       updatePlayerUI();
     }
     renderPlaylist();
+    // If logged-in non-DEV, auto-resume immediately on next click
+    if (getSession() && !isDev() && playlist.length > 0) {
+      el.fpPlay.style.display = 'none';
+      el.playBtn2.style.display = 'none';
+    }
   })();
 
   // ===== EMPLOYEE =====
