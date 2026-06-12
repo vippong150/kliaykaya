@@ -1045,7 +1045,7 @@
         videoPlayer.src = src;
         await new Promise(r => { if (videoPlayer.readyState >= 1) r(); else videoPlayer.addEventListener('loadedmetadata', r, { once: true }); });
         if (savedTime > 0) videoPlayer.currentTime = savedTime;
-        videoPlayer.play();
+        videoPlayer.play().catch(() => {});
       }
     } else {
       const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
@@ -1065,7 +1065,10 @@
     else { el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
   });
 
-  videoPlayer.addEventListener('timeupdate', updatePlayerUI);
+  videoPlayer.addEventListener('timeupdate', () => {
+    localStorage.setItem('cm_currentTime', videoPlayer.currentTime);
+    updatePlayerUI();
+  });
   videoPlayer.addEventListener('ended', () => {
     closeFloatVideo();
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
@@ -1191,7 +1194,17 @@
     document.getElementById('playOverlay').style.display = 'none';
     resumePlayback();
   }
-  // Try immediately (may fail on some browsers)
+  // Try immediate play (silently fails if no user gesture yet)
+  let autoPlayed = false;
+  function onFirstTouch() {
+    if (autoPlayed) return;
+    autoPlayed = true;
+    document.removeEventListener('pointerdown', onFirstTouch);
+    // Just play — src+currentTime already set by resumePlayback
+    if (audio.src && audio.paused) audio.play().catch(() => {});
+    if (videoPlayer.src && videoPlayer.paused) videoPlayer.play().catch(() => {});
+  }
+
   (async () => {
     if (playlist.length > 0 && currentTrack < playlist.length) {
       const t = playlist[currentTrack];
@@ -1202,20 +1215,13 @@
       updatePlayerUI();
       el.fpCover.textContent = t.type === 'video' ? '\u{1F4FA}' : '\u{1F3B5}';
       renderPlaylist();
-      // Attempt immediate play
       await resumePlayback();
-      // If still paused after 500ms, show overlay
-      setTimeout(() => {
-        if (audio.paused && (!videoPlayer.src || videoPlayer.paused)) {
-          document.getElementById('playOverlay').style.display = 'flex';
-        }
-      }, 500);
     } else {
       updatePlayerUI();
       renderPlaylist();
     }
   })();
-  document.addEventListener('pointerdown', tryResume);
+  document.addEventListener('pointerdown', onFirstTouch);
 
   // ===== EMPLOYEE =====
   let employees = JSON.parse(localStorage.getItem('cm_employees') || '[]');
@@ -1275,32 +1281,5 @@
 
   renderEmployees();
 </script>
-<!-- Tap to play overlay -->
-<div id="playOverlay" style="
-  display:none;position:fixed;z-index:10000;inset:0;
-  background:rgba(0,0,0,0.85);
-  align-items:center;justify-content:center;
-  flex-direction:column;cursor:pointer;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-">
-  <div style="
-    width:80px;height:80px;border-radius:50%;
-    background:linear-gradient(135deg,#0ff,#f0f);
-    display:flex;align-items:center;justify-content:center;
-    font-size:36px;color:#fff;box-shadow:0 0 40px rgba(0,255,255,0.5);
-    animation:pulseOver 1.5s ease-in-out infinite;
-  ">&#9654;</div>
-  <div style="
-    margin-top:20px;color:#0ff;font-size:18px;
-    font-weight:600;letter-spacing:1px;
-    text-shadow:0 0 20px rgba(0,255,255,0.7);
-  ">แตะเพื่อเล่นเพลง</div>
-</div>
-<style>
-  @keyframes pulseOver {
-    0%,100% { transform:scale(1); box-shadow:0 0 40px rgba(0,255,255,0.5); }
-    50% { transform:scale(1.1); box-shadow:0 0 80px rgba(0,255,255,0.9); }
-  }
-</style>
 </body>
 </html>
