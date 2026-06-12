@@ -206,6 +206,86 @@
       font-size: 0.8rem; color: #444;
     }
 
+    .fixed-player {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: rgba(10,10,26,0.95); backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(0,240,255,0.15); padding: 10px 20px;
+      display: none; align-items: center; gap: 14px;
+    }
+    .fixed-player.open { display: flex; }
+    .fixed-player .fp-cover {
+      width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg,#00f0ff,#0077ff);
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .fixed-player .fp-info { min-width: 0; flex-shrink: 1; }
+    .fixed-player .fp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+    .fixed-player .fp-artist { font-size: 0.7rem; color: #888; }
+    .fixed-player .fp-progress-wrap { flex: 1; min-width: 60px; cursor: pointer; position: relative; height: 20px; display: flex; align-items: center; }
+    .fixed-player .fp-progress {
+      width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+    }
+    .fixed-player .fp-progress .fp-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); border-radius: 2px; transition: width 0.2s; }
+    .fixed-player .fp-time { font-size: 0.7rem; color: #666; white-space: nowrap; min-width: 70px; text-align: center; }
+    .fixed-player .fp-ctrl {
+      width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
+      background: transparent; color: #fff; font-size: 0.95rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .fixed-player .fp-ctrl:hover { background: rgba(0,240,255,0.15); border-color: #00f0ff; }
+    body.has-player { padding-bottom: 72px; }
+
+    .video-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; z-index: 400; align-items: center; justify-content: center;
+    }
+    .video-modal.open { display: flex; }
+    .video-modal video { max-width: 95%; max-height: 90%; border-radius: 8px; }
+    .video-modal .vm-close {
+      position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2rem;
+      cursor: pointer; z-index: 5;
+    }
+
+    .music-section {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
+    }
+    .music-section .ms-left { display: flex; flex-direction: column; gap: 14px; }
+    .music-section .ms-right { display: flex; flex-direction: column; gap: 14px; }
+    .ms-upload-box {
+      border: 2px dashed rgba(0,240,255,0.2); border-radius: 12px; padding: 32px;
+      text-align: center; cursor: pointer; transition: border-color 0.3s;
+    }
+    .ms-upload-box:hover { border-color: #00f0ff; }
+    .ms-upload-box .ms-icon { font-size: 2.4rem; margin-bottom: 8px; }
+    .ms-upload-box .ms-txt { font-size: 0.85rem; color: #888; }
+    .ms-current {
+      background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .ms-current .msc-label { font-size: 0.75rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .ms-current .msc-name { font-size: 1.1rem; font-weight: 700; }
+    .ms-current .msc-artist { font-size: 0.82rem; color: #888; }
+    .ms-current .msc-progress { margin-top: 10px; }
+    .ms-current .msc-progress .msc-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+    .ms-current .msc-progress .msc-bar .msc-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); }
+    .ms-current .msc-time { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; margin-top: 4px; }
+
+    .ms-playlist { max-height: 300px; overflow-y: auto; }
+    .ms-playlist .ms-track {
+      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+      border-radius: 8px; cursor: pointer; transition: background 0.2s;
+    }
+    .ms-playlist .ms-track:hover { background: rgba(255,255,255,0.04); }
+    .ms-playlist .ms-track.active { background: rgba(0,240,255,0.08); border-left: 3px solid #00f0ff; }
+    .ms-playlist .ms-track .ms-num { width: 20px; font-size: 0.75rem; color: #555; }
+    .ms-playlist .ms-track .ms-name { flex: 1; font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ms-playlist .ms-track .ms-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,240,255,0.1); color: #00f0ff; }
+    .ms-playlist .ms-track .ms-del { color: #ff3366; font-size: 0.75rem; cursor: pointer; opacity: 0; }
+    .ms-playlist .ms-track:hover .ms-del { opacity: 1; }
+
+    @media (max-width:768px) {
+      .music-section { grid-template-columns: 1fr; }
+      .fixed-player .fp-name { max-width: 80px; }
+    }
     @media (max-width:600px) {
       nav .menu a { font-size: 0.75rem; }
       .hero h1 { font-size: 2rem; }
@@ -314,27 +394,57 @@
     <div class="section-title"><span class="icon">&#127926;</span> เครื่องเล่นเพลง</div>
     <div class="section-sub">เพลงเล่นต่อเนื่องทุกหน้า — DEV เท่านั้นที่อัปโหลดเพลงได้</div>
 
-    <div class="card">
-      <div class="music-player">
-        <div class="cover" id="musicCover">&#127925;</div>
-        <div class="info">
-          <div class="song-name" id="songName">ไม่พบเพลง</div>
-          <div class="song-artist" id="songArtist">เพิ่มเพลง MP3 / MP4 ได้เลย</div>
-          <div style="font-size:0.7rem;color:#444;margin-top:4px;" id="songTime">00:00 / 00:00</div>
+    <div class="music-section">
+      <div class="ms-left">
+        <div class="ms-current">
+          <div class="msc-label">กำลังเล่น</div>
+          <div class="msc-name" id="mscName">—</div>
+          <div class="msc-artist" id="mscArtist">ยังไม่มีเพลง</div>
+          <div class="msc-progress">
+            <div class="msc-bar"><div class="msc-fill" id="mscFill"></div></div>
+            <div class="msc-time"><span id="mscCur">00:00</span><span id="mscDur">00:00</span></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="fp-ctrl" id="prevBtn2" title="ก่อนหน้า">&#9198;</button>
+            <button class="fp-ctrl" id="playBtn2" title="เล่น/หยุด" style="background:rgba(0,240,255,0.15);border-color:#00f0ff;">&#9654;</button>
+            <button class="fp-ctrl" id="nextBtn2" title="ถัดไป">&#9197;</button>
+          </div>
         </div>
-        <div class="controls">
-          <button id="prevBtn">&#9198;</button>
-          <button id="playBtn">&#9654;</button>
-          <button id="nextBtn">&#9197;</button>
-          <button id="uploadMusicBtn" onclick="document.getElementById('musicFileInput').click()" title="DEV: อัปโหลดเพลง">&#128190;</button>
+        <div id="msUploadBox" class="ms-upload-box" onclick="document.getElementById('musicFileInput').click()">
+          <div class="ms-icon">&#128190;</div>
+          <div class="ms-txt">อัปโหลด MP3 / MP4 (เฉพาะ DEV)</div>
         </div>
       </div>
-
-      <div class="playlist" id="playlist"></div>
+      <div class="ms-right">
+        <div style="font-size:0.82rem;font-weight:600;color:#aaa;">เพลย์ลิสต์</div>
+        <div class="ms-playlist" id="msPlaylist"></div>
+      </div>
     </div>
     <input type="file" id="musicFileInput" accept=".mp3,.mp4,audio/*,video/*" multiple style="display:none">
   </div>
 </section>
+
+<div class="fixed-player" id="fixedPlayer">
+  <div class="fp-cover" id="fpCover">&#127925;</div>
+  <div class="fp-info">
+    <div class="fp-name" id="fpName">—</div>
+    <div class="fp-artist" id="fpArtist">CleanMaster</div>
+  </div>
+  <div class="fp-progress-wrap" id="fpProgressWrap">
+    <div class="fp-progress"><div class="fp-fill" id="fpFill"></div></div>
+  </div>
+  <div class="fp-time" id="fpTime">00:00 / 00:00</div>
+  <button class="fp-ctrl" id="fpPrev">&#9198;</button>
+  <button class="fp-ctrl" id="fpPlay">&#9654;</button>
+  <button class="fp-ctrl" id="fpNext">&#9197;</button>
+  <button class="fp-ctrl" id="fpUpload" onclick="document.getElementById('musicFileInput').click()" title="DEV upload">&#128190;</button>
+  <button class="fp-ctrl" id="fpFullscreen" title="ดูวิดีโอเต็มจอ" style="display:none;">&#9974;</button>
+</div>
+
+<div class="video-modal" id="videoModal">
+  <span class="vm-close" onclick="closeVideoModal()">&times;</span>
+  <video id="videoPlayer" controls autoplay></video>
+</div>
 
 <section id="employee">
   <div class="container">
@@ -595,79 +705,160 @@
 
   // ===== MUSIC PLAYER =====
   const audio = document.getElementById('audioPlayer');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const videoModal = document.getElementById('videoModal');
   let playlist = JSON.parse(localStorage.getItem('cm_playlist') || '[]');
   let currentTrack = parseInt(localStorage.getItem('cm_currentTrack') || '0');
   let savedTime = parseFloat(localStorage.getItem('cm_currentTime') || '0');
-  const playBtn = document.getElementById('playBtn');
-  const songName = document.getElementById('songName');
-  const songArtist = document.getElementById('songArtist');
-  const songTime = document.getElementById('songTime');
-  const playlistEl = document.getElementById('playlist');
+
+  const el = {
+    fpName: document.getElementById('fpName'),
+    fpArtist: document.getElementById('fpArtist'),
+    fpCover: document.getElementById('fpCover'),
+    fpFill: document.getElementById('fpFill'),
+    fpTime: document.getElementById('fpTime'),
+    fpPlay: document.getElementById('fpPlay'),
+    fpPrev: document.getElementById('fpPrev'),
+    fpNext: document.getElementById('fpNext'),
+    fpUpload: document.getElementById('fpUpload'),
+    fpFullscreen: document.getElementById('fpFullscreen'),
+    fpPlayer: document.getElementById('fixedPlayer'),
+    fpProgress: document.getElementById('fpProgressWrap'),
+    mscName: document.getElementById('mscName'),
+    mscArtist: document.getElementById('mscArtist'),
+    mscFill: document.getElementById('mscFill'),
+    mscCur: document.getElementById('mscCur'),
+    mscDur: document.getElementById('mscDur'),
+    mscPlaylist: document.getElementById('msPlaylist'),
+    msUploadBox: document.getElementById('msUploadBox'),
+    playBtn2: document.getElementById('playBtn2'),
+    prevBtn2: document.getElementById('prevBtn2'),
+    nextBtn2: document.getElementById('nextBtn2'),
+  };
 
   function formatTime(s) {
+    if (!s || isNaN(s)) return '00:00';
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
     return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
 
+  function closeVideoModal() {
+    videoModal.classList.remove('open');
+    videoPlayer.pause();
+    videoPlayer.src = '';
+  }
+
   function renderPlaylist() {
-    playlistEl.innerHTML = '';
+    el.mscPlaylist.innerHTML = '';
     if (playlist.length === 0) {
-      playlistEl.innerHTML = '<div style="color:#444;padding:16px;text-align:center;">ยังไม่มีเพลง — DEV กดปุ่ม &#128190; เพื่อเพิ่ม MP3/MP4</div>';
+      el.mscPlaylist.innerHTML = '<div style="color:#444;font-size:0.82rem;text-align:center;padding:20px;">ยังไม่มีเพลง</div>';
       return;
     }
     playlist.forEach((track, i) => {
       const div = document.createElement('div');
-      div.className = 'track' + (i === currentTrack ? ' active' : '');
-      const isDev = getSession() && getSession().user === '1@1.1';
+      div.className = 'ms-track' + (i === currentTrack ? ' active' : '');
+      const isVideo = track.type === 'video';
       div.innerHTML = `
-        <span class="t-num">${i + 1}</span>
-        <span class="t-name">${track.name}</span>
-        <span class="t-dur">${track.dur || '--:--'}</span>
-        ${isDev ? '<span class="t-del" data-idx="'+i+'">&#10005;</span>' : ''}
+        <span class="ms-num">${i + 1}</span>
+        <span class="ms-name">${track.name}</span>
+        ${isVideo ? '<span class="ms-tag">MP4</span>' : ''}
+        <span class="ms-dur" style="font-size:0.7rem;color:#666;">${track.dur || '--:--'}</span>
+        ${isDev() ? '<span class="ms-del" data-idx="'+i+'">&#10005;</span>' : ''}
       `;
-      div.querySelector('.t-name').onclick = () => playTrack(i);
-      const delBtn = div.querySelector('.t-del');
-      if (delBtn) delBtn.onclick = (e) => { e.stopPropagation(); deleteTrack(parseInt(delBtn.dataset.idx)); };
-      playlistEl.appendChild(div);
+      div.onclick = () => playTrack(i);
+      const del = div.querySelector('.ms-del');
+      if (del) del.onclick = (e) => { e.stopPropagation(); deleteTrack(parseInt(del.dataset.idx)); };
+      el.mscPlaylist.appendChild(div);
     });
+  }
+
+  function updatePlayerUI() {
+    const has = playlist.length > 0 && currentTrack >= 0 && currentTrack < playlist.length;
+    el.fpPlayer.classList.toggle('open', has);
+    document.body.classList.toggle('has-player', has);
+    if (!has) {
+      el.mscName.textContent = '—';
+      el.mscArtist.textContent = 'ยังไม่มีเพลง';
+      el.mscFill.style.width = '0%';
+      el.mscCur.textContent = '00:00';
+      el.mscDur.textContent = '00:00';
+      el.fpFill.style.width = '0%';
+      el.fpTime.textContent = '00:00 / 00:00';
+      el.fpName.textContent = '—';
+      el.fpArtist.textContent = 'CleanMaster';
+      el.playBtn2.textContent = '\u25B6';
+      el.fpPlay.textContent = '\u25B6';
+      return;
+    }
+    const t = playlist[currentTrack];
+    el.mscName.textContent = t.name;
+    el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
+    el.fpName.textContent = t.name;
+    el.fpArtist.textContent = t.artist || 'CleanMaster';
+    el.fpFullscreen.style.display = t.type === 'video' ? '' : 'none';
+
+    const cur = audio.currentTime || 0;
+    const dur = audio.duration || 0;
+    const pct = dur > 0 ? (cur / dur) * 100 : 0;
+    el.mscFill.style.width = pct + '%';
+    el.fpFill.style.width = pct + '%';
+    el.mscCur.textContent = formatTime(cur);
+    el.mscDur.textContent = formatTime(dur);
+    el.fpTime.textContent = formatTime(cur) + ' / ' + formatTime(dur);
   }
 
   function playTrack(i) {
     if (i < 0 || i >= playlist.length) return;
     currentTrack = i;
-    localStorage.setItem('cm_currentTrack', i);
     const track = playlist[i];
-    audio.src = track.data;
-    audio.play();
-    playBtn.textContent = '\u23F8';
-    songName.textContent = track.name;
-    songArtist.textContent = track.artist || 'ไม่ระบุศิลปิน';
-    document.getElementById('musicCover').textContent = '\u127925';
-    renderPlaylist();
+    localStorage.setItem('cm_currentTrack', i);
     localStorage.setItem('cm_currentTime', '0');
+
+    if (track.type === 'video') {
+      videoModal.classList.add('open');
+      videoPlayer.src = track.data;
+      videoPlayer.play();
+      el.fpCover.textContent = '\u127916';
+    } else {
+      closeVideoModal();
+      audio.src = track.data;
+      audio.play();
+      el.fpCover.textContent = '\u127925';
+    }
+    el.playBtn2.textContent = '\u23F8';
+    el.fpPlay.textContent = '\u23F8';
+    updatePlayerUI();
+    renderPlaylist();
   }
 
   function updateMusicUI() {
-    const uploadBtn = document.getElementById('uploadMusicBtn');
-    uploadBtn.style.display = isDev() ? '' : 'none';
+    const show = isDev();
+    el.fpUpload.style.display = show ? '' : 'none';
+    el.msUploadBox.style.display = show ? '' : 'none';
   }
 
   function deleteTrack(i) {
     if (!isDev()) return;
-    if (!confirm('ลบเพลงนี้?')) return;
-    if (i === currentTrack) { audio.pause(); audio.src = ''; playBtn.textContent = '\u25B6'; }
+    if (!confirm('ลบรายการนี้?')) return;
+    const wasCurrent = i === currentTrack;
+    if (i === currentTrack) { audio.pause(); audio.src = ''; closeVideoModal(); }
     playlist.splice(i, 1);
-    if (currentTrack >= playlist.length) currentTrack = playlist.length - 1;
-    if (currentTrack < 0) { currentTrack = 0; songName.textContent = 'ไม่พบเพลง'; songArtist.textContent = 'เพิ่มเพลง MP3/MP4 ได้เลย'; songTime.textContent = '00:00 / 00:00'; }
+    if (wasCurrent) {
+      if (i >= playlist.length) currentTrack = playlist.length - 1;
+      if (currentTrack < 0) currentTrack = 0;
+      if (playlist.length > 0) playTrack(currentTrack);
+      else { localStorage.setItem('cm_playlist', '[]'); localStorage.setItem('cm_currentTrack', '0'); localStorage.setItem('cm_currentTime', '0'); updatePlayerUI(); }
+    } else {
+      if (i < currentTrack) currentTrack--;
+      localStorage.setItem('cm_currentTrack', currentTrack);
+    }
     localStorage.setItem('cm_playlist', JSON.stringify(playlist));
-    localStorage.setItem('cm_currentTrack', currentTrack);
     renderPlaylist();
-    if (playlist.length > 0 && i <= currentTrack) playTrack(currentTrack);
   }
 
   document.getElementById('musicFileInput').onchange = function(e) {
-    if (!isDev()) { alert('เฉพาะ DEV เท่านั้นที่อัปโหลดเพลงได้'); this.value = ''; return; }
+    if (!isDev()) { alert('เฉพาะ DEV เท่านั้น'); this.value = ''; return; }
     for (const file of e.target.files) {
       const reader = new FileReader();
       reader.onload = function(ev) {
@@ -693,46 +884,83 @@
   audio.addEventListener('loadedmetadata', () => {
     const t = playlist[currentTrack];
     if (t) { t.dur = formatTime(audio.duration); renderPlaylist(); }
+    updatePlayerUI();
   });
 
   audio.addEventListener('timeupdate', () => {
-    const cur = audio.currentTime;
-    const dur = audio.duration || 1;
-    songTime.textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
-    localStorage.setItem('cm_currentTime', cur);
+    localStorage.setItem('cm_currentTime', audio.currentTime);
+    updatePlayerUI();
   });
 
   audio.addEventListener('ended', () => {
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
-    else { playBtn.textContent = '\u25B6'; }
+    else { el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
   });
 
-  playBtn.onclick = () => {
-    if (playlist.length === 0) { alert('เพิ่มเพลง MP3 ก่อน'); return; }
-    if (audio.paused) { audio.play(); playBtn.textContent = '\u23F8'; }
-    else { audio.pause(); playBtn.textContent = '\u25B6'; }
-  };
-
-  document.getElementById('prevBtn').onclick = () => {
-    if (currentTrack > 0) playTrack(currentTrack - 1);
-  };
-
-  document.getElementById('nextBtn').onclick = () => {
+  videoPlayer.addEventListener('timeupdate', updatePlayerUI);
+  videoPlayer.addEventListener('ended', () => {
+    closeVideoModal();
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
+  });
+
+  function togglePlay() {
+    if (playlist.length === 0) return;
+    const t = playlist[currentTrack];
+    if (t.type === 'video') {
+      if (videoPlayer.paused) videoPlayer.play();
+      else videoPlayer.pause();
+    } else {
+      if (audio.paused) audio.play();
+      else audio.pause();
+    }
+    const playing = t.type === 'video' ? !videoPlayer.paused : !audio.paused;
+    el.playBtn2.textContent = playing ? '\u23F8' : '\u25B6';
+    el.fpPlay.textContent = playing ? '\u23F8' : '\u25B6';
+  }
+
+  function prevTrack() {
+    if (currentTrack > 0) playTrack(currentTrack - 1);
+  }
+
+  function nextTrack() {
+    if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
+  }
+
+  [el.fpPlay, el.playBtn2].forEach(b => b.onclick = togglePlay);
+  [el.fpPrev, el.prevBtn2].forEach(b => b.onclick = prevTrack);
+  [el.fpNext, el.nextBtn2].forEach(b => b.onclick = nextTrack);
+
+  el.fpProgress.onclick = function(e) {
+    if (!audio.duration) return;
+    const rect = this.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = pct * audio.duration;
+  };
+
+  el.fpFullscreen.onclick = () => {
+    const t = playlist[currentTrack];
+    if (t && t.type === 'video') {
+      videoModal.classList.add('open');
+      videoPlayer.src = t.data;
+      videoPlayer.currentTime = audio.currentTime || 0;
+      videoPlayer.play();
+    }
   };
 
   // Resume playback
   if (playlist.length > 0 && currentTrack < playlist.length) {
     const t = playlist[currentTrack];
-    audio.src = t.data;
-    songName.textContent = t.name;
-    songArtist.textContent = t.artist || 'ไม่ระบุศิลปิน';
-    if (savedTime > 0) {
-      audio.currentTime = savedTime;
+    if (t.type !== 'video') {
+      audio.src = t.data;
+      if (savedTime > 0) audio.currentTime = savedTime;
+      audio.play().then(() => { el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }).catch(() => {});
+      el.fpCover.textContent = '\u127925';
+    } else {
+      el.fpCover.textContent = '\u127916';
     }
-    audio.play().then(() => {
-      playBtn.textContent = '\u23F8';
-    }).catch(() => {});
+    updatePlayerUI();
+  } else {
+    updatePlayerUI();
   }
   renderPlaylist();
 
