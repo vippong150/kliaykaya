@@ -378,8 +378,10 @@
 
     <div style="margin-bottom:16px;">
       <button class="btn btn-primary" onclick="scanDrive()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:14px 32px;font-size:1rem;">&#128187; เลือกไดรฟ์/โฟลเดอร์เพื่อสแกน</button>
+      <button class="btn btn-outline" onclick="scanDriveC()" style="margin-left:8px;">&#128190; เลือกไดรฟ์ C:</button>
       <button class="btn btn-outline" onclick="cleanBrowserCacheReal()" style="margin-left:8px;">&#127760; ลบ Cache เบราว์เซอร์</button>
       <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;margin-left:8px;">&#128230; Script ลบถังรีไซเคิล</button>
+      <div style="margin-top:8px;font-size:0.78rem;color:#888;">💡 เลือกโฟลเดอร์จากหน้าต่าง — สามารถพิมพ์ <kbd>C:\</kbd> ในแถบ path เพื่อเลือกทั้งไดรฟ์ C:</div>
     </div>
 
     <div id="scanResultArea" style="display:none;margin-bottom:16px;">
@@ -728,6 +730,19 @@
     let handle;
     try { handle = await window.showDirectoryPicker({ mode: 'readwrite' }); }
     catch (e) { if (e.name !== 'AbortError') alert(e.message); return; }
+    await doScan(handle);
+  }
+
+  async function scanDriveC() {
+    if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); return; }
+    // Open picker starting at desktop — user can navigate up to C:\ root
+    let handle;
+    try { handle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'desktop' }); }
+    catch (e) { if (e.name !== 'AbortError') alert(e.message); return; }
+    await doScan(handle);
+  }
+
+  async function doScan(handle) {
     addLog('📂 กำลังสแกน ' + handle.name + '...');
     document.getElementById('scanResultArea').style.display = 'none';
     const files = [];
