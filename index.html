@@ -139,6 +139,8 @@
     .playlist .track .t-num { width: 24px; color: #555; font-size: 0.8rem; }
     .playlist .track .t-name { flex: 1; font-weight: 500; }
     .playlist .track .t-dur { color: #666; font-size: 0.8rem; }
+    .playlist .track .t-del { color: #ff3366; font-size: 0.8rem; cursor: pointer; opacity: 0; transition: opacity 0.3s; }
+    .playlist .track:hover .t-del { opacity: 1; }
 
     .employee-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 16px; }
     .employee-card {
@@ -147,10 +149,10 @@
     }
     .employee-card:hover { border-color: rgba(0,240,255,0.2); transform: translateY(-4px); }
     .employee-card .avatar {
-      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px;
+      width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 12px;
       background: linear-gradient(135deg,#00f0ff,#0077ff); display: flex;
-      align-items: center; justify-content: center; font-size: 2rem; color: #fff;
-      overflow: hidden; object-fit: cover;
+      align-items: center; justify-content: center; font-size: 3rem; color: #fff;
+      overflow: hidden; border: 2px solid rgba(0,240,255,0.2);
     }
     .employee-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .employee-card .e-name { font-weight: 600; font-size: 0.9rem; }
@@ -309,27 +311,27 @@
 <section id="music" style="background:rgba(255,255,255,0.01);">
   <div class="container">
     <div class="section-title"><span class="icon">&#127926;</span> เครื่องเล่นเพลง</div>
-    <div class="section-sub">เพลงจะเล่นต่อเนื่องแม้ปิดเว็บแล้วกลับมาใหม่</div>
+    <div class="section-sub">เพลงเล่นต่อเนื่องทุกหน้า — DEV เท่านั้นที่อัปโหลดเพลงได้</div>
 
     <div class="card">
       <div class="music-player">
         <div class="cover" id="musicCover">&#127925;</div>
         <div class="info">
           <div class="song-name" id="songName">ไม่พบเพลง</div>
-          <div class="song-artist" id="songArtist">เพิ่มเพลง MP3 ได้เลย</div>
+          <div class="song-artist" id="songArtist">เพิ่มเพลง MP3 / MP4 ได้เลย</div>
           <div style="font-size:0.7rem;color:#444;margin-top:4px;" id="songTime">00:00 / 00:00</div>
         </div>
         <div class="controls">
           <button id="prevBtn">&#9198;</button>
           <button id="playBtn">&#9654;</button>
           <button id="nextBtn">&#9197;</button>
-          <button id="uploadMusicBtn" onclick="document.getElementById('musicFileInput').click()">&#128190;</button>
+          <button id="uploadMusicBtn" onclick="document.getElementById('musicFileInput').click()" title="DEV: อัปโหลดเพลง">&#128190;</button>
         </div>
       </div>
 
       <div class="playlist" id="playlist"></div>
     </div>
-    <input type="file" id="musicFileInput" accept=".mp3,audio/*" multiple style="display:none">
+    <input type="file" id="musicFileInput" accept=".mp3,.mp4,audio/*,video/*" multiple style="display:none">
   </div>
 </section>
 
@@ -355,22 +357,22 @@
 <div class="modal" id="authModal">
   <div class="modal-content">
     <span class="modal-close" onclick="closeModal('authModal')">&times;</span>
-    <h3 id="authTitle">สมัครสมาชิก</h3>
+    <h3 id="authTitle">เข้าสู่ระบบ</h3>
     <div class="form-group">
       <label>ชื่อผู้ใช้</label>
-      <input type="text" id="regUser">
+      <input type="text" id="regUser" placeholder="DEV: 1@1.1">
     </div>
-    <div class="form-group">
+    <div class="form-group" id="emailGroup">
       <label>อีเมล</label>
       <input type="email" id="regEmail">
     </div>
     <div class="form-group">
       <label>รหัสผ่าน</label>
-      <input type="password" id="regPass">
+      <input type="password" id="regPass" placeholder="DEV: 1">
     </div>
-    <button class="btn btn-primary" style="width:100%" onclick="handleAuth()">สมัครสมาชิก</button>
+    <button class="btn btn-primary" style="width:100%" onclick="handleAuth()">เข้าสู่ระบบ</button>
     <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:#666;">
-      มีบัญชีแล้ว? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">เข้าสู่ระบบ</a>
+      ยังไม่มีบัญชี? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">สมัครสมาชิก</a>
     </p>
   </div>
 </div>
@@ -443,11 +445,31 @@
   });
 
   // ===== AUTH =====
-  let isLogin = false;
+  // Auto-create DEV account
+  (function() {
+    const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
+    if (!users.find(u => u.user === '1@1.1')) {
+      users.push({ user: '1@1.1', email: 'dev@cleanmaster', pass: '1' });
+      localStorage.setItem('cm_users', JSON.stringify(users));
+    }
+  })();
+
+  function getSession() {
+    return JSON.parse(localStorage.getItem('cm_session'));
+  }
+
+  function isDev() {
+    const s = getSession();
+    return s && s.user === '1@1.1';
+  }
+
+  let isLogin = true;
+
   function toggleAuthMode() {
     isLogin = !isLogin;
     document.getElementById('authTitle').textContent = isLogin ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก';
     document.querySelector('#authModal .btn-primary').textContent = isLogin ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก';
+    document.getElementById('emailGroup').style.display = isLogin ? 'none' : 'block';
     document.querySelector('#authModal p').innerHTML = isLogin
       ? 'ยังไม่มีบัญชี? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">สมัครสมาชิก</a>'
       : 'มีบัญชีแล้ว? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">เข้าสู่ระบบ</a>';
@@ -457,15 +479,16 @@
     const user = document.getElementById('regUser').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    if (!user || !email || !pass) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+    if (!user || !pass) { alert('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'); return; }
 
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
 
     if (isLogin) {
-      const found = users.find(u => (u.user === user || u.email === email) && u.pass === pass);
+      const found = users.find(u => u.user === user && u.pass === pass);
       if (!found) { alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'); return; }
       localStorage.setItem('cm_session', JSON.stringify(found));
     } else {
+      if (!email) { alert('กรุณากรอกอีเมล'); return; }
       if (users.find(u => u.user === user)) { alert('ชื่อผู้ใช้นี้มีอยู่แล้ว'); return; }
       users.push({ user, email, pass });
       localStorage.setItem('cm_users', JSON.stringify(users));
@@ -474,15 +497,17 @@
 
     closeModal('authModal');
     updateAuthUI();
+    updateMusicUI();
   }
 
   function updateAuthUI() {
-    const session = JSON.parse(localStorage.getItem('cm_session'));
+    const session = getSession();
     const btn = document.getElementById('authBtn');
     if (session) {
-      btn.innerHTML = `<span class="auth-badge logout" onclick="logout()">${session.user}  (ออกจากระบบ)</span>`;
+      const badge = session.user === '1@1.1' ? '&#128272; DEV' : session.user;
+      btn.innerHTML = `<span class="auth-badge logout" onclick="logout()">${badge} (ออกจากระบบ)</span>`;
     } else {
-      btn.innerHTML = 'สมัครสมาชิก';
+      btn.innerHTML = 'เข้าสู่ระบบ';
       btn.onclick = function() { openModal('authModal'); };
     }
   }
@@ -490,6 +515,7 @@
   function logout() {
     localStorage.removeItem('cm_session');
     updateAuthUI();
+    updateMusicUI();
   }
   updateAuthUI();
 
@@ -599,18 +625,22 @@
   function renderPlaylist() {
     playlistEl.innerHTML = '';
     if (playlist.length === 0) {
-      playlistEl.innerHTML = '<div style="color:#444;padding:16px;text-align:center;">ยังไม่มีเพลง — กดปุ่ม &#128190; เพื่อเพิ่ม MP3</div>';
+      playlistEl.innerHTML = '<div style="color:#444;padding:16px;text-align:center;">ยังไม่มีเพลง — DEV กดปุ่ม &#128190; เพื่อเพิ่ม MP3/MP4</div>';
       return;
     }
     playlist.forEach((track, i) => {
       const div = document.createElement('div');
       div.className = 'track' + (i === currentTrack ? ' active' : '');
+      const isDev = getSession() && getSession().user === '1@1.1';
       div.innerHTML = `
         <span class="t-num">${i + 1}</span>
         <span class="t-name">${track.name}</span>
         <span class="t-dur">${track.dur || '--:--'}</span>
+        ${isDev ? '<span class="t-del" data-idx="'+i+'">&#10005;</span>' : ''}
       `;
-      div.onclick = () => playTrack(i);
+      div.querySelector('.t-name').onclick = () => playTrack(i);
+      const delBtn = div.querySelector('.t-del');
+      if (delBtn) delBtn.onclick = (e) => { e.stopPropagation(); deleteTrack(parseInt(delBtn.dataset.idx)); };
       playlistEl.appendChild(div);
     });
   }
@@ -630,15 +660,36 @@
     localStorage.setItem('cm_currentTime', '0');
   }
 
+  function updateMusicUI() {
+    const uploadBtn = document.getElementById('uploadMusicBtn');
+    uploadBtn.style.display = isDev() ? '' : 'none';
+  }
+
+  function deleteTrack(i) {
+    if (!isDev()) return;
+    if (!confirm('ลบเพลงนี้?')) return;
+    if (i === currentTrack) { audio.pause(); audio.src = ''; playBtn.textContent = '\u25B6'; }
+    playlist.splice(i, 1);
+    if (currentTrack >= playlist.length) currentTrack = playlist.length - 1;
+    if (currentTrack < 0) { currentTrack = 0; songName.textContent = 'ไม่พบเพลง'; songArtist.textContent = 'เพิ่มเพลง MP3/MP4 ได้เลย'; songTime.textContent = '00:00 / 00:00'; }
+    localStorage.setItem('cm_playlist', JSON.stringify(playlist));
+    localStorage.setItem('cm_currentTrack', currentTrack);
+    renderPlaylist();
+    if (playlist.length > 0 && i <= currentTrack) playTrack(currentTrack);
+  }
+
   document.getElementById('musicFileInput').onchange = function(e) {
+    if (!isDev()) { alert('เฉพาะ DEV เท่านั้นที่อัปโหลดเพลงได้'); this.value = ''; return; }
     for (const file of e.target.files) {
       const reader = new FileReader();
       reader.onload = function(ev) {
+        const isMp4 = file.name.toLowerCase().endsWith('.mp4');
         playlist.push({
-          name: file.name.replace('.mp3', ''),
-          artist: 'เพิ่มโดยคุณ',
+          name: file.name.replace(/\.(mp3|mp4)$/i, ''),
+          artist: isMp4 ? 'MP4 Video' : 'เพิ่มโดย DEV',
           dur: '--:--',
-          data: ev.target.result
+          data: ev.target.result,
+          type: isMp4 ? 'video' : 'audio'
         });
         localStorage.setItem('cm_playlist', JSON.stringify(playlist));
         renderPlaylist();
@@ -648,6 +699,8 @@
     }
     this.value = '';
   };
+
+  updateMusicUI();
 
   audio.addEventListener('loadedmetadata', () => {
     const t = playlist[currentTrack];
