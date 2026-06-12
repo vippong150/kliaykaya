@@ -426,6 +426,7 @@
       <button class="btn btn-outline" onclick="cleanSelected()">&#128465; ลบรายการที่สแกน</button>
       <button class="btn btn-outline" onclick="resetCleaner()">&#8635; รีเซ็ต</button>
       <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ลบขยะจริง (Silent)</button>
+      <button class="btn btn-primary" onclick="scanRealDrive()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;">&#128187; สแกนไดรฟ์จริงด้วย File API</button>
     </div>
     <div id="cleanScriptStatus" style="margin-top:8px;font-size:0.78rem;color:#ff8800;"></div>
 
@@ -436,6 +437,13 @@
     <div id="backupSection" style="margin-top:16px;display:none;">
       <div style="font-size:0.85rem;font-weight:600;color:#00f0ff;margin-bottom:8px;">💾 แบ็คอัพข้อมูล</div>
       <div id="backupList"></div>
+    </div>
+
+    <div id="realScanSection" style="margin-top:16px;display:none;">
+      <div style="font-size:0.85rem;font-weight:600;color:#f0f;margin-bottom:8px;">&#128187; สแกนไดรฟ์จริง</div>
+      <div id="realScanStatus" style="font-size:0.82rem;color:#aaa;margin-bottom:8px;"></div>
+      <div id="realScanList" style="max-height:300px;overflow-y:auto;"></div>
+      <button class="btn btn-outline btn-sm" id="realDeleteBtn" style="margin-top:8px;display:none;" onclick="deleteRealScanned()">&#128465; ลบไฟล์ที่เลือก</button>
     </div>
   </div>
 </section>
@@ -915,6 +923,96 @@
       el.classList.remove('scanned', 'cleaned');
       el.querySelector('.fill').style.width = '0%';
     });
+  }
+
+  // File System Access API — scan real user-selected folder
+  let realDirHandle = null;
+  let realScannedFiles = [];
+
+  async function scanRealDrive() {
+    if (!window.showDirectoryPicker) {
+      alert('เบราว์เซอร์ของคุณยังไม่รองรับ File System Access API — ใช้ Chrome/Edge เวอร์ชันล่าสุด');
+      return;
+    }
+    try {
+      realDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+      alert('เกิดข้อผิดพลาด: ' + e.message);
+      return;
+    }
+    const section = document.getElementById('realScanSection');
+    const status = document.getElementById('realScanStatus');
+    const list = document.getElementById('realScanList');
+    section.style.display = 'block';
+    status.textContent = 'กำลังสแกน ' + realDirHandle.name + '...';
+    list.innerHTML = '';
+    realScannedFiles = [];
+    await scanDirRecursive(realDirHandle);
+    status.textContent = 'พบ ' + realScannedFiles.length + ' ไฟล์ (' + formatBytes(realScannedFiles.reduce((a, f) => a + f.size, 0)) + ') — เลือกไฟล์ที่ต้องการลบ';
+    renderRealScanned();
+    document.getElementById('realDeleteBtn').style.display = 'block';
+  }
+
+  async function scanDirRecursive(dirHandle, path = '') {
+    for await (const [name, handle] of dirHandle.entries()) {
+      const fullPath = path ? path + '/' + name : name;
+      if (handle.kind === 'directory') {
+        try { await scanDirRecursive(handle, fullPath); } catch {}
+      } else {
+        try {
+          const file = await handle.getFile();
+          if (file.size > 0) {
+            realScannedFiles.push({ name: fullPath, size: file.size, handle });
+          }
+        } catch {}
+      }
+    }
+  }
+
+  function renderRealScanned() {
+    const list = document.getElementById('realScanList');
+    list.innerHTML = realScannedFiles.map((f, i) =>
+      `<label style="display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:0.78rem;">
+        <input type="checkbox" checked data-idx="${i}" onchange="toggleRealDelete()">
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
+        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
+      </label>`
+    ).join('');
+  }
+
+  function toggleRealDelete() {
+    const checked = document.querySelectorAll('#realScanList input:checked').length;
+    document.getElementById('realDeleteBtn').textContent = '🗑 ลบ ' + checked + ' ไฟล์ที่เลือก';
+  }
+
+  async function deleteRealScanned() {
+    const checks = document.querySelectorAll('#realScanList input:checked');
+    if (checks.length === 0) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
+    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์จริง?')) return;
+    let deleted = 0;
+    for (const cb of checks) {
+      const idx = parseInt(cb.dataset.idx);
+      const f = realScannedFiles[idx];
+      try {
+        await f.handle.remove();
+        deleted++;
+      } catch (e) { addLog('❌ ไม่สามารถลบ ' + f.name + ': ' + e.message); }
+    }
+    addLog('ลบ ' + deleted + '/' + checks.length + ' ไฟล์เรียบร้อย');
+    // Re-scan
+    realScannedFiles = [];
+    await scanDirRecursive(realDirHandle);
+    renderRealScanned();
+    document.getElementById('realScanStatus').textContent = 'เหลือ ' + realScannedFiles.length + ' ไฟล์';
+    toggleRealDelete();
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+    return (bytes / 1073741824).toFixed(2) + ' GB';
   }
 
   function downloadCleanScript() {
