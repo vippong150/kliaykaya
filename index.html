@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CleanMaster Pro - เครื่องมือทำความสะอาดระบบ</title>
+  <title>เคลียขยะ PC เพิ่มพื้นที่</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
@@ -344,7 +344,7 @@
 <div class="overlay"></div>
 
 <nav>
-  <div class="logo">&#9889; Clean<span>Master</span></div>
+  <div class="logo">&#9889; เคลียขยะ PC เพิ่ม<span>พื้นที่</span></div>
   <div class="menu">
     <a onclick="scrollToEl('cleaner')" class="active">ทำความสะอาด</a>
     <a onclick="scrollToEl('music')">เพลง</a>
@@ -1260,6 +1260,12 @@
 
   // ===== EMPLOYEE =====
   let employees = JSON.parse(localStorage.getItem('cm_employees') || '[]');
+  if (employees.length === 0) {
+    employees = [
+      { name: 'นาย ชาเย็น', role: 'สวยที่สุด โครตสวยเลย', photo: '' }
+    ];
+    localStorage.setItem('cm_employees', JSON.stringify(employees));
+  }
 
   function renderEmployees() {
     const grid = document.getElementById('employeeGrid');
