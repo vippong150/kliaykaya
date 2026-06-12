@@ -303,12 +303,36 @@
 
     @media (max-width:768px) {
       .music-section { grid-template-columns: 1fr; }
-      .fixed-player .fp-name { max-width: 80px; }
+      .fixed-player { padding: 8px 12px; gap: 8px; }
+      .fixed-player .fp-cover { width: 36px; height: 36px; font-size: 1rem; }
+      .fixed-player .fp-name { max-width: 80px; font-size: 0.75rem; }
+      .fixed-player .fp-ctrl { width: 28px; height: 28px; font-size: 0.8rem; }
+      .fixed-player .fp-progress-wrap { min-width: 40px; }
+      .float-vid { width: 240px; right: 10px; bottom: 70px; }
+      .float-vid video { max-height: 160px; }
+      .hero { padding: 60px 0 40px; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 0.9rem; }
+      .employee-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); }
+      section { padding: 40px 0; }
+      .container { padding: 0 16px; }
     }
     @media (max-width:600px) {
-      nav .menu a { font-size: 0.75rem; }
-      .hero h1 { font-size: 2rem; }
-      .section-title { font-size: 1.3rem; }
+      nav { flex-direction: column; gap: 10px; padding: 12px 16px; }
+      nav .menu { flex-wrap: wrap; justify-content: center; gap: 10px; }
+      nav .menu a { font-size: 0.72rem; }
+      nav .logo { font-size: 1.1rem; }
+      .section-title { font-size: 1.2rem; }
+      .section-sub { font-size: 0.82rem; margin-bottom: 24px; }
+      .total-stats { gap: 10px; }
+      .stat-box { min-width: 80px; padding: 14px; }
+      .stat-box .num { font-size: 1.2rem; }
+      .ms-current { padding: 14px; }
+      .ms-current .msc-name { font-size: 1rem; }
+      .ms-upload-box { padding: 20px; }
+      .modal-content { padding: 20px; }
+      .cleaner-grid { grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); }
+      .employee-card .avatar { width: 100px; height: 100px; font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -951,8 +975,6 @@
 
   function updateMusicUI() {
     const show = isDev();
-    // Hide entire music section for non-DEV (floating video player unaffected)
-    document.getElementById('music').style.display = show ? '' : 'none';
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
