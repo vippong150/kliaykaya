@@ -754,6 +754,21 @@
   let currentTrack = parseInt(localStorage.getItem('cm_currentTrack') || '0');
   let savedTime = parseFloat(localStorage.getItem('cm_currentTime') || '0');
 
+  // Migrate old playlist data to IndexedDB
+  (async function migratePlaylist() {
+    let changed = false;
+    for (const t of playlist) {
+      if (t.data && !t.dbId) {
+        try {
+          t.dbId = await dbPut(t.data);
+          delete t.data;
+          changed = true;
+        } catch (e) {}
+      }
+    }
+    if (changed) localStorage.setItem('cm_playlist', JSON.stringify(playlist));
+  })();
+
   const el = {
     fpName: document.getElementById('fpName'),
     fpArtist: document.getElementById('fpArtist'),
@@ -898,12 +913,12 @@
       if (i >= playlist.length) currentTrack = playlist.length - 1;
       if (currentTrack < 0) currentTrack = 0;
       if (playlist.length > 0) playTrack(currentTrack);
-      else { localStorage.setItem('cm_playlist', '[]'); localStorage.setItem('cm_currentTrack', '0'); localStorage.setItem('cm_currentTime', '0'); updatePlayerUI(); }
+      else { localStorage.setItem('cm_currentTrack', '0'); localStorage.setItem('cm_currentTime', '0'); savePlaylist(); updatePlayerUI(); }
     } else {
       if (i < currentTrack) currentTrack--;
       localStorage.setItem('cm_currentTrack', currentTrack);
     }
-    localStorage.setItem('cm_playlist', JSON.stringify(playlist));
+    savePlaylist();
     renderPlaylist();
   }
 
@@ -924,7 +939,7 @@
             dbId: dbId,
             type: isMp4 ? 'video' : 'audio'
           });
-          localStorage.setItem('cm_playlist', JSON.stringify(playlist));
+          savePlaylist();
           renderPlaylist();
           if (playlist.length === 1) playTrack(0);
         } catch (err) {
@@ -936,6 +951,13 @@
       reader.readAsDataURL(file);
     }
   };
+
+  function savePlaylist() {
+    // Strip any lingering data fields before saving to localStorage
+    const clean = playlist.map(t => ({ name: t.name, artist: t.artist, dur: t.dur, dbId: t.dbId, type: t.type }));
+    try { localStorage.setItem('cm_playlist', JSON.stringify(clean)); }
+    catch (e) { alert('Storage full! ลบเพลงเก่าออกก่อน'); }
+  }
 
   updateMusicUI();
 
