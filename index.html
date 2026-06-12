@@ -414,6 +414,7 @@
           <div class="ms-icon">&#128190;</div>
           <div class="ms-txt">อัปโหลด MP3 / MP4 (เฉพาะ DEV)</div>
         </div>
+        <button class="btn btn-sm btn-outline" id="clearPlaylistBtn" onclick="clearPlaylist()" style="display:none;">&#128465; ล้างเพลย์ลิสต์</button>
       </div>
       <div class="ms-right">
         <div style="font-size:0.82rem;font-weight:600;color:#aaa;">เพลย์ลิสต์</div>
@@ -876,7 +877,11 @@
     let src;
     if (track.data) src = track.data;
     else if (track.dbId) src = await dbGet(track.dbId);
-    if (!src) return;
+    if (!src) {
+      alert('ไม่พบไฟล์เพลง — อาจถูกลบหรือยังไม่ได้บันทึก กรุณาอัปโหลดใหม่');
+      playlist.splice(i, 1); savePlaylist(); renderPlaylist(); updatePlayerUI();
+      return;
+    }
 
     if (track.type === 'video') {
       videoModal.classList.add('open');
@@ -895,10 +900,21 @@
     renderPlaylist();
   }
 
+  async function clearPlaylist() {
+    if (!isDev() || !confirm('ล้างเพลย์ลิสต์ทั้งหมด?')) return;
+    for (const t of playlist) { if (t.dbId) await dbDel(t.dbId); }
+    playlist = []; currentTrack = 0;
+    audio.pause(); audio.src = ''; closeVideoModal();
+    localStorage.setItem('cm_currentTrack', '0');
+    localStorage.setItem('cm_currentTime', '0');
+    savePlaylist(); renderPlaylist(); updatePlayerUI();
+  }
+
   function updateMusicUI() {
     const show = isDev();
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
+    document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
   }
 
   async function deleteTrack(i) {
