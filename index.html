@@ -440,6 +440,7 @@
   <button class="fp-ctrl" id="fpNext">&#9197;</button>
   <button class="fp-ctrl" id="fpUpload" onclick="document.getElementById('musicFileInput').click()" title="DEV upload">&#128190;</button>
   <button class="fp-ctrl" id="fpFullscreen" title="ดูวิดีโอเต็มจอ" style="display:none;">&#9974;</button>
+  <input type="range" id="fpVolume" min="0" max="1" step="0.05" value="1" style="width:60px;accent-color:#00f0ff;cursor:pointer;">
 </div>
 
 <div class="video-modal" id="videoModal">
@@ -749,6 +750,7 @@
 
   // ===== MUSIC PLAYER =====
   const audio = document.getElementById('audioPlayer');
+  audio.volume = 1; audio.muted = false;
   const videoPlayer = document.getElementById('videoPlayer');
   const videoModal = document.getElementById('videoModal');
   let playlist = JSON.parse(localStorage.getItem('cm_playlist') || '[]');
@@ -891,7 +893,13 @@
     } else {
       closeVideoModal();
       audio.src = src;
-      audio.play();
+      audio.play().catch(e => {
+        if (e.name === 'NotAllowedError') {
+          // Browser blocked autoplay - user needs to click
+          el.playBtn2.textContent = '\u25B6';
+          el.fpPlay.textContent = '\u25B6';
+        }
+      });
       el.fpCover.textContent = '\u127925';
     }
     el.playBtn2.textContent = '\u23F8';
@@ -1031,6 +1039,15 @@
     const rect = this.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
     audio.currentTime = pct * audio.duration;
+  };
+
+  document.getElementById('fpVolume').oninput = function() {
+    audio.volume = parseFloat(this.value);
+    videoPlayer.volume = parseFloat(this.value);
+  };
+
+  audio.onerror = function() {
+    console.error('Audio error:', audio.error ? audio.error.message : 'unknown');
   };
 
   el.fpFullscreen.onclick = () => {
