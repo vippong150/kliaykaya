@@ -977,6 +977,7 @@
 
   function updateMusicUI() {
     const show = isDev();
+    document.getElementById('music').style.display = show ? '' : 'none';
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
