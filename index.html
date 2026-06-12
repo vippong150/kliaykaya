@@ -370,63 +370,50 @@
     <div class="section-sub">สแกนและลบขยะระบบ เพิ่มประสิทธิภาพเครื่องของคุณ</div>
 
     <div class="total-stats">
-      <div class="stat-box"><div class="num" id="totalScanned">0</div><div class="lbl">รายการที่สแกน</div></div>
-      <div class="stat-box"><div class="num" id="totalCleaned">0</div><div class="lbl">ลบแล้ว (รายการ)</div></div>
-      <div class="stat-box"><div class="num" id="totalFreed">0 MB</div><div class="lbl">พื้นที่ว่าง</div></div>
       <div class="stat-box"><div class="num" id="storageUsage" style="font-size:1rem;">กำลังโหลด...</div><div class="lbl">พื้นที่จัดเก็บเบราว์เซอร์</div></div>
     </div>
 
     <div class="cleaner-grid" id="cleanerGrid">
-      <div class="cleaner-item" data-key="temp" data-size="1280">
+      <div class="cleaner-item" data-key="temp" style="cursor:pointer;" onclick="realScanFolder('temp')">
         <div class="ci-icon">&#128451;</div>
         <div class="ci-label">ไฟล์ชั่วคราว (Temp)</div>
-        <div class="ci-size">~1.28 GB</div>
+        <div class="ci-size" id="realSize-temp">คลิกเพื่อเลือกโฟลเดอร์</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
-      <div class="cleaner-item" data-key="cache" data-size="890">
+      <div class="cleaner-item" data-key="cache" style="cursor:pointer;" onclick="realScanFolder('cache')">
         <div class="ci-icon">&#128230;</div>
         <div class="ci-label">แคชระบบ (Cache)</div>
-        <div class="ci-size">~890 MB</div>
+        <div class="ci-size" id="realSize-cache">คลิกเพื่อเลือกโฟลเดอร์</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
-      <div class="cleaner-item" data-key="recycle" data-size="2048">
+      <div class="cleaner-item" data-key="recycle" style="cursor:pointer;" onclick="realScanFolder('recycle')">
         <div class="ci-icon">&#128267;</div>
         <div class="ci-label">ถังรีไซเคิล</div>
-        <div class="ci-size">~2.05 GB</div>
+        <div class="ci-size" id="realSize-recycle">คลิกเพื่อเลือกโฟลเดอร์</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
-      <div class="cleaner-item" data-key="browser" data-size="560">
+      <div class="cleaner-item" data-key="browser" style="cursor:pointer;" onclick="cleanBrowserCacheReal()">
         <div class="ci-icon">&#127760;</div>
         <div class="ci-label">แคชเบราว์เซอร์</div>
-        <div class="ci-size">~560 MB</div>
+        <div class="ci-size" id="realSize-browser">คลิกเพื่อลบ Cache API</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
-      <div class="cleaner-item" data-key="log" data-size="340">
+      <div class="cleaner-item" data-key="log" style="cursor:pointer;" onclick="realScanFolder('log')">
         <div class="ci-icon">&#128196;</div>
         <div class="ci-label">ไฟล์บันทึก (Log)</div>
-        <div class="ci-size">~340 MB</div>
+        <div class="ci-size" id="realSize-log">คลิกเพื่อเลือกโฟลเดอร์</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
-      <div class="cleaner-item" data-key="thumb" data-size="190">
+      <div class="cleaner-item" data-key="thumb" style="cursor:pointer;" onclick="realScanFolder('thumb')">
         <div class="ci-icon">&#128247;</div>
         <div class="ci-label">Thumbnails แคช</div>
-        <div class="ci-size">~190 MB</div>
+        <div class="ci-size" id="realSize-thumb">คลิกเพื่อเลือกโฟลเดอร์</div>
         <div class="ci-check">&#10003;</div>
-        <div class="progress-bar"><div class="fill"></div></div>
       </div>
     </div>
 
     <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="startFullClean()">&#128269; สแกนทั้งหมด</button>
-      <button class="btn btn-outline" onclick="cleanSelected()">&#128465; ลบรายการที่สแกน</button>
-      <button class="btn btn-outline" onclick="resetCleaner()">&#8635; รีเซ็ต</button>
-      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ลบขยะจริง (Silent)</button>
-      <button class="btn btn-primary" onclick="scanRealDrive()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;">&#128187; สแกนไดรฟ์จริงด้วย File API</button>
+      <button class="btn btn-outline" onclick="resetCleaner()">&#8635; รีเซ็ตทั้งหมด</button>
     </div>
     <div id="cleanScriptStatus" style="margin-top:8px;font-size:0.78rem;color:#ff8800;"></div>
 
@@ -434,16 +421,9 @@
       <div class="line">&#9889; CleanMaster v3.0 Ready</div>
     </div>
 
-    <div id="backupSection" style="margin-top:16px;display:none;">
-      <div style="font-size:0.85rem;font-weight:600;color:#00f0ff;margin-bottom:8px;">💾 แบ็คอัพข้อมูล</div>
-      <div id="backupList"></div>
-    </div>
-
-    <div id="realScanSection" style="margin-top:16px;display:none;">
-      <div style="font-size:0.85rem;font-weight:600;color:#f0f;margin-bottom:8px;">&#128187; สแกนไดรฟ์จริง</div>
-      <div id="realScanStatus" style="font-size:0.82rem;color:#aaa;margin-bottom:8px;"></div>
-      <div id="realScanList" style="max-height:300px;overflow-y:auto;"></div>
-      <button class="btn btn-outline btn-sm" id="realDeleteBtn" style="margin-top:8px;display:none;" onclick="deleteRealScanned()">&#128465; ลบไฟล์ที่เลือก</button>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-outline" onclick="deleteScannedReal()" style="border-color:#ff3366;color:#ff3366;">&#128465; ลบไฟล์ที่สแกนไว้ทั้งหมด</button>
+      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ดาวน์โหลด Script ลบถังรีไซเคิล</button>
     </div>
   </div>
 </section>
@@ -702,7 +682,6 @@
   updateAuthUI();
 
   // ===== CLEANER =====
-  let scannedCount = 0, cleanedCount = 0, freedMB = 0;
   const cleanerItems = document.querySelectorAll('.cleaner-item');
 
   // Show real browser storage usage
@@ -718,22 +697,6 @@
     } catch { document.getElementById('storageUsage').textContent = 'ไม่สามารถอ่านค่าได้'; }
   })();
 
-  // Real Cache API cleaning
-  async function cleanBrowserCache() {
-    try {
-      const keys = await caches.keys();
-      let total = 0;
-      for (const key of keys) {
-        const cache = await caches.open(key);
-        // estimate size by counting requests
-        const reqs = await cache.keys();
-        total += reqs.length * 50; // rough estimate: ~50KB per entry
-        await cache.delete(key);
-      }
-      return total;
-    } catch { return 0; }
-  }
-
   function addLog(msg) {
     const log = document.getElementById('scanLog');
     const div = document.createElement('div');
@@ -743,276 +706,90 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  function scanItem(el) {
-    return new Promise(resolve => {
-      const size = parseInt(el.dataset.size);
-      const fill = el.querySelector('.fill');
-      el.classList.add('scanned');
-      let pct = 0;
-      const interval = setInterval(() => {
-        pct += Math.random() * 15 + 5;
-        if (pct >= 100) { pct = 100; clearInterval(interval); }
-        fill.style.width = pct + '%';
-      }, 100);
-      setTimeout(() => {
-        clearInterval(interval);
-        fill.style.width = '100%';
-        scannedCount++;
-        freedMB += size;
-        document.getElementById('totalScanned').textContent = scannedCount;
-        document.getElementById('totalFreed').textContent = freedMB + ' MB';
-        addLog(`สแกน ${el.querySelector('.ci-label').textContent} — ${(size/1000).toFixed(2)} GB`);
-        resolve();
-      }, 1200 + Math.random() * 800);
-    });
-  }
-
-  function cleanItem(el) {
-    const fill = el.querySelector('.fill');
-    el.classList.remove('scanned');
-    el.classList.add('cleaned');
-    fill.style.width = '0%';
-    cleanedCount++;
-    const size = parseInt(el.dataset.size);
-    addLog(`ลบ ${el.querySelector('.ci-label').textContent} เรียบร้อย (+${(size/1000).toFixed(2)} GB)`);
-    document.getElementById('totalCleaned').textContent = cleanedCount;
-    document.getElementById('totalFreed').textContent = freedMB + ' MB';
-  }
-
-  async function startFullClean() {
-    scannedCount = 0; cleanedCount = 0; freedMB = 0;
-    document.getElementById('totalScanned').textContent = '0';
-    document.getElementById('totalCleaned').textContent = '0';
-    document.getElementById('totalFreed').textContent = '0 MB';
-    addLog('เริ่มสแกนระบบ...');
-    addLog('ตรวจสอบพื้นที่จัดเก็บเบราว์เซอร์...');
-    try {
-      const est = await navigator.storage.estimate();
-      const used = ((est.usage || 0) / 1048576).toFixed(1);
-      addLog(`พื้นที่ที่ใช้ไป: ${used} MB`);
-    } catch {}
-    for (const item of cleanerItems) {
-      item.classList.remove('scanned', 'cleaned');
-      await scanItem(item);
-    }
-    addLog('สแกนเสร็จสมบูรณ์! กด "ลบรายการที่สแกน" เพื่อทำความสะอาด');
-  }
-
-  // Backup functions for cleaner
-  async function saveCleanerBackup(cleanedItems) {
-    const d = await openDB();
-    return new Promise((res, rej) => {
-      const tx = d.transaction('backups', 'readwrite');
-      const r = tx.objectStore('backups').add({
-        timestamp: new Date().toISOString(),
-        items: Array.from(cleanedItems).map(el => ({
-          key: el.dataset.key,
-          label: el.querySelector('.ci-label').textContent,
-          size: el.dataset.size
-        }))
-      });
-      r.onsuccess = () => res(r.result);
-      r.onerror = () => rej(r.error);
-    });
-  }
-  async function getBackups() {
-    const d = await openDB();
-    return new Promise((res, rej) => {
-      const tx = d.transaction('backups', 'readonly');
-      const r = tx.objectStore('backups').getAll();
-      r.onsuccess = () => res(r.result || []);
-      r.onerror = () => rej(r.error);
-    });
-  }
-  async function deleteBackup(id) {
-    const d = await openDB();
-    return new Promise((res, rej) => {
-      const tx = d.transaction('backups', 'readwrite');
-      const r = tx.objectStore('backups').delete(id);
-      r.onsuccess = () => res();
-      r.onerror = () => rej(r.error);
-    });
-  }
-
-  async function cleanSelected() {
-    const scanned = document.querySelectorAll('.cleaner-item.scanned');
-    if (scanned.length === 0) { alert('กรุณาสแกนก่อน'); return; }
-    if (!confirm('ยืนยันลบ ' + scanned.length + ' รายการ?')) return;
-    // Save backup
-    const backupId = await saveCleanerBackup(scanned);
-    addLog('💾 บันทึกแบ็คอัพ #' + backupId + ' เรียบร้อย');
-    addLog('กำลังทำความสะอาด...');
-    for (const item of scanned) {
-      if (item.dataset.key === 'browser') {
-        addLog('กำลังลบ Cache เบราว์เซอร์ (Cache API)...');
-        const cleared = await cleanBrowserCache();
-        if (cleared > 0) addLog(`ลบ Cache API แล้ว ~${(cleared/1024).toFixed(1)} KB`);
-      }
-      if (item.dataset.key === 'cache') {
-        addLog('กำลังลบ localStorage...');
-        const before = new Blob([JSON.stringify(localStorage)]).size;
-        addLog(`ข้อมูล localStorage: ${(before/1024).toFixed(1)} KB`);
-      }
-      cleanItem(item);
-      await new Promise(r => setTimeout(r, 300));
-    }
-    // Refresh storage estimate
-    try {
-      const est = await navigator.storage.estimate();
-      const used = ((est.usage || 0) / 1048576).toFixed(1);
-      addLog(`พื้นที่หลังจากทำความสะอาด: ${used} MB`);
-      document.getElementById('storageUsage').textContent = used + ' MB';
-    } catch {}
-    addLog('ทำความสะอาดเสร็จสมบูรณ์! สามารถกู้คืนได้จากรายการแบ็คอัพ');
-    renderBackups();
-  }
-
-  async function restoreBackup(id, items) {
-    if (!confirm('กู้คืน ' + items.length + ' รายการที่ถูกลบ?')) return;
-    items.forEach(item => {
-      // Find matching cleaner item by key
-      const el = document.querySelector(`.cleaner-item[data-key="${item.key}"]`);
-      if (el) {
-        el.classList.remove('cleaned');
-        el.querySelector('.fill').style.width = '0%';
-        cleanedCount = Math.max(0, cleanedCount - 1);
-        freedMB = Math.max(0, freedMB - parseInt(item.size));
-      }
-    });
-    document.getElementById('totalCleaned').textContent = cleanedCount;
-    document.getElementById('totalFreed').textContent = freedMB + ' MB';
-    await deleteBackup(id);
-    addLog('🔄 กู้คืน ' + items.length + ' รายการเรียบร้อย');
-    renderBackups();
-  }
-
-  async function renderBackups() {
-    const section = document.getElementById('backupSection');
-    const container = document.getElementById('backupList');
-    let backups;
-    try { backups = await getBackups(); } catch { backups = []; }
-    section.style.display = 'block';
-    if (!backups || backups.length === 0) {
-      container.innerHTML = '<div style="padding:12px;color:#666;font-size:0.82rem;text-align:center;">ยังไม่มีแบ็คอัพ — ลบรายการจาก cleaner เพื่อสร้างแบ็คอัพ</div>';
-      return;
-    }
-    container.innerHTML = backups.map(b => {
-      const time = new Date(b.timestamp).toLocaleString('th-TH');
-      const data = encodeURIComponent(JSON.stringify(b.items));
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:6px;font-size:0.82rem;">
-        <span>💾 <span style="color:#aaa;">${time}</span> — ${b.items.length} รายการ</span>
-        <button class="btn btn-sm btn-outline" style="font-size:0.7rem;padding:4px 10px;" data-id="${b.id}" data-items="${data}">กู้คืน</button>
-      </div>`;
-    }).join('');
-    container.querySelectorAll('[data-id]').forEach(btn => {
-      btn.onclick = () => {
-        const id = parseInt(btn.dataset.id);
-        const items = JSON.parse(decodeURIComponent(btn.dataset.items));
-        restoreBackup(id, items);
-      };
-    });
-  }
-
-  function resetCleaner() {
-    scannedCount = 0; cleanedCount = 0; freedMB = 0;
-    document.getElementById('totalScanned').textContent = '0';
-    document.getElementById('totalCleaned').textContent = '0';
-    document.getElementById('totalFreed').textContent = '0 MB';
-    document.getElementById('scanLog').innerHTML = '<div class="line">&#9889; CleanMaster v3.0 Ready</div>';
-    cleanerItems.forEach(el => {
-      el.classList.remove('scanned', 'cleaned');
-      el.querySelector('.fill').style.width = '0%';
-    });
-  }
-
-  // File System Access API — scan real user-selected folder
-  let realDirHandle = null;
-  let realScannedFiles = [];
-
-  async function scanRealDrive() {
-    if (!window.showDirectoryPicker) {
-      alert('เบราว์เซอร์ของคุณยังไม่รองรับ File System Access API — ใช้ Chrome/Edge เวอร์ชันล่าสุด');
-      return;
-    }
-    try {
-      realDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-    } catch (e) {
-      if (e.name === 'AbortError') return;
-      alert('เกิดข้อผิดพลาด: ' + e.message);
-      return;
-    }
-    const section = document.getElementById('realScanSection');
-    const status = document.getElementById('realScanStatus');
-    const list = document.getElementById('realScanList');
-    section.style.display = 'block';
-    status.textContent = 'กำลังสแกน ' + realDirHandle.name + '...';
-    list.innerHTML = '';
-    realScannedFiles = [];
-    await scanDirRecursive(realDirHandle);
-    status.textContent = 'พบ ' + realScannedFiles.length + ' ไฟล์ (' + formatBytes(realScannedFiles.reduce((a, f) => a + f.size, 0)) + ') — เลือกไฟล์ที่ต้องการลบ';
-    renderRealScanned();
-    document.getElementById('realDeleteBtn').style.display = 'block';
-  }
-
-  async function scanDirRecursive(dirHandle, path = '') {
-    for await (const [name, handle] of dirHandle.entries()) {
-      const fullPath = path ? path + '/' + name : name;
-      if (handle.kind === 'directory') {
-        try { await scanDirRecursive(handle, fullPath); } catch {}
-      } else {
-        try {
-          const file = await handle.getFile();
-          if (file.size > 0) {
-            realScannedFiles.push({ name: fullPath, size: file.size, handle });
-          }
-        } catch {}
-      }
-    }
-  }
-
-  function renderRealScanned() {
-    const list = document.getElementById('realScanList');
-    list.innerHTML = realScannedFiles.map((f, i) =>
-      `<label style="display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:0.78rem;">
-        <input type="checkbox" checked data-idx="${i}" onchange="toggleRealDelete()">
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
-        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
-      </label>`
-    ).join('');
-  }
-
-  function toggleRealDelete() {
-    const checked = document.querySelectorAll('#realScanList input:checked').length;
-    document.getElementById('realDeleteBtn').textContent = '🗑 ลบ ' + checked + ' ไฟล์ที่เลือก';
-  }
-
-  async function deleteRealScanned() {
-    const checks = document.querySelectorAll('#realScanList input:checked');
-    if (checks.length === 0) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
-    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์จริง?')) return;
-    let deleted = 0;
-    for (const cb of checks) {
-      const idx = parseInt(cb.dataset.idx);
-      const f = realScannedFiles[idx];
-      try {
-        await f.handle.remove();
-        deleted++;
-      } catch (e) { addLog('❌ ไม่สามารถลบ ' + f.name + ': ' + e.message); }
-    }
-    addLog('ลบ ' + deleted + '/' + checks.length + ' ไฟล์เรียบร้อย');
-    // Re-scan
-    realScannedFiles = [];
-    await scanDirRecursive(realDirHandle);
-    renderRealScanned();
-    document.getElementById('realScanStatus').textContent = 'เหลือ ' + realScannedFiles.length + ' ไฟล์';
-    toggleRealDelete();
-  }
-
   function formatBytes(bytes) {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
     return (bytes / 1073741824).toFixed(2) + ' GB';
+  }
+
+  // File System Access API — scan real user-selected folder
+  async function realScanFolder(key) {
+    if (!window.showDirectoryPicker) {
+      alert('ใช้ Chrome/Edge เวอร์ชันล่าสุดเพื่อใช้ฟีเจอร์นี้');
+      return;
+    }
+    try {
+      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      addLog('📂 กำลังสแกน ' + handle.name + '...');
+      const files = [];
+      await scanDirRecursive(handle, '', files);
+      const total = files.reduce((a, f) => a + f.size, 0);
+      document.getElementById('realSize-' + key).textContent = formatBytes(total) + ' (' + files.length + ' ไฟล์)';
+      document.querySelector(`.cleaner-item[data-key="${key}"]`).classList.add('scanned');
+      addLog(`✅ ${handle.name}: ${files.length} ไฟล์ (${formatBytes(total)})`);
+      // Store for batch delete
+      window._realScanned = window._realScanned || {};
+      window._realScanned[key] = { handle, files };
+    } catch (e) {
+      if (e.name !== 'AbortError') addLog('❌ ' + e.message);
+    }
+  }
+
+  async function scanDirRecursive(dirHandle, path, files) {
+    for await (const [name, handle] of dirHandle.entries()) {
+      const fullPath = path ? path + '/' + name : name;
+      if (handle.kind === 'directory') {
+        try { await scanDirRecursive(handle, fullPath, files); } catch {}
+      } else {
+        try {
+          const file = await handle.getFile();
+          if (file.size > 0) files.push({ name: fullPath, size: file.size, handle });
+        } catch {}
+      }
+    }
+  }
+
+  async function cleanBrowserCacheReal() {
+    addLog('🗑 กำลังลบ Cache API...');
+    try {
+      const keys = await caches.keys();
+      let total = 0;
+      for (const key of keys) {
+        const cache = await caches.open(key);
+        const reqs = await cache.keys();
+        total += reqs.length;
+        await caches.delete(key);
+      }
+      document.getElementById('realSize-browser').textContent = 'ลบ ' + total + ' รายการ';
+      document.querySelector('.cleaner-item[data-key="browser"]').classList.add('cleaned');
+      addLog(`✅ ลบ Cache API แล้ว (${total} รายการ)`);
+    } catch (e) { addLog('❌ ' + e.message); }
+  }
+
+  function resetCleaner() {
+    cleanerItems.forEach(el => el.classList.remove('scanned', 'cleaned'));
+    document.querySelectorAll('[id^="realSize-"]').forEach(el => el.textContent = 'คลิกเพื่อเลือกโฟลเดอร์');
+    window._realScanned = {};
+  }
+
+  // Batch delete all scanned real files
+  async function deleteScannedReal() {
+    const data = window._realScanned || {};
+    const keys = Object.keys(data);
+    if (keys.length === 0) { alert('ไม่มีไฟล์ที่สแกนไว้'); return; }
+    let totalFiles = 0;
+    for (const k of keys) totalFiles += data[k].files.length;
+    if (!confirm('ยืนยันลบ ' + totalFiles + ' ไฟล์จริง?')) return;
+    let deleted = 0;
+    for (const k of keys) {
+      for (const f of data[k].files) {
+        try { await f.handle.remove(); deleted++; } catch (e) { addLog('❌ ' + f.name + ': ' + e.message); }
+      }
+      document.querySelector(`.cleaner-item[data-key="${k}"]`).classList.add('cleaned');
+    }
+    addLog('✅ ลบแล้ว ' + deleted + '/' + totalFiles + ' ไฟล์');
+    window._realScanned = {};
   }
 
   function downloadCleanScript() {
@@ -1631,7 +1408,6 @@ Set WshShell = Nothing`;
 
   renderEmployees();
   updateFbLink();
-  renderBackups();
 </script>
 </body>
 </html>
