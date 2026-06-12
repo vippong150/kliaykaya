@@ -953,18 +953,17 @@
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
-    // Lock controls for non-DEV (can't pause/skip)
-    const locked = getSession() && !isDev();
-    el.fpPlay.style.display = locked ? 'none' : '';
-    el.playBtn2.style.display = locked ? 'none' : '';
-    el.fpPrev.style.display = locked ? 'none' : '';
-    el.prevBtn2.style.display = locked ? 'none' : '';
-    el.fpNext.style.display = locked ? 'none' : '';
-    el.nextBtn2.style.display = locked ? 'none' : '';
+    // Lock controls for non-DEV or not logged in
+    const locked = !isDev();
+    [el.fpPlay, el.playBtn2].forEach(b => { b.style.display = locked ? 'none' : ''; });
+    [el.fpPrev, el.prevBtn2, el.fpNext, el.nextBtn2].forEach(b => { b.style.display = locked ? 'none' : ''; });
     el.fpProgress.style.pointerEvents = locked ? 'none' : '';
-    document.querySelectorAll('.ms-track .ms-name, .ms-track .ms-num').forEach(el => {
-      el.style.cursor = locked ? 'default' : 'pointer';
-    });
+    document.querySelectorAll('.ms-track').forEach(el => { el.style.cursor = locked ? 'default' : 'pointer'; });
+    // Override: locked users can only resume, never pause/skip
+    if (locked) {
+      [el.fpPlay, el.playBtn2].forEach(b => { if (b) b.onclick = (e) => { e.stopPropagation(); if (audio.paused || videoPlayer.paused) resumePlayback(); }; });
+      [el.fpPrev, el.prevBtn2, el.fpNext, el.nextBtn2].forEach(b => { if (b) b.onclick = (e) => e.stopPropagation(); });
+    }
   }
 
   async function deleteTrack(i) {
@@ -1025,8 +1024,6 @@
     catch (e) { alert('Storage full! ลบเพลงเก่าออกก่อน'); }
   }
 
-  updateMusicUI();
-
   audio.addEventListener('loadedmetadata', () => {
     const t = playlist[currentTrack];
     if (t) { t.dur = formatTime(audio.duration); renderPlaylist(); }
@@ -1074,8 +1071,7 @@
 
   function togglePlay() {
     if (playlist.length === 0) return;
-    // Non-DEV cannot pause
-    if (getSession() && !isDev()) {
+    if (!isDev()) {
       if (audio.paused || videoPlayer.paused) { resumePlayback(); }
       return;
     }
@@ -1093,19 +1089,22 @@
   }
 
   function prevTrack() {
+    if (!isDev()) return;
     if (currentTrack > 0) playTrack(currentTrack - 1);
   }
 
   function nextTrack() {
+    if (!isDev()) return;
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
   }
 
   [el.fpPlay, el.playBtn2].forEach(b => b.onclick = togglePlay);
   [el.fpPrev, el.prevBtn2].forEach(b => b.onclick = prevTrack);
   [el.fpNext, el.nextBtn2].forEach(b => b.onclick = nextTrack);
+  updateMusicUI();
 
   el.fpProgress.onclick = function(e) {
-    if (!audio.duration) return;
+    if (!audio.duration || !isDev()) return;
     const rect = this.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
     audio.currentTime = pct * audio.duration;
@@ -1123,6 +1122,7 @@
   // Floating video controls
   document.getElementById('fvCloseBtn').onclick = closeFloatVideo;
   document.getElementById('fvPlayBtn').onclick = () => {
+    if (!isDev()) { if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; } return; }
     if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }
     else { videoPlayer.pause(); document.getElementById('fvPlayBtn').textContent = '\u25B6'; el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
   };
@@ -1135,7 +1135,7 @@
     document.getElementById('fvPlayBtn').textContent = '\u25B6';
   });
   document.getElementById('fvProgress').onclick = function(e) {
-    if (!videoPlayer.duration) return;
+    if (!videoPlayer.duration || !isDev()) return;
     const rect = this.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
     videoPlayer.currentTime = pct * videoPlayer.duration;
@@ -1179,26 +1179,17 @@
   });
   document.addEventListener('mouseup', () => { isDrag = false; fvHeader.style.cursor = 'grab'; });
 
-  // Resume playback on user interaction (browser blocks autoplay)
+  // Resume playback aggressively - try immediately, show overlay if blocked
   let unlocked = false;
-  function unlockAudio() {
+  function tryResume() {
     if (unlocked) return;
+    if (playlist.length === 0 || currentTrack >= playlist.length) return;
     unlocked = true;
-    document.removeEventListener('click', unlockAudio);
-    document.removeEventListener('touchstart', unlockAudio);
-    // Load but don't play yet
-    if (playlist.length > 0 && currentTrack < playlist.length) {
-      const t = playlist[currentTrack];
-      if (t.type === 'video') el.fpCover.textContent = '\u127916';
-      else el.fpCover.textContent = '\u127925';
-      updatePlayerUI();
-      resumePlayback();
-    }
+    document.removeEventListener('pointerdown', tryResume);
+    document.getElementById('playOverlay').style.display = 'none';
+    resumePlayback();
   }
-  document.addEventListener('click', unlockAudio);
-  document.addEventListener('touchstart', unlockAudio);
-
-  // Preload data to show Now Playing
+  // Try immediately (may fail on some browsers)
   (async () => {
     if (playlist.length > 0 && currentTrack < playlist.length) {
       const t = playlist[currentTrack];
@@ -1206,19 +1197,23 @@
       el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
       el.fpName.textContent = t.name;
       el.fpArtist.textContent = t.artist || 'CleanMaster';
-      if (t.type === 'video') el.fpCover.textContent = '\u127916';
-      else el.fpCover.textContent = '\u127925';
       updatePlayerUI();
+      el.fpCover.textContent = t.type === 'video' ? '\u{1F4FA}' : '\u{1F3B5}';
+      renderPlaylist();
+      // Attempt immediate play
+      await resumePlayback();
+      // If still paused after 500ms, show overlay
+      setTimeout(() => {
+        if (audio.paused && (!videoPlayer.src || videoPlayer.paused)) {
+          document.getElementById('playOverlay').style.display = 'flex';
+        }
+      }, 500);
     } else {
       updatePlayerUI();
-    }
-    renderPlaylist();
-    // If logged-in non-DEV, auto-resume immediately on next click
-    if (getSession() && !isDev() && playlist.length > 0) {
-      el.fpPlay.style.display = 'none';
-      el.playBtn2.style.display = 'none';
+      renderPlaylist();
     }
   })();
+  document.addEventListener('pointerdown', tryResume);
 
   // ===== EMPLOYEE =====
   let employees = JSON.parse(localStorage.getItem('cm_employees') || '[]');
@@ -1278,5 +1273,32 @@
 
   renderEmployees();
 </script>
+<!-- Tap to play overlay -->
+<div id="playOverlay" style="
+  display:none;position:fixed;z-index:10000;inset:0;
+  background:rgba(0,0,0,0.85);
+  align-items:center;justify-content:center;
+  flex-direction:column;cursor:pointer;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+">
+  <div style="
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#0ff,#f0f);
+    display:flex;align-items:center;justify-content:center;
+    font-size:36px;color:#fff;box-shadow:0 0 40px rgba(0,255,255,0.5);
+    animation:pulseOver 1.5s ease-in-out infinite;
+  ">&#9654;</div>
+  <div style="
+    margin-top:20px;color:#0ff;font-size:18px;
+    font-weight:600;letter-spacing:1px;
+    text-shadow:0 0 20px rgba(0,255,255,0.7);
+  ">แตะเพื่อเล่นเพลง</div>
+</div>
+<style>
+  @keyframes pulseOver {
+    0%,100% { transform:scale(1); box-shadow:0 0 40px rgba(0,255,255,0.5); }
+    50% { transform:scale(1.1); box-shadow:0 0 80px rgba(0,255,255,0.9); }
+  }
+</style>
 </body>
 </html>
