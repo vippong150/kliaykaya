@@ -234,16 +234,33 @@
     .fixed-player .fp-ctrl:hover { background: rgba(0,240,255,0.15); border-color: #00f0ff; }
     body.has-player { padding-bottom: 72px; }
 
-    .video-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #000; z-index: 400; align-items: center; justify-content: center;
+    .float-vid {
+      position: fixed; bottom: 80px; right: 20px; width: 320px; z-index: 350;
+      border-radius: 12px; overflow: hidden; display: none;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6); border: 1px solid rgba(0,240,255,0.2);
+      background: #000; resize: both;
     }
-    .video-modal.open { display: flex; }
-    .video-modal video { max-width: 95%; max-height: 90%; border-radius: 8px; }
-    .video-modal .vm-close {
-      position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2rem;
-      cursor: pointer; z-index: 5;
+    .float-vid.open { display: block; }
+    .float-vid .fv-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 10px; background: rgba(0,0,0,0.8); cursor: grab; user-select: none;
     }
+    .float-vid .fv-header:active { cursor: grabbing; }
+    .float-vid .fv-title { font-size: 0.75rem; color: #aaa; }
+    .float-vid .fv-close { color: #ff3366; cursor: pointer; font-size: 1rem; padding: 0 4px; }
+    .float-vid video { width: 100%; display: block; max-height: 240px; }
+    .float-vid .fv-controls {
+      display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+      background: rgba(0,0,0,0.8);
+    }
+    .float-vid .fv-controls button {
+      background: none; border: none; color: #fff; font-size: 0.8rem; cursor: pointer; padding: 2px 6px;
+    }
+    .float-vid .fv-controls button:hover { color: #00f0ff; }
+    .float-vid .fv-controls .fv-progress { flex: 1; height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; cursor: pointer; }
+    .float-vid .fv-controls .fv-progress .fv-fill { height: 100%; width: 0%; background: #00f0ff; border-radius: 2px; }
+    .float-vid-min { width: 180px !important; }
+    .float-vid-min video { max-height: 100px; }
 
     .music-section {
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
@@ -443,9 +460,17 @@
   <input type="range" id="fpVolume" min="0" max="1" step="0.05" value="1" style="width:60px;accent-color:#00f0ff;cursor:pointer;">
 </div>
 
-<div class="video-modal" id="videoModal">
-  <span class="vm-close" onclick="closeVideoModal()">&times;</span>
-  <video id="videoPlayer" controls autoplay></video>
+<div class="float-vid" id="floatVid">
+  <div class="fv-header" id="fvHeader">
+    <span class="fv-title" id="fvTitle">▶ วิดีโอ</span>
+    <span class="fv-close" id="fvCloseBtn">&times;</span>
+  </div>
+  <video id="videoPlayer" autoplay playsinline></video>
+  <div class="fv-controls">
+    <button id="fvPlayBtn">&#9654;</button>
+    <div class="fv-progress" id="fvProgress"><div class="fv-fill" id="fvFill"></div></div>
+    <button id="fvMinBtn">&#8211;</button>
+  </div>
 </div>
 
 <section id="employee">
@@ -804,8 +829,10 @@
     return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
 
-  function closeVideoModal() {
-    videoModal.classList.remove('open');
+  let isFloatingMin = false;
+
+  function closeFloatVideo() {
+    document.getElementById('floatVid').classList.remove('open');
     videoPlayer.pause();
     videoPlayer.src = '';
   }
@@ -886,16 +913,18 @@
     }
 
     if (track.type === 'video') {
-      videoModal.classList.add('open');
+      closeFloatVideo();
+      document.getElementById('floatVid').classList.add('open');
+      document.getElementById('fvTitle').textContent = '▶ ' + track.name;
       videoPlayer.src = src;
       videoPlayer.play();
       el.fpCover.textContent = '\u127916';
+      document.getElementById('fvPlayBtn').textContent = '\u23F8';
     } else {
-      closeVideoModal();
+      closeFloatVideo();
       audio.src = src;
       audio.play().catch(e => {
         if (e.name === 'NotAllowedError') {
-          // Browser blocked autoplay - user needs to click
           el.playBtn2.textContent = '\u25B6';
           el.fpPlay.textContent = '\u25B6';
         }
@@ -912,7 +941,7 @@
     if (!isDev() || !confirm('ล้างเพลย์ลิสต์ทั้งหมด?')) return;
     for (const t of playlist) { if (t.dbId) await dbDel(t.dbId); }
     playlist = []; currentTrack = 0;
-    audio.pause(); audio.src = ''; closeVideoModal();
+    audio.pause(); audio.src = ''; closeFloatVideo();
     localStorage.setItem('cm_currentTrack', '0');
     localStorage.setItem('cm_currentTime', '0');
     savePlaylist(); renderPlaylist(); updatePlayerUI();
@@ -930,7 +959,7 @@
     if (!confirm('ลบรายการนี้?')) return;
     const wasCurrent = i === currentTrack;
     const tr = playlist[i];
-    if (i === currentTrack) { audio.pause(); audio.src = ''; closeVideoModal(); }
+    if (i === currentTrack) { audio.pause(); audio.src = ''; closeFloatVideo(); }
     if (tr && tr.dbId) await dbDel(tr.dbId);
     playlist.splice(i, 1);
     if (wasCurrent) {
@@ -1003,7 +1032,7 @@
 
   videoPlayer.addEventListener('timeupdate', updatePlayerUI);
   videoPlayer.addEventListener('ended', () => {
-    closeVideoModal();
+    closeFloatVideo();
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
   });
 
@@ -1050,15 +1079,64 @@
     console.error('Audio error:', audio.error ? audio.error.message : 'unknown');
   };
 
+  // Floating video controls
+  document.getElementById('fvCloseBtn').onclick = closeFloatVideo;
+  document.getElementById('fvPlayBtn').onclick = () => {
+    if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }
+    else { videoPlayer.pause(); document.getElementById('fvPlayBtn').textContent = '\u25B6'; el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
+  };
+  videoPlayer.addEventListener('timeupdate', () => {
+    const dur = videoPlayer.duration || 1;
+    const pct = (videoPlayer.currentTime / dur) * 100;
+    document.getElementById('fvFill').style.width = pct + '%';
+  });
+  videoPlayer.addEventListener('ended', () => {
+    document.getElementById('fvPlayBtn').textContent = '\u25B6';
+  });
+  document.getElementById('fvProgress').onclick = function(e) {
+    if (!videoPlayer.duration) return;
+    const rect = this.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    videoPlayer.currentTime = pct * videoPlayer.duration;
+  };
+  document.getElementById('fvMinBtn').onclick = function() {
+    isFloatingMin = !isFloatingMin;
+    document.getElementById('floatVid').classList.toggle('float-vid-min', isFloatingMin);
+    this.textContent = isFloatingMin ? '\u25A1' : '\u2013';
+  };
+
   el.fpFullscreen.onclick = () => {
-    const t = playlist[currentTrack];
-    if (t && t.type === 'video') {
-      videoModal.classList.add('open');
-      videoPlayer.src = t.data;
-      videoPlayer.currentTime = audio.currentTime || 0;
-      videoPlayer.play();
+    const fv = document.getElementById('floatVid');
+    if (fv.classList.contains('open')) {
+      isFloatingMin = false;
+      fv.classList.remove('float-vid-min');
+      document.getElementById('fvMinBtn').textContent = '\u2013';
     }
   };
+
+  // Draggable floating video
+  let dragOffX, dragOffY, isDrag = false;
+  const fvHeader = document.getElementById('fvHeader');
+  fvHeader.addEventListener('mousedown', e => {
+    isDrag = true;
+    const rect = document.getElementById('floatVid').getBoundingClientRect();
+    dragOffX = e.clientX - rect.left;
+    dragOffY = e.clientY - rect.top;
+    fvHeader.style.cursor = 'grabbing';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isDrag) return;
+    const fv = document.getElementById('floatVid');
+    let x = e.clientX - dragOffX;
+    let y = e.clientY - dragOffY;
+    x = Math.max(0, Math.min(x, window.innerWidth - fv.offsetWidth));
+    y = Math.max(0, Math.min(y, window.innerHeight - fv.offsetHeight));
+    fv.style.left = x + 'px';
+    fv.style.right = 'auto';
+    fv.style.bottom = 'auto';
+    fv.style.top = y + 'px';
+  });
+  document.addEventListener('mouseup', () => { isDrag = false; fvHeader.style.cursor = 'grab'; });
 
   // Resume playback
   (async () => {
