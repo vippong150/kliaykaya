@@ -703,6 +703,49 @@
     });
   }
 
+  // ===== INDEXEDDB =====
+  let db;
+  const DB_NAME = 'cm_media';
+  const DB_VERSION = 1;
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      if (db) { resolve(db); return; }
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains('files')) {
+          d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+        }
+      };
+      req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+      req.onerror = () => reject(req.error);
+    });
+  }
+  function dbPut(data) {
+    return openDB().then(d => new Promise((res, rej) => {
+      const tx = d.transaction('files', 'readwrite');
+      const r = tx.objectStore('files').add({ data });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    }));
+  }
+  function dbGet(id) {
+    return openDB().then(d => new Promise((res, rej) => {
+      const tx = d.transaction('files', 'readonly');
+      const r = tx.objectStore('files').get(id);
+      r.onsuccess = () => res(r.result ? r.result.data : null);
+      r.onerror = () => rej(r.error);
+    }));
+  }
+  function dbDel(id) {
+    return openDB().then(d => new Promise((res, rej) => {
+      const tx = d.transaction('files', 'readwrite');
+      const r = tx.objectStore('files').delete(id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    }));
+  }
+
   // ===== MUSIC PLAYER =====
   const audio = document.getElementById('audioPlayer');
   const videoPlayer = document.getElementById('videoPlayer');
@@ -808,21 +851,26 @@
     el.fpTime.textContent = formatTime(cur) + ' / ' + formatTime(dur);
   }
 
-  function playTrack(i) {
+  async function playTrack(i) {
     if (i < 0 || i >= playlist.length) return;
     currentTrack = i;
     const track = playlist[i];
     localStorage.setItem('cm_currentTrack', i);
     localStorage.setItem('cm_currentTime', '0');
 
+    let src;
+    if (track.data) src = track.data;
+    else if (track.dbId) src = await dbGet(track.dbId);
+    if (!src) return;
+
     if (track.type === 'video') {
       videoModal.classList.add('open');
-      videoPlayer.src = track.data;
+      videoPlayer.src = src;
       videoPlayer.play();
       el.fpCover.textContent = '\u127916';
     } else {
       closeVideoModal();
-      audio.src = track.data;
+      audio.src = src;
       audio.play();
       el.fpCover.textContent = '\u127925';
     }
@@ -838,11 +886,13 @@
     el.msUploadBox.style.display = show ? '' : 'none';
   }
 
-  function deleteTrack(i) {
+  async function deleteTrack(i) {
     if (!isDev()) return;
     if (!confirm('ลบรายการนี้?')) return;
     const wasCurrent = i === currentTrack;
+    const tr = playlist[i];
     if (i === currentTrack) { audio.pause(); audio.src = ''; closeVideoModal(); }
+    if (tr && tr.dbId) await dbDel(tr.dbId);
     playlist.splice(i, 1);
     if (wasCurrent) {
       if (i >= playlist.length) currentTrack = playlist.length - 1;
@@ -859,24 +909,32 @@
 
   document.getElementById('musicFileInput').onchange = function(e) {
     if (!isDev()) { alert('เฉพาะ DEV เท่านั้น'); this.value = ''; return; }
-    for (const file of e.target.files) {
+    const files = Array.from(e.target.files);
+    let done = 0;
+    for (const file of files) {
       const reader = new FileReader();
-      reader.onload = function(ev) {
+      reader.onload = async function(ev) {
         const isMp4 = file.name.toLowerCase().endsWith('.mp4');
-        playlist.push({
-          name: file.name.replace(/\.(mp3|mp4)$/i, ''),
-          artist: isMp4 ? 'MP4 Video' : 'เพิ่มโดย DEV',
-          dur: '--:--',
-          data: ev.target.result,
-          type: isMp4 ? 'video' : 'audio'
-        });
-        localStorage.setItem('cm_playlist', JSON.stringify(playlist));
-        renderPlaylist();
-        if (playlist.length === 1) playTrack(0);
+        try {
+          const dbId = await dbPut(ev.target.result);
+          playlist.push({
+            name: file.name.replace(/\.(mp3|mp4)$/i, ''),
+            artist: isMp4 ? 'MP4 Video' : 'เพิ่มโดย DEV',
+            dur: '--:--',
+            dbId: dbId,
+            type: isMp4 ? 'video' : 'audio'
+          });
+          localStorage.setItem('cm_playlist', JSON.stringify(playlist));
+          renderPlaylist();
+          if (playlist.length === 1) playTrack(0);
+        } catch (err) {
+          alert('ไม่สามารถบันทึกไฟล์ได้: ' + err.message);
+        }
+        done++;
+        if (done === files.length) document.getElementById('musicFileInput').value = '';
       };
       reader.readAsDataURL(file);
     }
-    this.value = '';
   };
 
   updateMusicUI();
@@ -948,21 +1006,24 @@
   };
 
   // Resume playback
-  if (playlist.length > 0 && currentTrack < playlist.length) {
-    const t = playlist[currentTrack];
-    if (t.type !== 'video') {
-      audio.src = t.data;
-      if (savedTime > 0) audio.currentTime = savedTime;
-      audio.play().then(() => { el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }).catch(() => {});
-      el.fpCover.textContent = '\u127925';
+  (async () => {
+    if (playlist.length > 0 && currentTrack < playlist.length) {
+      const t = playlist[currentTrack];
+      const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
+      if (src && t.type !== 'video') {
+        audio.src = src;
+        if (savedTime > 0) audio.currentTime = savedTime;
+        audio.play().then(() => { el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }).catch(() => {});
+        el.fpCover.textContent = '\u127925';
+      } else if (t.type === 'video') {
+        el.fpCover.textContent = '\u127916';
+      }
+      updatePlayerUI();
     } else {
-      el.fpCover.textContent = '\u127916';
+      updatePlayerUI();
     }
-    updatePlayerUI();
-  } else {
-    updatePlayerUI();
-  }
-  renderPlaylist();
+    renderPlaylist();
+  })();
 
   // ===== EMPLOYEE =====
   let employees = JSON.parse(localStorage.getItem('cm_employees') || '[]');
