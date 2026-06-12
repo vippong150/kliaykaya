@@ -314,7 +314,7 @@
 <body>
 
 <video id="bgVideo" autoplay muted loop playsinline>
-  <source src="video-bg.mp4" type="video/mp4">
+  <source src="video-bg.mp4?t=20260612" type="video/mp4">
 </video>
 <div class="overlay"></div>
 
@@ -1043,14 +1043,16 @@
       if (src) {
         document.getElementById('floatVid').classList.add('open');
         videoPlayer.src = src;
-        videoPlayer.currentTime = savedTime || 0;
+        await new Promise(r => { if (videoPlayer.readyState >= 1) r(); else videoPlayer.addEventListener('loadedmetadata', r, { once: true }); });
+        if (savedTime > 0) videoPlayer.currentTime = savedTime;
         videoPlayer.play();
       }
     } else {
       const src = t.data || (t.dbId ? await dbGet(t.dbId) : null);
       if (src) {
         audio.src = src;
-        audio.currentTime = savedTime || 0;
+        await new Promise(r => { if (audio.readyState >= 1) r(); else audio.addEventListener('loadedmetadata', r, { once: true }); });
+        if (savedTime > 0) audio.currentTime = savedTime;
         audio.play().catch(() => {});
       }
     }
@@ -1120,7 +1122,7 @@
   };
 
   // Floating video controls
-  document.getElementById('fvCloseBtn').onclick = closeFloatVideo;
+  document.getElementById('fvCloseBtn').onclick = () => { if (isDev()) closeFloatVideo(); };
   document.getElementById('fvPlayBtn').onclick = () => {
     if (!isDev()) { if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; } return; }
     if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8'; }
