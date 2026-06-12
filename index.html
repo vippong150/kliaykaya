@@ -649,6 +649,7 @@
     document.getElementById('regPassConfirm').value = '';
     updateAuthUI();
     updateMusicUI();
+    updateEmployeeUI();
   }
 
   function updateAuthUI() {
@@ -667,6 +668,7 @@
     localStorage.removeItem('cm_session');
     updateAuthUI();
     updateMusicUI();
+    updateEmployeeUI();
   }
   updateAuthUI();
 
@@ -991,6 +993,13 @@
     }
   }
 
+  function updateEmployeeUI() {
+    const show = isDev();
+    const addBtn = document.querySelector('[onclick*="empModal"]');
+    if (addBtn) addBtn.style.display = show ? '' : 'none';
+    document.querySelectorAll('.e-del').forEach(el => { el.style.display = show ? '' : 'none'; });
+  }
+
   async function deleteTrack(i) {
     if (!isDev()) return;
     if (!confirm('ลบรายการนี้?')) return;
@@ -1267,6 +1276,7 @@
         <div class="e-del" onclick="deleteEmployee(${i})">ลบ</div>
       </div>
     `).join('');
+    updateEmployeeUI();
   }
 
   function addEmployee() {
