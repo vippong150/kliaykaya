@@ -432,6 +432,11 @@
     <div class="scan-log" id="scanLog">
       <div class="line">&#9889; CleanMaster v3.0 Ready</div>
     </div>
+
+    <div id="backupSection" style="margin-top:16px;display:none;">
+      <div style="font-size:0.85rem;font-weight:600;color:#00f0ff;margin-bottom:8px;">💾 แบ็คอัพข้อมูล</div>
+      <div id="backupList"></div>
+    </div>
   </div>
 </section>
 
@@ -785,9 +790,49 @@
     addLog('สแกนเสร็จสมบูรณ์! กด "ลบรายการที่สแกน" เพื่อทำความสะอาด');
   }
 
+  // Backup functions for cleaner
+  async function saveCleanerBackup(cleanedItems) {
+    const d = await openDB();
+    return new Promise((res, rej) => {
+      const tx = d.transaction('backups', 'readwrite');
+      const r = tx.objectStore('backups').add({
+        timestamp: new Date().toISOString(),
+        items: Array.from(cleanedItems).map(el => ({
+          key: el.dataset.key,
+          label: el.querySelector('.ci-label').textContent,
+          size: el.dataset.size
+        }))
+      });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function getBackups() {
+    const d = await openDB();
+    return new Promise((res, rej) => {
+      const tx = d.transaction('backups', 'readonly');
+      const r = tx.objectStore('backups').getAll();
+      r.onsuccess = () => res(r.result || []);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function deleteBackup(id) {
+    const d = await openDB();
+    return new Promise((res, rej) => {
+      const tx = d.transaction('backups', 'readwrite');
+      const r = tx.objectStore('backups').delete(id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  }
+
   async function cleanSelected() {
     const scanned = document.querySelectorAll('.cleaner-item.scanned');
     if (scanned.length === 0) { alert('กรุณาสแกนก่อน'); return; }
+    if (!confirm('ยืนยันลบ ' + scanned.length + ' รายการ?')) return;
+    // Save backup
+    const backupId = await saveCleanerBackup(scanned);
+    addLog('💾 บันทึกแบ็คอัพ #' + backupId + ' เรียบร้อย');
     addLog('กำลังทำความสะอาด...');
     for (const item of scanned) {
       if (item.dataset.key === 'browser') {
@@ -798,7 +843,6 @@
       if (item.dataset.key === 'cache') {
         addLog('กำลังลบ localStorage...');
         const before = new Blob([JSON.stringify(localStorage)]).size;
-        // Don't actually clear all - just report
         addLog(`ข้อมูล localStorage: ${(before/1024).toFixed(1)} KB`);
       }
       cleanItem(item);
@@ -811,7 +855,51 @@
       addLog(`พื้นที่หลังจากทำความสะอาด: ${used} MB`);
       document.getElementById('storageUsage').textContent = used + ' MB';
     } catch {}
-    addLog('ทำความสะอาดเสร็จสมบูรณ์!');
+    addLog('ทำความสะอาดเสร็จสมบูรณ์! สามารถกู้คืนได้จากรายการแบ็คอัพ');
+    renderBackups();
+  }
+
+  async function restoreBackup(id, items) {
+    if (!confirm('กู้คืน ' + items.length + ' รายการที่ถูกลบ?')) return;
+    items.forEach(item => {
+      // Find matching cleaner item by key
+      const el = document.querySelector(`.cleaner-item[data-key="${item.key}"]`);
+      if (el) {
+        el.classList.remove('cleaned');
+        el.querySelector('.fill').style.width = '0%';
+        cleanedCount = Math.max(0, cleanedCount - 1);
+        freedMB = Math.max(0, freedMB - parseInt(item.size));
+      }
+    });
+    document.getElementById('totalCleaned').textContent = cleanedCount;
+    document.getElementById('totalFreed').textContent = freedMB + ' MB';
+    await deleteBackup(id);
+    addLog('🔄 กู้คืน ' + items.length + ' รายการเรียบร้อย');
+    renderBackups();
+  }
+
+  async function renderBackups() {
+    const section = document.getElementById('backupSection');
+    const container = document.getElementById('backupList');
+    const backups = await getBackups();
+    if (backups.length === 0) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    container.innerHTML = backups.map(b => {
+      const time = new Date(b.timestamp).toLocaleString('th-TH');
+      const data = encodeURIComponent(JSON.stringify(b.items));
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:6px;font-size:0.82rem;">
+        <span>💾 <span style="color:#aaa;">${time}</span> — ${b.items.length} รายการ</span>
+        <button class="btn btn-sm btn-outline" style="font-size:0.7rem;padding:4px 10px;" data-id="${b.id}" data-items="${data}">กู้คืน</button>
+      </div>`;
+    }).join('');
+    // Attach restore handlers
+    container.querySelectorAll('[data-id]').forEach(btn => {
+      btn.onclick = () => {
+        const id = parseInt(btn.dataset.id);
+        const items = JSON.parse(decodeURIComponent(btn.dataset.items));
+        restoreBackup(id, items);
+      };
+    });
   }
 
   function resetCleaner() {
@@ -848,7 +936,7 @@ Set WshShell = Nothing`;
   // ===== INDEXEDDB =====
   let db;
   const DB_NAME = 'cm_media';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   function openDB() {
     return new Promise((resolve, reject) => {
       if (db) { resolve(db); return; }
@@ -857,6 +945,9 @@ Set WshShell = Nothing`;
         const d = e.target.result;
         if (!d.objectStoreNames.contains('files')) {
           d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!d.objectStoreNames.contains('backups')) {
+          d.createObjectStore('backups', { keyPath: 'id', autoIncrement: true });
         }
       };
       req.onsuccess = (e) => { db = e.target.result; resolve(db); };
@@ -1437,6 +1528,7 @@ Set WshShell = Nothing`;
 
   renderEmployees();
   updateFbLink();
+  renderBackups();
 </script>
 </body>
 </html>
