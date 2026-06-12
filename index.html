@@ -381,7 +381,7 @@
       <button class="btn btn-primary" onclick="scanDriveC()" style="margin-left:8px;background:linear-gradient(135deg,#f0f,#ff8800);border:none;padding:14px 24px;">&#128190; สแกนไดรฟ์ C:</button>
       <button class="btn btn-outline" onclick="cleanBrowserCacheReal()" style="margin-left:8px;">&#127760; ลบ Cache เบราว์เซอร์</button>
       <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;margin-left:8px;">&#128230; Script ลบถังรีไซเคิล</button>
-      <div style="margin-top:8px;font-size:0.78rem;color:#888;">💡 กด "สแกนไดรฟ์ C:" ครั้งแรกจะให้เลือก C:\ ก่อน ครั้งต่อไปไม่ต้องเลือกอีก</div>
+      <div id="firstTimeHint" style="margin-top:8px;font-size:0.85rem;color:#ff8800;display:block;"></div>
     </div>
 
     <div id="scanResultArea" style="display:none;margin-bottom:16px;">
@@ -736,18 +736,20 @@
 
   async function scanDriveC() {
     if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); return; }
-    // Try to use previously saved handle first
     const saved = await getDriveHandle();
     if (saved) {
       const ok = await saved.queryPermission({ mode: 'readwrite' }) === 'granted'
              || (await saved.requestPermission({ mode: 'readwrite' })) === 'granted';
-      if (ok) { await doScan(saved); return; }
+      if (ok) { document.getElementById('firstTimeHint').textContent = ''; await doScan(saved); return; }
     }
-    // First time: ask user to pick C:\
+    // First time: show clear instruction
+    document.getElementById('firstTimeHint').innerHTML = '⚠️ ครั้งแรกให้เลือก <b>Local Disk (C:)</b> หรือพิมพ์ <kbd>C:\\</kbd> ในแถบ path แล้ว Enter';
     let handle;
     try { handle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'desktop' }); }
-    catch (e) { if (e.name !== 'AbortError') alert(e.message); return; }
+    catch (e) { if (e.name !== 'AbortError') alert(e.message); document.getElementById('firstTimeHint').textContent = ''; return; }
     await saveDriveHandle(handle);
+    document.getElementById('firstTimeHint').innerHTML = '✅ บันทึก C:\ แล้ว — ครั้งต่อไปกดปุ่ม <b>"สแกนไดรฟ์ C:"</b> ได้เลย ไม่ต้องเลือกอีก';
+    setTimeout(() => document.getElementById('firstTimeHint').textContent = '', 5000);
     await doScan(handle);
   }
 
@@ -1450,6 +1452,8 @@ Set WshShell = Nothing`;
 
   renderEmployees();
   updateFbLink();
+  // Ensure IndexedDB is ready for drive handle
+  openDB().catch(() => {});
 </script>
 </body>
 </html>
