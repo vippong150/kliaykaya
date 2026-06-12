@@ -69,8 +69,8 @@
     .section-title .icon { font-size: 1.6rem; }
     .section-sub { color: #666; margin-bottom: 40px; font-size: 0.95rem; }
 
-    #scanFileList::-webkit-scrollbar { width: 4px; }
-    #scanFileList::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.3); border-radius: 2px; }
+    #fileList::-webkit-scrollbar { width: 4px; }
+    #fileList::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.3); border-radius: 2px; }
 
     .card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
@@ -372,31 +372,26 @@
     <div class="section-title"><span class="icon">&#128200;</span> เครื่องมือทำความสะอาด</div>
     <div class="section-sub">สแกนและลบขยะระบบ เพิ่มประสิทธิภาพเครื่องของคุณ</div>
 
-    <div class="total-stats">
-      <div class="stat-box"><div class="num" id="storageUsage" style="font-size:1rem;">กำลังโหลด...</div><div class="lbl">พื้นที่จัดเก็บเบราว์เซอร์</div></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <button id="mainScanBtn" class="btn btn-primary" onclick="startScan()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:18px 50px;font-size:1.2rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
+        &#9889; สแกนและลบขยะ
+      </button>
+      <div id="scanHint" style="margin-top:10px;font-size:0.85rem;color:#888;"></div>
     </div>
 
-    <div style="margin-bottom:16px;">
-      <button class="btn btn-primary" onclick="scanDrive()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:14px 32px;font-size:1rem;">&#128187; เลือกไดรฟ์/โฟลเดอร์เพื่อสแกน</button>
-      <button class="btn btn-primary" onclick="scanDriveC()" style="margin-left:8px;background:linear-gradient(135deg,#f0f,#ff8800);border:none;padding:14px 24px;">&#128190; สแกนไดรฟ์ C:</button>
-      <button class="btn btn-outline" onclick="cleanBrowserCacheReal()" style="margin-left:8px;">&#127760; ลบ Cache เบราว์เซอร์</button>
-      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;margin-left:8px;">&#128230; Script ลบถังรีไซเคิล</button>
-      <div id="firstTimeHint" style="margin-top:8px;font-size:0.85rem;color:#ff8800;display:block;"></div>
-    </div>
-
-    <div id="scanResultArea" style="display:none;margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span id="scanResultSummary" style="font-size:0.9rem;color:#aaa;"></span>
-        <div>
-          <button class="btn btn-sm btn-outline" onclick="toggleSelectAll()">เลือกทั้งหมด</button>
-          <button class="btn btn-sm btn-outline" onclick="deselectAll()">ยกเลิกทั้งหมด</button>
-          <button class="btn btn-sm btn-primary" onclick="deleteSelectedFiles()" style="background:#ff3366;border:none;">&#128465; ลบที่เลือก</button>
+    <div id="resultArea" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <span id="resultSummary" style="font-size:0.95rem;color:#0ff;font-weight:600;"></span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm btn-outline" onclick="selAll()">ทั้งหมด</button>
+          <button class="btn btn-sm btn-outline" onclick="selNone()">ไม่เลือก</button>
+          <button class="btn btn-sm btn-primary" onclick="delSel()" style="background:#ff3366;border:none;">&#128465; ลบที่เลือก</button>
         </div>
       </div>
-      <div id="scanFileList" style="max-height:400px;overflow-y:auto;background:rgba(255,255,255,0.02);border-radius:8px;padding:4px;"></div>
+      <div id="fileList" style="max-height:420px;overflow-y:auto;background:rgba(255,255,255,0.02);border-radius:12px;padding:6px;border:1px solid rgba(255,255,255,0.05);"></div>
     </div>
 
-    <div class="scan-log" id="scanLog">
+    <div class="scan-log" id="scanLog" style="margin-top:16px;">
       <div class="line">&#9889; CleanMaster v3.0 Ready</div>
     </div>
   </div>
@@ -655,21 +650,6 @@
   }
   updateAuthUI();
 
-  // ===== CLEANER =====
-
-  // Show real browser storage usage
-  (async function showStorage() {
-    try {
-      const est = await navigator.storage.estimate();
-      const used = est.usage || 0;
-      const quota = est.quota || 0;
-      const usedMB = (used / 1048576).toFixed(1);
-      const quotaMB = (quota / 1048576).toFixed(0);
-      const pct = quota > 0 ? ((used / quota) * 100).toFixed(1) : 0;
-      document.getElementById('storageUsage').innerHTML = `${usedMB} MB / ${quotaMB} MB <span style="font-size:0.65rem;color:#888;">(${pct}%)</span>`;
-    } catch { document.getElementById('storageUsage').textContent = 'ไม่สามารถอ่านค่าได้'; }
-  })();
-
   function addLog(msg) {
     const log = document.getElementById('scanLog');
     const div = document.createElement('div');
@@ -686,36 +666,67 @@
     return (bytes / 1073741824).toFixed(2) + ' GB';
   }
 
-  // File System Access API — scan real user-selected folder
-  async function realScanFolder(key) {
-    if (!window.showDirectoryPicker) {
-      alert('ใช้ Chrome/Edge เวอร์ชันล่าสุดเพื่อใช้ฟีเจอร์นี้');
-      return;
+  // ==================== CLEANER (real File System Access API) ====================
+  let scanFiles = [];
+  let scanHandle = null;
+
+  async function startScan() {
+    const btn = document.getElementById('mainScanBtn');
+    const hint = document.getElementById('scanHint');
+    btn.textContent = '⏳ กำลังสแกน...';
+    btn.disabled = true;
+
+    // Auto clean browser cache in background
+    cleanBrowserCacheReal().catch(() => {});
+
+    // Try saved handle first
+    if (!scanHandle) scanHandle = await getDriveHandle();
+    if (scanHandle) {
+      const ok = await scanHandle.queryPermission({ mode: 'readwrite' }) === 'granted'
+             || (await scanHandle.requestPermission({ mode: 'readwrite' })) === 'granted';
+      if (!ok) scanHandle = null;
     }
-    try {
-      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
-      addLog('📂 กำลังสแกน ' + handle.name + '...');
-      const files = [];
-      await scanDirRecursive(handle, '', files);
-      const total = files.reduce((a, f) => a + f.size, 0);
-      document.getElementById('realSize-' + key).textContent = formatBytes(total) + ' (' + files.length + ' ไฟล์)';
-      document.querySelector(`.cleaner-item[data-key="${key}"]`).classList.add('scanned');
-      addLog(`✅ ${handle.name}: ${files.length} ไฟล์ (${formatBytes(total)})`);
-      // Store for batch delete
-      window._realScanned = window._realScanned || {};
-      window._realScanned[key] = { handle, files };
-    } catch (e) {
-      if (e.name !== 'AbortError') addLog('❌ ' + e.message);
+
+    if (!scanHandle) {
+      if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); btnReset(); return; }
+      hint.innerHTML = '⚠️ ครั้งแรกเลือก <b>Local Disk (C:)</b> หรือพิมพ์ <kbd>C:\\</kbd> ในแถบ path แล้ว Enter';
+      try {
+        scanHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      } catch (e) {
+        if (e.name !== 'AbortError') alert(e.message);
+        hint.textContent = '';
+        btnReset();
+        return;
+      }
+      await saveDriveHandle(scanHandle);
+      hint.textContent = '✅ บันทึก C:\ แล้ว ครั้งต่อไปสแกนได้ทันที';
+      setTimeout(() => hint.textContent = '', 4000);
     }
+
+    // Scan
+    const allFiles = [];
+    addLog('📂 กำลังสแกน ' + scanHandle.name + '...');
+    await scanDir(scanHandle, '', allFiles);
+    scanFiles = allFiles;
+    const totalSize = scanFiles.reduce((a, f) => a + f.size, 0);
+
+    // Show results
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('resultSummary').textContent = '📁 ' + scanHandle.name + ' — พบ ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')';
+    renderFiles();
+    addLog('✅ สแกนเสร็จ: ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')');
+
+    // Clean temp handle
+    cleanTempVBS().catch(() => {});
+    btnReset();
+    function btnReset() { btn.textContent = '⚡ สแกนและลบขยะ'; btn.disabled = false; }
   }
 
-  let scanFiles = []; // { name, size, handle }
-
-  async function scanDirRecursive(dirHandle, path, files) {
+  async function scanDir(dirHandle, path, files) {
     for await (const [name, handle] of dirHandle.entries()) {
       const fullPath = path ? path + '/' + name : name;
       if (handle.kind === 'directory') {
-        try { await scanDirRecursive(handle, fullPath, files); } catch {}
+        try { await scanDir(handle, fullPath, files); } catch {}
       } else {
         try {
           const file = await handle.getFile();
@@ -725,32 +736,55 @@
     }
   }
 
-  async function scanDrive() {
-    if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); return; }
-    let handle;
-    try { handle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'desktop' }); }
-    catch (e) { if (e.name !== 'AbortError') alert(e.message); return; }
-    await saveDriveHandle(handle);
-    await doScan(handle);
+  function renderFiles() {
+    const list = document.getElementById('fileList');
+    list.innerHTML = scanFiles.map((f, i) =>
+      `<label style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:0.8rem;transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''">
+        <input type="checkbox" class="fchk" data-idx="${i}" checked>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ddd;">${f.name}</span>
+        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
+      </label>`
+    ).join('');
   }
 
-  async function scanDriveC() {
-    if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); return; }
-    const saved = await getDriveHandle();
-    if (saved) {
-      const ok = await saved.queryPermission({ mode: 'readwrite' }) === 'granted'
-             || (await saved.requestPermission({ mode: 'readwrite' })) === 'granted';
-      if (ok) { document.getElementById('firstTimeHint').textContent = ''; await doScan(saved); return; }
+  function selAll() { document.querySelectorAll('.fchk').forEach(c => c.checked = true); }
+  function selNone() { document.querySelectorAll('.fchk').forEach(c => c.checked = false); }
+
+  async function delSel() {
+    const checks = document.querySelectorAll('.fchk:checked');
+    if (!checks.length) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
+    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์?')) return;
+    let ok = 0;
+    for (const cb of checks) {
+      const idx = parseInt(cb.dataset.idx);
+      try { await scanFiles[idx].handle.remove(); ok++; } catch (e) { addLog('❌ ' + scanFiles[idx].name + ': ' + e.message); }
     }
-    // First time: show clear instruction
-    document.getElementById('firstTimeHint').innerHTML = '⚠️ ครั้งแรกให้เลือก <b>Local Disk (C:)</b> หรือพิมพ์ <kbd>C:\\</kbd> ในแถบ path แล้ว Enter';
-    let handle;
-    try { handle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'desktop' }); }
-    catch (e) { if (e.name !== 'AbortError') alert(e.message); document.getElementById('firstTimeHint').textContent = ''; return; }
-    await saveDriveHandle(handle);
-    document.getElementById('firstTimeHint').innerHTML = '✅ บันทึก C:\ แล้ว — ครั้งต่อไปกดปุ่ม <b>"สแกนไดรฟ์ C:"</b> ได้เลย ไม่ต้องเลือกอีก';
-    setTimeout(() => document.getElementById('firstTimeHint').textContent = '', 5000);
-    await doScan(handle);
+    addLog('✅ ลบแล้ว ' + ok + '/' + checks.length + ' ไฟล์');
+    scanFiles = scanFiles.filter(f => { try { f.handle.getFile(); return true; } catch { return false; } });
+    renderFiles();
+    const totalSize = scanFiles.reduce((a, f) => a + f.size, 0);
+    document.getElementById('resultSummary').textContent = 'เหลือ ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')';
+  }
+
+  async function cleanBrowserCacheReal() {
+    addLog('🗑 กำลังลบ Cache API...');
+    try {
+      const keys = await caches.keys();
+      for (const k of keys) { await caches.delete(k); addLog('  ✅ ลบ cache: ' + k); }
+      addLog('✅ ลบ Cache ทั้งหมดแล้ว');
+    } catch (e) { addLog('❌ ลบ Cache ไม่สำเร็จ: ' + e.message); }
+  }
+
+  async function cleanTempVBS() {
+    try {
+      const blob = new Blob(['CreateObject("Shell.Application").ShellExecute "cmd.exe","/c del /f /s /q %temp%\\*.* & del /f /s /q C:\\Windows\\Prefetch\\*.* & rd /s /q C:\\$Recycle.bin 2>nul & echo done","","runas",0'], {type: 'application/octet-stream'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'clean_pc_silent.vbs';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      addLog('📥 ดาวน์โหลด Script ลบขยะ Windows แล้ว — คลิกเปิดเพื่อรัน');
+    } catch {}
   }
 
   async function getDriveHandle() {
@@ -770,86 +804,6 @@
       r.onsuccess = () => res();
       r.onerror = () => rej(r.error);
     });
-  }
-
-  async function doScan(handle) {
-    addLog('📂 กำลังสแกน ' + handle.name + '...');
-    document.getElementById('scanResultArea').style.display = 'none';
-    const files = [];
-    await scanDirRecursive(handle, '', files);
-    scanFiles = files;
-    const total = files.reduce((a, f) => a + f.size, 0);
-    document.getElementById('scanResultSummary').textContent = '📁 ' + handle.name + ' — พบ ' + files.length + ' ไฟล์ (' + formatBytes(total) + ')';
-    renderFileList();
-    document.getElementById('scanResultArea').style.display = 'block';
-    addLog('✅ สแกน ' + handle.name + ' เสร็จ: ' + files.length + ' ไฟล์ (' + formatBytes(total) + ')');
-  }
-
-  function renderFileList() {
-    const list = document.getElementById('scanFileList');
-    list.innerHTML = scanFiles.map((f, i) =>
-      `<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:0.78rem;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
-        <input type="checkbox" class="file-check" data-idx="${i}" checked>
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
-        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
-      </label>`
-    ).join('');
-  }
-
-  function toggleSelectAll() {
-    document.querySelectorAll('.file-check').forEach(cb => cb.checked = true);
-  }
-  function deselectAll() {
-    document.querySelectorAll('.file-check').forEach(cb => cb.checked = false);
-  }
-
-  async function deleteSelectedFiles() {
-    const checks = document.querySelectorAll('.file-check:checked');
-    if (checks.length === 0) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
-    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์ (' + checks.length + '/' + scanFiles.length + ')' )) return;
-    let deleted = 0;
-    for (const cb of checks) {
-      const idx = parseInt(cb.dataset.idx);
-      try { await scanFiles[idx].handle.remove(); deleted++; } catch (e) { addLog('❌ ' + scanFiles[idx].name + ': ' + e.message); }
-    }
-    addLog('✅ ลบแล้ว ' + deleted + '/' + checks.length + ' ไฟล์');
-    // Re-scan remaining
-    scanFiles = scanFiles.filter(f => { try { f.handle.getFile(); return true; } catch { return false; } });
-    renderFileList();
-    document.getElementById('scanResultSummary').textContent = 'เหลือ ' + scanFiles.length + ' ไฟล์';
-  }
-
-  async function cleanBrowserCacheReal() {
-    addLog('🗑 กำลังลบ Cache API...');
-    try {
-      const keys = await caches.keys();
-      let total = 0;
-      for (const key of keys) {
-        const reqs = await (await caches.open(key)).keys();
-        total += reqs.length;
-        await caches.delete(key);
-      }
-      addLog('✅ ลบ Cache API แล้ว (' + total + ' รายการ)');
-    } catch (e) { addLog('❌ ' + e.message); }
-  }
-
-  function downloadCleanScript() {
-    // Silent cleaner - VBScript runs with ZERO visible windows
-    const script = `Set WshShell = CreateObject("WScript.Shell")
-' เคลียขยะ PC พัฒนา นายชาเย็น - Silent Cleaner
-WshShell.Run "powershell -Command ""Clear-RecycleBin -Force""", 0, True
-WshShell.Run "cmd /c del /q /s %temp%\\*.* && rd /s /q %temp% && md %temp%", 0, True
-WshShell.Run "cmd /c del /q /s C:\\Windows\\Prefetch\\*.*", 0, True
-WshShell.Run "cmd /c del /q /s %userprofile%\\Recent\\*.*", 0, True
-Set WshShell = Nothing`;
-    const blob = new Blob([script], { type: 'application/x-vbs' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'clean_pc_silent.vbs';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    addLog('ดาวน์โหลด clean_pc_silent.vbs แล้ว — ดับเบิลคลิก run เลย ไม่เห็นหน้าต่าง');
-    document.getElementById('cleanScriptStatus').textContent = '✓ ดาวน์โหลดแล้ว — เปิดไฟล์ clean_pc_silent.vbs เพื่อลบขยะ';
   }
 
   // ===== INDEXEDDB =====
