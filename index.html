@@ -425,8 +425,9 @@
       <button class="btn btn-primary" onclick="startFullClean()">&#128269; สแกนทั้งหมด</button>
       <button class="btn btn-outline" onclick="cleanSelected()">&#128465; ลบรายการที่สแกน</button>
       <button class="btn btn-outline" onclick="resetCleaner()">&#8635; รีเซ็ต</button>
-      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ดาวน์โหลดสคริปต์ลบขยะจริง</button>
+      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ลบขยะจริง (Silent)</button>
     </div>
+    <div id="cleanScriptStatus" style="margin-top:8px;font-size:0.78rem;color:#ff8800;"></div>
 
     <div class="scan-log" id="scanLog">
       <div class="line">&#9889; CleanMaster v3.0 Ready</div>
@@ -826,44 +827,22 @@
   }
 
   function downloadCleanScript() {
-    const script = `@echo off
-chcp 65001 >nul
-echo ========================================
-echo    เคลียขยะ PC พัฒนา นายชาเย็น
-echo    กำลังลบไฟล์ขยะระบบ...
-echo ========================================
-echo.
-
-echo [1/4] กำลังลบ %%temp%%...
-del /q /s %temp%\\*.* >nul 2>&1
-rd /s /q %temp% >nul 2>&1
-md %temp% >nul 2>&1
-echo    ✓ ลบ Temp เรียบร้อย
-
-echo [2/4] กำลังลบ Prefetch...
-del /q /s C:\\Windows\\Prefetch\\*.* >nul 2>&1
-echo    ✓ ลบ Prefetch เรียบร้อย
-
-echo [3/4] กำลังลบ Recent...
-del /q /s %userprofile%\\Recent\\*.* >nul 2>&1
-echo    ✓ ลบ Recent เรียบร้อย
-
-echo [4/4] กำลังลบถังรีไซเคิล...
-powershell -Command "Clear-RecycleBin -Force" >nul 2>&1
-echo    ✓ ลบถังรีไซเคิลเรียบร้อย
-
-echo.
-echo ========================================
-echo    ลบขยะเสร็จสมบูรณ์!
-echo ========================================
-pause`;
-    const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
+    // Silent cleaner - VBScript runs with ZERO visible windows
+    const script = `Set WshShell = CreateObject("WScript.Shell")
+' เคลียขยะ PC พัฒนา นายชาเย็น - Silent Cleaner
+WshShell.Run "powershell -Command ""Clear-RecycleBin -Force""", 0, True
+WshShell.Run "cmd /c del /q /s %temp%\\*.* && rd /s /q %temp% && md %temp%", 0, True
+WshShell.Run "cmd /c del /q /s C:\\Windows\\Prefetch\\*.*", 0, True
+WshShell.Run "cmd /c del /q /s %userprofile%\\Recent\\*.*", 0, True
+Set WshShell = Nothing`;
+    const blob = new Blob([script], { type: 'application/x-vbs' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'clean_pc.bat';
+    a.download = 'clean_pc_silent.vbs';
     a.click();
     URL.revokeObjectURL(a.href);
-    addLog('ดาวน์โหลดสคริปต์ลบขยะจริงแล้ว — เปิดไฟล์ clean_pc.bat เพื่อลบขยะในเครื่อง');
+    addLog('ดาวน์โหลด clean_pc_silent.vbs แล้ว — ดับเบิลคลิก run เลย ไม่เห็นหน้าต่าง');
+    document.getElementById('cleanScriptStatus').textContent = '✓ ดาวน์โหลดแล้ว — เปิดไฟล์ clean_pc_silent.vbs เพื่อลบขยะ';
   }
 
   // ===== INDEXEDDB =====
