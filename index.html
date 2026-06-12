@@ -881,9 +881,13 @@
   async function renderBackups() {
     const section = document.getElementById('backupSection');
     const container = document.getElementById('backupList');
-    const backups = await getBackups();
-    if (backups.length === 0) { section.style.display = 'none'; return; }
+    let backups;
+    try { backups = await getBackups(); } catch { backups = []; }
     section.style.display = 'block';
+    if (!backups || backups.length === 0) {
+      container.innerHTML = '<div style="padding:12px;color:#666;font-size:0.82rem;text-align:center;">ยังไม่มีแบ็คอัพ — ลบรายการจาก cleaner เพื่อสร้างแบ็คอัพ</div>';
+      return;
+    }
     container.innerHTML = backups.map(b => {
       const time = new Date(b.timestamp).toLocaleString('th-TH');
       const data = encodeURIComponent(JSON.stringify(b.items));
@@ -892,7 +896,6 @@
         <button class="btn btn-sm btn-outline" style="font-size:0.7rem;padding:4px 10px;" data-id="${b.id}" data-items="${data}">กู้คืน</button>
       </div>`;
     }).join('');
-    // Attach restore handlers
     container.querySelectorAll('[data-id]').forEach(btn => {
       btn.onclick = () => {
         const id = parseInt(btn.dataset.id);
@@ -935,11 +938,12 @@ Set WshShell = Nothing`;
 
   // ===== INDEXEDDB =====
   let db;
+  let dbPromise = null;
   const DB_NAME = 'cm_media';
   const DB_VERSION = 2;
   function openDB() {
-    return new Promise((resolve, reject) => {
-      if (db) { resolve(db); return; }
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
       const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onupgradeneeded = (e) => {
         const d = e.target.result;
@@ -953,6 +957,7 @@ Set WshShell = Nothing`;
       req.onsuccess = (e) => { db = e.target.result; resolve(db); };
       req.onerror = () => reject(req.error);
     });
+    return dbPromise;
   }
   function dbPut(data) {
     return openDB().then(d => new Promise((res, rej) => {
