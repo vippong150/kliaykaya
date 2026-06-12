@@ -344,7 +344,7 @@
 <div class="overlay"></div>
 
 <nav>
-  <div class="logo">&#9889; เคลียขยะ PC เพิ่ม<span>พื้นที่</span></div>
+  <div class="logo">&#9889; เคลียขยะ PC พัฒนา <span>นายชาเย็น</span></div>
   <div class="menu">
     <a onclick="scrollToEl('cleaner')" class="active">ทำความสะอาด</a>
     <a onclick="scrollToEl('music')">เพลง</a>
@@ -483,7 +483,7 @@
   <button class="fp-ctrl" id="fpNext">&#9197;</button>
   <button class="fp-ctrl" id="fpUpload" onclick="document.getElementById('musicFileInput').click()" title="DEV upload">&#128190;</button>
   <button class="fp-ctrl" id="fpFullscreen" title="ดูวิดีโอเต็มจอ" style="display:none;">&#9974;</button>
-  <input type="range" id="fpVolume" min="0" max="1" step="0.05" value="1" style="width:60px;accent-color:#00f0ff;cursor:pointer;">
+  <input type="range" id="fpVolume" min="0.3" max="1" step="0.05" value="1" style="width:60px;accent-color:#00f0ff;cursor:pointer;">
 </div>
 
 <div class="float-vid" id="floatVid">
@@ -514,8 +514,14 @@
 
 <footer>
   <div class="container">
-    <p>&copy; 2026 เคลียขยะ PC เพิ่มพื้นที่</p>
-    <p style="margin-top:8px;font-size:0.78rem;color:#666;">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา นายชาเย็น</p>
+    <p style="font-size:0.85rem;color:#888;">&copy; 2026 เคลียขยะ PC พัฒนา นายชาเย็น</p>
+    <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:0.85rem;color:#aaa;">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
+      <span style="font-size:1rem;font-weight:700;background:linear-gradient(135deg,#00f0ff,#f0f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(0,240,255,0.3);">นายชาเย็น</span>
+      <a id="fbLink" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:6px;color:#1877f2;font-size:0.85rem;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);transition:all 0.3s;">
+        <span style="font-size:1.1rem;">&#120143;</span> ติดต่อผ่าน Facebook
+      </a>
+    </div>
   </div>
 </footer>
 
@@ -565,6 +571,12 @@
       <input type="file" id="empPhoto" accept="image/*">
     </div>
     <button class="btn btn-primary" style="width:100%" onclick="addEmployee()">เพิ่มพนักงาน</button>
+    <hr style="border-color:rgba(255,255,255,0.06);margin:16px 0;">
+    <div class="form-group" id="fbLinkGroup">
+      <label>&#120143; ลิงก์ Facebook สำหรับติดต่อ</label>
+      <input type="url" id="fbUrl" placeholder="https://www.facebook.com/...">
+    </div>
+    <button class="btn btn-outline btn-sm" style="width:100%" onclick="saveFbLink()">บันทึกลิงก์ Facebook</button>
   </div>
 </div>
 
@@ -1000,6 +1012,7 @@
     const addBtn = document.querySelector('[onclick*="empModal"]');
     if (addBtn) addBtn.style.display = show ? '' : 'none';
     document.querySelectorAll('.e-del').forEach(el => { el.style.display = show ? '' : 'none'; });
+    updateFbLink();
   }
 
   async function deleteTrack(i) {
@@ -1152,8 +1165,10 @@
   };
 
   document.getElementById('fpVolume').oninput = function() {
-    audio.volume = parseFloat(this.value);
-    videoPlayer.volume = parseFloat(this.value);
+    const v = Math.max(0.3, parseFloat(this.value));
+    this.value = v;
+    audio.volume = v;
+    videoPlayer.volume = v;
   };
 
   audio.onerror = function() {
@@ -1322,7 +1337,31 @@
     renderEmployees();
   }
 
+  // Facebook link
+  function updateFbLink() {
+    const url = localStorage.getItem('cm_fbUrl') || '';
+    const fbLink = document.getElementById('fbLink');
+    const fbGroup = document.getElementById('fbLinkGroup');
+    const fbInput = document.getElementById('fbUrl');
+    fbGroup.style.display = isDev() ? '' : 'none';
+    if (url) {
+      fbLink.style.display = 'inline-flex';
+      fbLink.href = url;
+    } else {
+      fbLink.style.display = 'none';
+    }
+    if (fbInput) fbInput.value = url;
+  }
+  function saveFbLink() {
+    const url = document.getElementById('fbUrl').value.trim();
+    if (url && !url.startsWith('https://')) { alert('กรุณาใส่ลิงก์ที่ขึ้นต้นด้วย https://'); return; }
+    localStorage.setItem('cm_fbUrl', url);
+    updateFbLink();
+    alert('บันทึกลิงก์ Facebook แล้ว');
+  }
+
   renderEmployees();
+  updateFbLink();
 </script>
 </body>
 </html>
