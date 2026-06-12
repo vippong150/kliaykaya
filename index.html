@@ -855,7 +855,7 @@
         <span class="ms-dur" style="font-size:0.7rem;color:#666;">${track.dur || '--:--'}</span>
         ${isDev() ? '<span class="ms-del" data-idx="'+i+'">&#10005;</span>' : ''}
       `;
-      div.onclick = () => playTrack(i);
+      div.onclick = () => { if (isDev()) playTrack(i); };
       const del = div.querySelector('.ms-del');
       if (del) del.onclick = (e) => { e.stopPropagation(); deleteTrack(parseInt(del.dataset.idx)); };
       el.mscPlaylist.appendChild(div);
