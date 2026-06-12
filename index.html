@@ -950,6 +950,8 @@
 
   function updateMusicUI() {
     const show = isDev();
+    // Hide entire music section for non-DEV (floating video player unaffected)
+    document.getElementById('music').style.display = show ? '' : 'none';
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
