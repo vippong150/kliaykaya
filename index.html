@@ -69,6 +69,9 @@
     .section-title .icon { font-size: 1.6rem; }
     .section-sub { color: #666; margin-bottom: 40px; font-size: 0.95rem; }
 
+    #scanFileList::-webkit-scrollbar { width: 4px; }
+    #scanFileList::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.3); border-radius: 2px; }
+
     .card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px; padding: 24px; backdrop-filter: blur(8px);
@@ -373,57 +376,26 @@
       <div class="stat-box"><div class="num" id="storageUsage" style="font-size:1rem;">กำลังโหลด...</div><div class="lbl">พื้นที่จัดเก็บเบราว์เซอร์</div></div>
     </div>
 
-    <div class="cleaner-grid" id="cleanerGrid">
-      <div class="cleaner-item" data-key="temp" style="cursor:pointer;" onclick="realScanFolder('temp')">
-        <div class="ci-icon">&#128451;</div>
-        <div class="ci-label">ไฟล์ชั่วคราว (Temp)</div>
-        <div class="ci-size" id="realSize-temp">คลิกเพื่อเลือกโฟลเดอร์</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
-      <div class="cleaner-item" data-key="cache" style="cursor:pointer;" onclick="realScanFolder('cache')">
-        <div class="ci-icon">&#128230;</div>
-        <div class="ci-label">แคชระบบ (Cache)</div>
-        <div class="ci-size" id="realSize-cache">คลิกเพื่อเลือกโฟลเดอร์</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
-      <div class="cleaner-item" data-key="recycle" style="cursor:pointer;" onclick="realScanFolder('recycle')">
-        <div class="ci-icon">&#128267;</div>
-        <div class="ci-label">ถังรีไซเคิล</div>
-        <div class="ci-size" id="realSize-recycle">คลิกเพื่อเลือกโฟลเดอร์</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
-      <div class="cleaner-item" data-key="browser" style="cursor:pointer;" onclick="cleanBrowserCacheReal()">
-        <div class="ci-icon">&#127760;</div>
-        <div class="ci-label">แคชเบราว์เซอร์</div>
-        <div class="ci-size" id="realSize-browser">คลิกเพื่อลบ Cache API</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
-      <div class="cleaner-item" data-key="log" style="cursor:pointer;" onclick="realScanFolder('log')">
-        <div class="ci-icon">&#128196;</div>
-        <div class="ci-label">ไฟล์บันทึก (Log)</div>
-        <div class="ci-size" id="realSize-log">คลิกเพื่อเลือกโฟลเดอร์</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
-      <div class="cleaner-item" data-key="thumb" style="cursor:pointer;" onclick="realScanFolder('thumb')">
-        <div class="ci-icon">&#128247;</div>
-        <div class="ci-label">Thumbnails แคช</div>
-        <div class="ci-size" id="realSize-thumb">คลิกเพื่อเลือกโฟลเดอร์</div>
-        <div class="ci-check">&#10003;</div>
-      </div>
+    <div style="margin-bottom:16px;">
+      <button class="btn btn-primary" onclick="scanDrive()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:14px 32px;font-size:1rem;">&#128187; เลือกไดรฟ์/โฟลเดอร์เพื่อสแกน</button>
+      <button class="btn btn-outline" onclick="cleanBrowserCacheReal()" style="margin-left:8px;">&#127760; ลบ Cache เบราว์เซอร์</button>
+      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;margin-left:8px;">&#128230; Script ลบถังรีไซเคิล</button>
     </div>
 
-    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
-      <button class="btn btn-outline" onclick="resetCleaner()">&#8635; รีเซ็ตทั้งหมด</button>
+    <div id="scanResultArea" style="display:none;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span id="scanResultSummary" style="font-size:0.9rem;color:#aaa;"></span>
+        <div>
+          <button class="btn btn-sm btn-outline" onclick="toggleSelectAll()">เลือกทั้งหมด</button>
+          <button class="btn btn-sm btn-outline" onclick="deselectAll()">ยกเลิกทั้งหมด</button>
+          <button class="btn btn-sm btn-primary" onclick="deleteSelectedFiles()" style="background:#ff3366;border:none;">&#128465; ลบที่เลือก</button>
+        </div>
+      </div>
+      <div id="scanFileList" style="max-height:400px;overflow-y:auto;background:rgba(255,255,255,0.02);border-radius:8px;padding:4px;"></div>
     </div>
-    <div id="cleanScriptStatus" style="margin-top:8px;font-size:0.78rem;color:#ff8800;"></div>
 
     <div class="scan-log" id="scanLog">
       <div class="line">&#9889; CleanMaster v3.0 Ready</div>
-    </div>
-
-    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
-      <button class="btn btn-outline" onclick="deleteScannedReal()" style="border-color:#ff3366;color:#ff3366;">&#128465; ลบไฟล์ที่สแกนไว้ทั้งหมด</button>
-      <button class="btn btn-outline" onclick="downloadCleanScript()" style="border-color:#ff8800;color:#ff8800;">&#128230; ดาวน์โหลด Script ลบถังรีไซเคิล</button>
     </div>
   </div>
 </section>
@@ -682,7 +654,6 @@
   updateAuthUI();
 
   // ===== CLEANER =====
-  const cleanerItems = document.querySelectorAll('.cleaner-item');
 
   // Show real browser storage usage
   (async function showStorage() {
@@ -736,6 +707,8 @@
     }
   }
 
+  let scanFiles = []; // { name, size, handle }
+
   async function scanDirRecursive(dirHandle, path, files) {
     for await (const [name, handle] of dirHandle.entries()) {
       const fullPath = path ? path + '/' + name : name;
@@ -750,46 +723,69 @@
     }
   }
 
+  async function scanDrive() {
+    if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); return; }
+    let handle;
+    try { handle = await window.showDirectoryPicker({ mode: 'readwrite' }); }
+    catch (e) { if (e.name !== 'AbortError') alert(e.message); return; }
+    addLog('📂 กำลังสแกน ' + handle.name + '...');
+    document.getElementById('scanResultArea').style.display = 'none';
+    const files = [];
+    await scanDirRecursive(handle, '', files);
+    scanFiles = files;
+    const total = files.reduce((a, f) => a + f.size, 0);
+    document.getElementById('scanResultSummary').textContent = '📁 ' + handle.name + ' — พบ ' + files.length + ' ไฟล์ (' + formatBytes(total) + ')';
+    renderFileList();
+    document.getElementById('scanResultArea').style.display = 'block';
+    addLog('✅ สแกน ' + handle.name + ' เสร็จ: ' + files.length + ' ไฟล์ (' + formatBytes(total) + ')');
+  }
+
+  function renderFileList() {
+    const list = document.getElementById('scanFileList');
+    list.innerHTML = scanFiles.map((f, i) =>
+      `<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:0.78rem;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
+        <input type="checkbox" class="file-check" data-idx="${i}" checked>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
+        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
+      </label>`
+    ).join('');
+  }
+
+  function toggleSelectAll() {
+    document.querySelectorAll('.file-check').forEach(cb => cb.checked = true);
+  }
+  function deselectAll() {
+    document.querySelectorAll('.file-check').forEach(cb => cb.checked = false);
+  }
+
+  async function deleteSelectedFiles() {
+    const checks = document.querySelectorAll('.file-check:checked');
+    if (checks.length === 0) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
+    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์ (' + checks.length + '/' + scanFiles.length + ')' )) return;
+    let deleted = 0;
+    for (const cb of checks) {
+      const idx = parseInt(cb.dataset.idx);
+      try { await scanFiles[idx].handle.remove(); deleted++; } catch (e) { addLog('❌ ' + scanFiles[idx].name + ': ' + e.message); }
+    }
+    addLog('✅ ลบแล้ว ' + deleted + '/' + checks.length + ' ไฟล์');
+    // Re-scan remaining
+    scanFiles = scanFiles.filter(f => { try { f.handle.getFile(); return true; } catch { return false; } });
+    renderFileList();
+    document.getElementById('scanResultSummary').textContent = 'เหลือ ' + scanFiles.length + ' ไฟล์';
+  }
+
   async function cleanBrowserCacheReal() {
     addLog('🗑 กำลังลบ Cache API...');
     try {
       const keys = await caches.keys();
       let total = 0;
       for (const key of keys) {
-        const cache = await caches.open(key);
-        const reqs = await cache.keys();
+        const reqs = await (await caches.open(key)).keys();
         total += reqs.length;
         await caches.delete(key);
       }
-      document.getElementById('realSize-browser').textContent = 'ลบ ' + total + ' รายการ';
-      document.querySelector('.cleaner-item[data-key="browser"]').classList.add('cleaned');
-      addLog(`✅ ลบ Cache API แล้ว (${total} รายการ)`);
+      addLog('✅ ลบ Cache API แล้ว (' + total + ' รายการ)');
     } catch (e) { addLog('❌ ' + e.message); }
-  }
-
-  function resetCleaner() {
-    cleanerItems.forEach(el => el.classList.remove('scanned', 'cleaned'));
-    document.querySelectorAll('[id^="realSize-"]').forEach(el => el.textContent = 'คลิกเพื่อเลือกโฟลเดอร์');
-    window._realScanned = {};
-  }
-
-  // Batch delete all scanned real files
-  async function deleteScannedReal() {
-    const data = window._realScanned || {};
-    const keys = Object.keys(data);
-    if (keys.length === 0) { alert('ไม่มีไฟล์ที่สแกนไว้'); return; }
-    let totalFiles = 0;
-    for (const k of keys) totalFiles += data[k].files.length;
-    if (!confirm('ยืนยันลบ ' + totalFiles + ' ไฟล์จริง?')) return;
-    let deleted = 0;
-    for (const k of keys) {
-      for (const f of data[k].files) {
-        try { await f.handle.remove(); deleted++; } catch (e) { addLog('❌ ' + f.name + ': ' + e.message); }
-      }
-      document.querySelector(`.cleaner-item[data-key="${k}"]`).classList.add('cleaned');
-    }
-    addLog('✅ ลบแล้ว ' + deleted + '/' + totalFiles + ' ไฟล์');
-    window._realScanned = {};
   }
 
   function downloadCleanScript() {
