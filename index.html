@@ -6,428 +6,168 @@
   <title>VideoSeller AI - เปลี่ยนรูปเป็นคลิปขายของ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%F0%9F%8E%AC%3C/text%3E%3C/svg%3E">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0a0a1a; }
     ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 3px; }
-    body {
-      font-family: 'Inter', sans-serif; background: #070a15; color: #e0e0e0;
-      overflow-x: hidden; min-height: 100vh;
-    }
+    body { font-family: 'Inter', sans-serif; background: #070a15; color: #e0e0e0; overflow-x: hidden; min-height: 100vh; }
     a { color: #12d8ff; text-decoration: none; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
-
-    #bgVideo {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      object-fit: cover; z-index: 0; opacity: 0.5;
-      filter: saturate(1.2) contrast(1.1);
-    }
-    .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.45);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      z-index: 1; pointer-events: none;
-    }
-
-    nav {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 32px; height: 72px;
-      background: rgba(5,8,20,0.75); backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    }
+    /* เลื่อนคอนเทนต์ทั้งหน้าไปทางขวา เว้นซ้าย ~15% */
+    .container { max-width: none; width: 100%; margin: 0; padding: 0 24px 0 15vw; position: relative; z-index: 2; }
+    #bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.97; filter: saturate(1.18) contrast(1.12) brightness(1.02); transform: scale(1.02); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background:
+      radial-gradient(circle at 18% 14%, rgba(18,216,255,0.14) 0%, rgba(18,216,255,0) 28%),
+      radial-gradient(circle at 82% 18%, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0) 24%),
+      linear-gradient(180deg, rgba(4,8,18,0.18) 0%, rgba(7,10,21,0.24) 42%, rgba(7,10,21,0.42) 100%);
+      z-index: 1; pointer-events: none; }
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 32px; height: 72px; background: rgba(5,8,20,0.42); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid rgba(255,255,255,0.06); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 10px 40px rgba(4,8,18,0.15); }
     nav .logo { font-size: 1.3rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
     nav .logo span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    nav .menu { display: flex; gap: 6px; align-items: center; }
-    nav .menu a {
-      color: rgba(255,255,255,0.7); font-size: 0.82rem; font-weight: 500;
-      cursor: pointer; padding: 8px 14px; border-radius: 10px;
-      transition: all 0.2s;
-    }
+    nav .menu { display: flex; gap: 4px; align-items: center; }
+    nav .menu a { color: rgba(255,255,255,0.75); font-size: 0.82rem; font-weight: 500; cursor: pointer; padding: 8px 12px; border-radius: 10px; transition: all 0.2s; white-space: nowrap; }
     nav .menu a:hover { color: #fff; background: rgba(255,255,255,0.06); }
-    .btn-nav-cta {
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6) !important;
-      color: #fff !important; font-weight: 700 !important; padding: 8px 18px !important;
-      border-radius: 10px !important;
-    }
+    .btn-nav-login { background: rgba(255,255,255,0.06) !important; border: 1px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; }
+    .btn-nav-cta { background: linear-gradient(90deg,#12d8ff,#8b5cf6) !important; color: #fff !important; font-weight: 700 !important; padding: 8px 20px !important; border-radius: 10px !important; }
     .btn-nav-cta:hover { opacity: 0.9; }
-    .btn {
-      padding: 10px 24px; border-radius: 10px; font-weight: 700; font-size: 0.85rem;
-      cursor: pointer; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
-    }
+    .btn { padding: 10px 24px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-primary { background: linear-gradient(135deg, #12d8ff, #8b5cf6); color: #fff; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(18,216,255,0.3); }
-    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
     .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: #12d8ff; }
-    .btn-danger { background: #ff3366; color: #fff; }
-    .btn-danger:hover { box-shadow: 0 4px 20px rgba(255,51,102,0.3); }
     .btn-sm { padding: 6px 14px; font-size: 0.78rem; border-radius: 8px; }
+    /* HERO */
+    /* ขยับเนื้อหา HERO ขึ้น/ชิดซ้ายมากขึ้น (เดสก์ท็อป) */
+    .hero { position: relative; min-height: calc(100vh - 72px); display: flex; align-items: flex-start; padding: 22px 0 28px; margin-top: 72px; overflow: hidden; }
+    .hero-glow { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .hero-glow.blue { width: 680px; height: 680px; background: rgba(18,216,255,0.10); top: -240px; right: 8%; }
+    /* ปิดพื้นหลังม่วง (กันทับกับวิดีโอพื้นหลัง) */
+    .hero-glow.purple { display: none; }
+    /* HERO ใช้ระยะซ้ายเท่ากับทั้งหน้า */
+    .hero .container { max-width: none; width: 100%; padding-left: 15vw; padding-right: 24px; }
+    .hero-layout { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; width: 100%; max-width: 1320px; margin: 0; padding-top: 14px; padding-left: 0; position: relative; z-index: 2; min-height: calc(100vh - 72px - 22px - 28px); }
+    .hero-left { display: flex; flex-direction: column; align-self: flex-start; max-width: 700px; margin-left: 0; padding-left: 0; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: rgba(255,255,255,0.08); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); font-size: 0.78rem; color: #c5eeff; margin-bottom: 20px; width: fit-content; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+    .hero-h1 { font-size: clamp(2.7rem, 5.2vw, 4.8rem); font-weight: 900; line-height: 0.98; letter-spacing: -0.04em; margin-bottom: 18px; color: #fff; text-shadow: 0 8px 32px rgba(6,10,26,0.36); }
+    .hero-h1 .grad { background: linear-gradient(90deg,#fff,#6ed7ff,#7c6dff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { font-size: 1.02rem; line-height: 1.8; color: rgba(255,255,255,0.82); margin-bottom: 18px; max-width: 620px; text-shadow: 0 4px 18px rgba(6,10,26,0.24); }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .hero-chips span { padding: 8px 15px; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); font-size: 0.78rem; color: rgba(255,255,255,0.92); display: flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); box-shadow: 0 12px 26px rgba(0,0,0,0.10); }
+    /* hero right */
+    /* ย้ายทั้งบล็อกอัปโหลดให้เริ่มจากซ้ายสุดของ HERO เท่ากับบล็อกข้อความ */
+    /* ฟังชั่น: ทำให้สบายตา/ไม่บังฉาก — วางชิดซ้ายมุมล่าง */
+    .hero-right { display: flex; flex-direction: column; align-items: flex-start; gap: 0; position: relative; padding-top: 0; padding-bottom: 6px; width: 100%; max-width: 560px; justify-content: flex-end; margin-top: auto; margin-left: 0; }
+    /* ซ่อนรูปทับมุมขวา เพราะทำให้เกิดกรอบสี่เหลี่ยมบนหมวก */
+    .hero-anime { display: none; }
+    .hero-dock { width: 100%; max-width: 560px; padding: 14px; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(18px) saturate(1.05); -webkit-backdrop-filter: blur(18px) saturate(1.05);
+      box-shadow: 0 18px 44px rgba(4,8,18,0.18), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .hero-content-row { display: flex; align-items: center; gap: 10px; position: relative; z-index: 2; width: 100%; justify-content: flex-start; }
+    /* upload box */
+    .hero-upload { width: 220px; min-height: 164px; flex-shrink: 0; background: linear-gradient(180deg, rgba(8,12,28,0.26), rgba(8,12,28,0.14)); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px dashed rgba(255,255,255,0.16); border-radius: 22px; box-shadow: 0 14px 36px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; padding: 18px 14px; }
+    .hero-upload:hover { border-color: rgba(18,216,255,0.52); background: linear-gradient(180deg, rgba(8,12,28,0.46), rgba(8,12,28,0.30)); transform: translateY(-2px); }
+    .hero-upload.has-image { padding: 10px; }
+    .hero-upload.has-image img { max-height: 180px; width: 100%; object-fit: cover; border-radius: 12px; display:block; }
+    .hero-upload.has-image .hu-icon-wrap, .hero-upload.has-image .hu-title, .hero-upload.has-image .hu-link, .hero-upload.has-image .hu-fmts { display: none; }
+    .hu-icon-wrap { width: 72px; height: 72px; border-radius: 18px; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .hu-title { font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center; }
+    .hu-link { color: #12d8ff; font-size: 0.8rem; margin-bottom: 10px; text-decoration: underline; }
+    .hu-fmts { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-align: center; }
+    /* arrow */
+    /* sample product card (กลางระหว่างอัปโหลด -> มือถือ) */
+    .hero-sample { width: 78px; height: 108px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.14); background: rgba(15,18,35,0.18); box-shadow: 0 14px 30px rgba(0,0,0,0.12); flex-shrink: 0; transform: translateY(6px); }
+    .hero-sample img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    /* ===== HERO ===== */
-    .hero {
-      position: relative; min-height: 100vh; display: flex; align-items: center;
-      padding: 120px 24px 80px; margin-top: 72px; overflow: hidden;
-    }
-    .hero-glow {
-      position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
-    }
-    .hero-glow.blue { width: 600px; height: 600px; background: rgba(18,216,255,0.1); top: -200px; right: 20%; }
-    .hero-glow.purple { width: 500px; height: 500px; background: rgba(139,92,246,0.1); bottom: -150px; left: 10%; }
-    .hero-inner {
-      position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
-      width: 100%; max-width: 1100px; margin: 0 auto; text-align: center;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 20px; border-radius: 999px;
-      background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
-      font-size: 0.8rem; color: #b0e0ff; margin-bottom: 24px;
-    }
-    .hero-h1 {
-      font-size: clamp(2.2rem, 4vw, 3.8rem);
-      font-weight: 900; line-height: 1.08; margin-bottom: 18px; max-width: 800px;
-    }
-    .hero-h1 span {
-      background: linear-gradient(90deg,#fff,#6ed7ff,#7c6dff);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero-desc {
-      font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.7;
-      color: rgba(255,255,255,0.7); margin-bottom: 24px; max-width: 640px;
-    }
-    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
-    .hero-chips span {
-      padding: 8px 18px; border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.8rem; color: rgba(255,255,255,0.8);
-    }
-
-    .hero-preview {
-      display: grid; grid-template-columns: 520px 260px; gap: 48px;
-      align-items: center; margin-bottom: 32px;
-    }
-
-    .hero-upload {
-      width: 520px; height: 280px;
-      background: rgba(15,18,35,0.65); backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255,255,255,0.10); border-radius: 28px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s;
-    }
-    .hero-upload:hover { border-color: rgba(255,255,255,0.2); background: rgba(15,18,35,0.8); }
-    .hero-upload.has-image { padding: 12px; height: auto; }
-    .hero-upload.has-image img { max-height: 240px; border-radius: 14px; display:block; margin:0 auto; }
-    .hero-upload.has-image .hu-icon,
-    .hero-upload.has-image .hu-title,
-    .hero-upload.has-image .hu-sub,
-    .hero-upload.has-image .hu-fmts { display: none; }
-    .hu-icon { font-size: 3.2rem; margin-bottom: 10px; }
-    .hu-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
-    .hu-sub { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
-    .hu-fmts { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 8px; }
-
-    .phone-preview {
-      width: 260px; flex-shrink: 0; position: relative; top: 30px;
-      background: rgba(15,18,25,0.75); backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-radius: 36px; border: 2px solid rgba(255,255,255,0.10);
-      overflow: hidden; display: flex; flex-direction: column; align-items: center;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
-    }
-    .phone-preview .pm-notch {
-      width: 90px; height: 22px; background: #000; border-radius: 0 0 14px 14px;
-      flex-shrink: 0;
-    }
-    .phone-preview .pm-content { width: 100%; padding: 10px 12px 14px; display: flex; flex-direction: column; align-items: center; }
-    .phone-preview .pm-video {
-      width: 100%; aspect-ratio: 9/16; border-radius: 14px;
-      background: linear-gradient(135deg,#12d8ff,#8b5cf6,#ff2ec4);
-      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
-    }
-    .phone-preview .pm-playbtn {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; color: #fff;
-    }
-    .phone-preview .pm-text { font-size: 0.82rem; font-weight: 600; text-align: center; margin-bottom: 8px; color: #fff; }
-    .phone-preview .pm-cart {
-      padding: 7px 18px; border-radius: 20px;
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6); font-size: 0.72rem;
-      color: #fff; font-weight: 600;
-    }
-
-    .hero-btn {
-      width: 520px; height: 64px;
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6,#ff2ec4);
-      border: none; border-radius: 18px;
-      color: #fff; font-size: 1.2rem; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-      box-shadow: 0 0 50px rgba(0,212,255,0.3);
-      transition: all 0.3s;
-    }
-    .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 0 70px rgba(0,212,255,0.5); }
+    .hero-arrow { display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.72); font-size: 1.35rem; flex-shrink: 0; letter-spacing: -2px; text-shadow: 0 0 18px rgba(18,216,255,0.28); }
+    /* phone preview */
+    .phone-preview { flex-shrink: 0; width: 142px; background: rgba(15,18,25,0.34); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 26px; border: 1.25px solid rgba(255,255,255,0.16); overflow: hidden; display: flex; flex-direction: column; align-items: center; box-shadow: 0 16px 40px rgba(0,0,0,0.14), 0 0 0 1px rgba(18,216,255,0.05); }
+    .phone-preview .pm-notch { width: 60px; height: 16px; background: #000; border-radius: 0 0 10px 10px; flex-shrink: 0; }
+    .phone-preview .pm-content { width: 100%; padding: 6px 8px 10px; display: flex; flex-direction: column; align-items: center; }
+    .pm-video-wrap { width: 100%; aspect-ratio: 9/16; border-radius: 10px; overflow: hidden; position: relative; margin-bottom: 0; }
+    .pm-video-fallback { width: 100%; height: 100%; background: linear-gradient(160deg,rgba(26,26,62,0.36) 0%,rgba(45,27,78,0.24) 40%,rgba(26,42,78,0.18) 100%), url('product_upload_2.png'); background-size: cover; background-position: center; }
+    .pm-playbtn { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); width: 38px; height: 38px; border-radius: 50%; background: rgba(18,216,255,0.28); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; font-size: 0.92rem; color: #fff; box-shadow: 0 0 26px rgba(18,216,255,0.32); }
+    .pm-badge { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg,rgba(0,0,0,0.64) 0%,rgba(0,0,0,0.08) 100%); padding: 22px 10px 10px; display: flex; flex-direction: column; align-items: flex-start; }
+    .pm-text { font-size: 0.65rem; font-weight: 700; color: #fff; line-height: 1.4; }
+    .pm-cart-btn { margin-top: 5px; padding: 3px 8px; border-radius: 10px; background: #e53e3e; font-size: 0.58rem; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+    /* generate button */
+    .hero-btn-wrap { width: 100%; margin-top: 10px; position: relative; z-index: 2; }
+    .hero-btn { width: 100%; height: 52px; background: linear-gradient(90deg,#3dd9ff 0%,#7d6bff 48%,#ff4fd8 100%); border: none; border-radius: 16px; color: #fff; font-size: 0.98rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 28px rgba(61,217,255,0.22), 0 8px 18px rgba(125,107,255,0.18); transition: all 0.25s; letter-spacing: -0.01em; }
+    .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 44px rgba(61,217,255,0.34), 0 10px 28px rgba(255,79,216,0.26); }
     .hero-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    /* ===== SECTIONS ===== */
+    /* SECTIONS */
     .sec { padding: 70px 0; }
-    .sec-h2 {
-      font-size: clamp(1.6rem, 2.2vw, 2.2rem); font-weight: 800; margin-bottom: 16px;
-      background: linear-gradient(90deg,#fff,#6ed7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .sec-sub { color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-bottom: 40px; }
-
-    .steps-3 { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
-    .step-card {
-      background: rgba(255,255,255,0.04); border-radius: 24px; padding: 36px 28px;
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.06); width: 260px; text-align: center;
-      transition: all 0.3s;
-    }
+    .sec-h2 { font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 800; margin-bottom: 8px; color: #fff; }
+    .sec-h2 .grad { background: linear-gradient(90deg,#fff,#6ed7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .sec-sub { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 40px; }
+    /* steps */
+    .steps-3 { display: flex; justify-content: flex-start; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+    .step-card { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border-radius: 24px; padding: 36px 28px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.10); width: 240px; text-align: center; transition: all 0.3s; box-shadow: 0 18px 44px rgba(4,8,18,0.18); }
     .step-card:hover { border-color: rgba(18,216,255,0.2); transform: translateY(-4px); }
-    .sc-num { margin-bottom: 12px; }
-    .sc-icon { font-size: 2.8rem; margin-bottom: 14px; }
-    .sc-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .sc-desc { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
-    .step-arrow { font-size: 1.6rem; color: rgba(255,255,255,0.15); }
-
-    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
-    .pricing-card {
-      background: rgba(18,20,35,0.62); backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(255,255,255,0.10); border-radius: 32px;
-      padding: 40px 32px; text-align: center; transition: all 0.3s; position: relative;
-    }
-    .pricing-card:hover { border-color: rgba(18,216,255,0.2); transform: translateY(-6px); box-shadow: 0 16px 60px rgba(0,0,0,0.3); }
-    .pricing-card.featured { border-color: rgba(18,216,255,0.15); }
-    .badge-pro {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6); padding: 4px 20px;
-      border-radius: 100px; font-size: 0.7rem; font-weight: 700; color: #fff;
-      white-space: nowrap;
-    }
-    .pricing-card .p-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
-    .pricing-card .p-price { font-size: 2.4rem; font-weight: 800; color: #fff; margin: 12px 0; }
-    .pricing-card .p-price span { font-size: 0.9rem; font-weight: 400; color: rgba(255,255,255,0.4); }
-    .pricing-card .p-features { list-style: none; margin: 16px 0 28px; padding: 0; font-size: 0.85rem; }
-    .pricing-card .p-features li { padding: 6px 0; color: rgba(255,255,255,0.7); }
-    .pricing-card .p-features li::before { content: '✓ '; color: #12d8ff; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
-    .stat-card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px; padding: 36px 20px; text-align: center;
-    }
-    .stat-card .stat-num {
-      font-size: 2.2rem; font-weight: 800;
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 6px;
-    }
-    .stat-card .stat-lbl { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
-
-    .plat-grid { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .plat-item {
-      padding: 16px 28px; border-radius: 16px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8);
-      display: flex; align-items: center; gap: 8px; transition: all 0.3s;
-    }
+    .sc-circle { width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(18,216,255,0.35); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.2rem; font-weight: 800; color: #12d8ff; }
+    .sc-icon { font-size: 2.6rem; margin-bottom: 12px; }
+    .sc-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .sc-desc { font-size: 0.8rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
+    .step-arrow { font-size: 1.5rem; color: rgba(255,255,255,0.15); }
+    /* pricing */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; max-width: 1000px; margin: 0; }
+    .pricing-card { background: linear-gradient(180deg, rgba(18,20,40,0.48), rgba(18,20,40,0.26)); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border: 1px solid rgba(255,255,255,0.11); border-radius: 28px; padding: 36px 28px; text-align: left; transition: all 0.3s; position: relative; box-shadow: 0 20px 48px rgba(4,8,18,0.18); }
+    .pricing-card:hover { transform: translateY(-6px); box-shadow: 0 16px 60px rgba(0,0,0,0.3); }
+    .pricing-card.featured { border: 1.5px solid rgba(18,216,255,0.35); box-shadow: 0 0 40px rgba(18,216,255,0.08); }
+    .pricing-card.featured:hover { box-shadow: 0 16px 60px rgba(18,216,255,0.2); }
+    .pricing-card.ultra { border: 1.5px solid rgba(139,92,246,0.35); box-shadow: 0 0 40px rgba(139,92,246,0.08); }
+    .pricing-card.ultra:hover { border-color: rgba(139,92,246,0.5); box-shadow: 0 16px 60px rgba(139,92,246,0.2); }
+    .badge-pro { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg,#12d8ff,#8b5cf6); padding: 4px 22px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; color: #fff; white-space: nowrap; }
+    .pricing-card .p-tag { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .pricing-card .p-name { font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
+    .pricing-card .p-price { font-size: 2.8rem; font-weight: 900; color: #fff; margin: 12px 0 6px; line-height: 1; }
+    .pricing-card .p-price sup { font-size: 1.2rem; vertical-align: super; }
+    .pricing-card .p-price .per { font-size: 0.85rem; font-weight: 400; color: rgba(255,255,255,0.4); }
+    .pricing-card .p-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 18px 0; }
+    .pricing-card .p-features { list-style: none; padding: 0; font-size: 0.83rem; display: flex; flex-direction: column; gap: 10px; }
+    .pricing-card .p-features li { color: rgba(255,255,255,0.8); display: flex; align-items: flex-start; gap: 8px; }
+    .pricing-card .p-features li::before { content: '✓'; color: #12d8ff; font-weight: 700; flex-shrink: 0; }
+    .pricing-card.ultra .p-features li::before { color: #a78bfa; }
+    .btn-ultra { background: linear-gradient(90deg,#8b5cf6,#6366f1) !important; border: none !important; color: #fff !important; }
+    /* stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; max-width: 1000px; margin: 0; }
+    .stat-card { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 36px 20px; text-align: center; backdrop-filter: blur(18px); }
+    .stat-card .stat-icon { font-size: 2rem; margin-bottom: 12px; }
+    .stat-card .stat-num { font-size: 2.2rem; font-weight: 800; background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+    .stat-card .stat-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    /* platforms */
+    .plat-grid { display: flex; gap: 16px; justify-content: flex-start; flex-wrap: wrap; }
+    .plat-item { padding: 14px 24px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px; transition: all 0.3s; backdrop-filter: blur(14px); }
     .plat-item:hover { border-color: rgba(18,216,255,0.2); background: rgba(18,216,255,0.04); }
-
-    section { padding: 60px 0; }
-    .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-    .section-title .icon { font-size: 1.6rem; }
-    .section-sub { color: #666; margin-bottom: 40px; font-size: 0.95rem; }
-
-
-
-    .card {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px; padding: 24px; backdrop-filter: blur(8px);
-      transition: all 0.3s;
-    }
-    .card:hover { border-color: rgba(0,240,255,0.2); box-shadow: 0 8px 40px rgba(0,240,255,0.05); }
-
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-    @media (max-width:768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-
-    .music-player {
-      display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
-    }
-    .music-player .cover {
-      width: 80px; height: 80px; border-radius: 12px; background: linear-gradient(135deg,#00f0ff,#0077ff);
-      display: flex; align-items: center; justify-content: center; font-size: 2rem;
-    }
-    .music-player .info { flex: 1; min-width: 150px; }
-    .music-player .info .song-name { font-weight: 600; }
-    .music-player .info .song-artist { font-size: 0.8rem; color: #888; }
-    .music-player .controls { display: flex; gap: 8px; }
-    .music-player .controls button {
-      width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05); color: #fff; font-size: 1.1rem;
-      cursor: pointer; transition: all 0.3s;
-    }
-    .music-player .controls button:hover { background: rgba(0,240,255,0.2); border-color: #00f0ff; }
-
-    .playlist { margin-top: 16px; }
-    .playlist .track {
-      display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-      border-radius: 8px; cursor: pointer; transition: background 0.3s;
-    }
-    .playlist .track:hover { background: rgba(255,255,255,0.05); }
-    .playlist .track.active { background: rgba(0,240,255,0.1); border-left: 3px solid #00f0ff; }
-    .playlist .track .t-num { width: 24px; color: #555; font-size: 0.8rem; }
-    .playlist .track .t-name { flex: 1; font-weight: 500; }
-    .playlist .track .t-dur { color: #666; font-size: 0.8rem; }
-    .playlist .track .t-del { color: #ff3366; font-size: 0.8rem; cursor: pointer; opacity: 0; transition: opacity 0.3s; }
-    .playlist .track:hover .t-del { opacity: 1; }
-
-    .employee-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 16px; }
-    .employee-card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px; padding: 20px; text-align: center; transition: all 0.3s;
-    }
-    .employee-card:hover { border-color: rgba(0,240,255,0.2); transform: translateY(-4px); }
-    .employee-card .avatar {
-      width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 12px;
-      background: linear-gradient(135deg,#00f0ff,#0077ff); display: flex;
-      align-items: center; justify-content: center; font-size: 3rem; color: #fff;
-      overflow: hidden; border: 2px solid rgba(0,240,255,0.2);
-    }
-    .employee-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .employee-card .e-name { font-weight: 600; font-size: 0.9rem; }
-    .employee-card .e-role { font-size: 0.78rem; color: #888; }
-    .employee-card .e-del {
-      margin-top: 8px; font-size: 0.7rem; color: #ff3366; cursor: pointer; opacity: 0.6;
-    }
-    .employee-card .e-del:hover { opacity: 1; }
-
-    #fileInput { display: none; }
-
-    .modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 200;
-      align-items: center; justify-content: center;
-    }
-    .modal.open { display: flex; }
-    .modal-content {
-      background: #12122a; border: 1px solid rgba(0,240,255,0.2); border-radius: 16px;
-      padding: 32px; width: 90%; max-width: 420px;
-    }
-    .modal-content h3 { margin-bottom: 20px; color: #00f0ff; }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; color: #aaa; }
-    .form-group input, .form-group select {
-      width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9rem;
-    }
-    .form-group input:focus { outline: none; border-color: #00f0ff; }
-    .modal-close { float: right; cursor: pointer; color: #666; font-size: 1.4rem; }
-
-    .auth-badge {
-      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
-      background: rgba(0,240,255,0.1); border-radius: 20px; font-size: 0.78rem; color: #00f0ff;
-    }
-    .auth-badge.logout { cursor: pointer; }
-    .auth-badge.logout:hover { background: rgba(255,51,102,0.15); color: #ff3366; }
-
-    footer {
-      text-align: center; padding: 32px; border-top: 1px solid rgba(255,255,255,0.05);
-      font-size: 0.8rem; color: #444;
-    }
-
-    .fixed-player {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
-      background: rgba(10,10,26,0.95); backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(0,240,255,0.15); padding: 10px 20px;
-      display: none; align-items: center; gap: 14px;
-    }
-    .fixed-player.open { display: flex; }
-    .fixed-player .fp-cover {
-      width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg,#00f0ff,#0077ff);
-      display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
-    }
-    .fixed-player .fp-info { min-width: 0; flex-shrink: 1; }
-    .fixed-player .fp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-    .fixed-player .fp-artist { font-size: 0.7rem; color: #888; }
-    .fixed-player .fp-progress-wrap { flex: 1; min-width: 60px; cursor: pointer; position: relative; height: 20px; display: flex; align-items: center; }
-    .fixed-player .fp-progress {
-      width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
-    }
-    .fixed-player .fp-progress .fp-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); border-radius: 2px; transition: width 0.2s; }
-    .fixed-player .fp-time { font-size: 0.7rem; color: #666; white-space: nowrap; min-width: 70px; text-align: center; }
-    .fixed-player .fp-ctrl {
-      width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
-      background: transparent; color: #fff; font-size: 0.95rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .fixed-player .fp-ctrl:hover { background: rgba(0,240,255,0.15); border-color: #00f0ff; }
-    body.has-player { padding-bottom: 72px; }
-
-    .float-vid {
-      position: fixed; bottom: 80px; right: 20px; width: 320px; z-index: 350;
-      border-radius: 12px; overflow: hidden; display: none;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.6); border: 1px solid rgba(0,240,255,0.2);
-      background: #000; resize: both;
-    }
-    .float-vid.open { display: block; }
-    .float-vid .fv-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 10px; background: rgba(0,0,0,0.8); cursor: grab; user-select: none;
-    }
-    .float-vid .fv-header:active { cursor: grabbing; }
-    .float-vid .fv-title { font-size: 0.75rem; color: #aaa; }
-    .float-vid .fv-close { color: #ff3366; cursor: pointer; font-size: 1rem; padding: 0 4px; }
-    .float-vid video { width: 100%; display: block; max-height: 240px; }
-    .float-vid .fv-controls {
-      display: flex; align-items: center; gap: 6px; padding: 4px 8px;
-      background: rgba(0,0,0,0.8);
-    }
-    .float-vid .fv-controls button {
-      background: none; border: none; color: #fff; font-size: 0.8rem; cursor: pointer; padding: 2px 6px;
-    }
-    .float-vid .fv-controls button:hover { color: #00f0ff; }
-    .float-vid .fv-controls .fv-progress { flex: 1; height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; cursor: pointer; }
-    .float-vid .fv-controls .fv-progress .fv-fill { height: 100%; width: 0%; background: #00f0ff; border-radius: 2px; }
-    .float-vid-min { width: 180px !important; }
-    .float-vid-min video { max-height: 100px; }
-
-    .music-section {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
-    }
+    .plat-sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+    /* GEN STEPS */
+    .gen-steps { display: flex; flex-direction: column; gap: 10px; }
+    .gen-step { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem; color: rgba(255,255,255,0.5); transition: all 0.4s; }
+    .gen-step.active { background: rgba(18,216,255,0.08); border-color: rgba(18,216,255,0.2); color: #12d8ff; }
+    .gen-step.done { background: rgba(18,216,255,0.05); border-color: rgba(18,216,255,0.1); color: rgba(255,255,255,0.7); }
+    .gen-step.done .step-icon::before { content: '✓ '; color: #12d8ff; }
+    .step-icon { font-size: 1.2rem; }
+    /* MUSIC */
+    .music-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
     .music-section .ms-left { display: flex; flex-direction: column; gap: 14px; }
     .music-section .ms-right { display: flex; flex-direction: column; gap: 14px; }
-    .ms-upload-box {
-      border: 2px dashed rgba(0,240,255,0.2); border-radius: 12px; padding: 32px;
-      text-align: center; cursor: pointer; transition: border-color 0.3s;
-    }
+    .ms-upload-box { border: 2px dashed rgba(0,240,255,0.2); border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; transition: border-color 0.3s; }
     .ms-upload-box:hover { border-color: #00f0ff; }
-    .ms-upload-box .ms-icon { font-size: 2.4rem; margin-bottom: 8px; }
-    .ms-upload-box .ms-txt { font-size: 0.85rem; color: #888; }
-    .ms-current {
-      background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .ms-current .msc-label { font-size: 0.75rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-    .ms-current .msc-name { font-size: 1.1rem; font-weight: 700; }
-    .ms-current .msc-artist { font-size: 0.82rem; color: #888; }
+    .ms-upload-box .ms-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .ms-upload-box .ms-txt { font-size: 0.83rem; color: #888; }
+    .ms-current { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.06); }
+    .ms-current .msc-label { font-size: 0.72rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .ms-current .msc-name { font-size: 1.05rem; font-weight: 700; }
+    .ms-current .msc-artist { font-size: 0.8rem; color: #888; }
     .ms-current .msc-progress { margin-top: 10px; }
-    .ms-current .msc-progress .msc-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-    .ms-current .msc-progress .msc-bar .msc-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); }
+    .ms-current .msc-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+    .ms-current .msc-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); }
     .ms-current .msc-time { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; margin-top: 4px; }
-
     .ms-playlist { max-height: 300px; overflow-y: auto; }
-    .ms-playlist .ms-track {
-      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
-      border-radius: 8px; cursor: pointer; transition: background 0.2s;
-    }
+    .ms-playlist .ms-track { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
     .ms-playlist .ms-track:hover { background: rgba(255,255,255,0.04); }
     .ms-playlist .ms-track.active { background: rgba(0,240,255,0.08); border-left: 3px solid #00f0ff; }
     .ms-playlist .ms-track .ms-num { width: 20px; font-size: 0.75rem; color: #555; }
@@ -435,52 +175,116 @@
     .ms-playlist .ms-track .ms-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,240,255,0.1); color: #00f0ff; }
     .ms-playlist .ms-track .ms-del { color: #ff3366; font-size: 0.75rem; cursor: pointer; opacity: 0; }
     .ms-playlist .ms-track:hover .ms-del { opacity: 1; }
-
+    /* EMPLOYEE */
+    .employee-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 16px; }
+    .employee-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.3s; }
+    .employee-card:hover { border-color: rgba(0,240,255,0.2); transform: translateY(-4px); }
+    .employee-card .avatar { width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 12px; background: linear-gradient(135deg,#00f0ff,#0077ff); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #fff; overflow: hidden; border: 2px solid rgba(0,240,255,0.2); }
+    .employee-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .employee-card .e-name { font-weight: 600; font-size: 0.9rem; }
+    .employee-card .e-role { font-size: 0.78rem; color: #888; }
+    .employee-card .e-del { margin-top: 8px; font-size: 0.7rem; color: #ff3366; cursor: pointer; opacity: 0.6; }
+    .employee-card .e-del:hover { opacity: 1; }
+    /* MODAL */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-content { background: #12122a; border: 1px solid rgba(0,240,255,0.2); border-radius: 16px; padding: 32px; width: 90%; max-width: 420px; }
+    .modal-content h3 { margin-bottom: 20px; color: #00f0ff; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; color: #aaa; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9rem; }
+    .form-group input:focus { outline: none; border-color: #00f0ff; }
+    .modal-close { float: right; cursor: pointer; color: #666; font-size: 1.4rem; }
+    .auth-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(0,240,255,0.1); border-radius: 20px; font-size: 0.78rem; color: #00f0ff; }
+    .auth-badge.logout { cursor: pointer; }
+    .auth-badge.logout:hover { background: rgba(255,51,102,0.15); color: #ff3366; }
+    /* FIXED PLAYER */
+    .fixed-player { position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; background: rgba(10,10,26,0.95); backdrop-filter: blur(16px); border-top: 1px solid rgba(0,240,255,0.15); padding: 10px 20px; display: none; align-items: center; gap: 14px; }
+    .fixed-player.open { display: flex; }
+    .fixed-player .fp-cover { width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg,#00f0ff,#0077ff); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .fixed-player .fp-info { min-width: 0; flex-shrink: 1; }
+    .fixed-player .fp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+    .fixed-player .fp-artist { font-size: 0.7rem; color: #888; }
+    .fixed-player .fp-progress-wrap { flex: 1; min-width: 60px; cursor: pointer; position: relative; height: 20px; display: flex; align-items: center; }
+    .fixed-player .fp-progress { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+    .fixed-player .fp-progress .fp-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#00f0ff,#0077ff); border-radius: 2px; transition: width 0.2s; }
+    .fixed-player .fp-time { font-size: 0.7rem; color: #666; white-space: nowrap; min-width: 70px; text-align: center; }
+    .fixed-player .fp-ctrl { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .fixed-player .fp-ctrl:hover { background: rgba(0,240,255,0.15); border-color: #00f0ff; }
+    body.has-player { padding-bottom: 72px; }
+    /* FLOAT VIDEO */
+    .float-vid { position: fixed; bottom: 80px; right: 20px; width: 320px; z-index: 350; border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 8px 40px rgba(0,0,0,0.6); border: 1px solid rgba(0,240,255,0.2); background: #000; resize: both; }
+    .float-vid.open { display: block; }
+    .float-vid .fv-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(0,0,0,0.8); cursor: grab; user-select: none; }
+    .float-vid .fv-header:active { cursor: grabbing; }
+    .float-vid .fv-title { font-size: 0.75rem; color: #aaa; }
+    .float-vid .fv-close { color: #ff3366; cursor: pointer; font-size: 1rem; padding: 0 4px; }
+    .float-vid video { width: 100%; display: block; max-height: 240px; }
+    .float-vid .fv-controls { display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(0,0,0,0.8); }
+    .float-vid .fv-controls button { background: none; border: none; color: #fff; font-size: 0.8rem; cursor: pointer; padding: 2px 6px; }
+    .float-vid .fv-controls button:hover { color: #00f0ff; }
+    .float-vid .fv-progress { flex: 1; height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; cursor: pointer; }
+    .float-vid .fv-fill { height: 100%; width: 0%; background: #00f0ff; border-radius: 2px; }
+    .float-vid-min { width: 180px !important; }
+    .float-vid-min video { max-height: 100px; }
+    /* SECTION */
+    section { padding: 60px 0; }
+    .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+    .section-sub { color: rgba(255,255,255,0.5); margin-bottom: 40px; font-size: 0.93rem; }
+    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; backdrop-filter: blur(12px); transition: all 0.3s; }
+    .card:hover { border-color: rgba(0,240,255,0.2); }
+    /* FOOTER */
+    footer { text-align: center; padding: 32px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; color: #444; }
+    /* RESPONSIVE */
+    @media (max-width:1024px) {
+      .container { padding-left: 10vw; padding-right: 20px; }
+      .hero .container { padding-left: 10vw; padding-right: 20px; }
+      .hero-right { max-width: 520px; }
+      .hero-dock { max-width: 520px; }
+      .hero-upload { width: 210px; min-height: 156px; }
+      .phone-preview { width: 138px; }
+    }
+    @media (max-width:900px) {
+      .hero-layout { gap: 32px; }
+      .hero-left { text-align: center; align-items: center; }
+      .hero-chips { justify-content: center; }
+      .hero-right { align-items: center; width: 100%; max-width: 100%; }
+      .hero-dock { padding: 16px; }
+      .hero-content-row { justify-content: center; }
+      .hero-upload { width: 260px; }
+      .phone-preview { width: 160px; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+    }
     @media (max-width:768px) {
       .music-section { grid-template-columns: 1fr; }
       .fixed-player { padding: 8px 12px; gap: 8px; }
       .fixed-player .fp-cover { width: 36px; height: 36px; font-size: 1rem; }
       .fixed-player .fp-name { max-width: 80px; font-size: 0.75rem; }
       .fixed-player .fp-ctrl { width: 28px; height: 28px; font-size: 0.8rem; }
-      .fixed-player .fp-progress-wrap { min-width: 40px; }
       .float-vid { width: 240px; right: 10px; bottom: 70px; }
       .float-vid video { max-height: 160px; }
-      .hide-mobile { display: none; }
-      .hero { padding: 80px 16px 60px; min-height: auto; }
-      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
-      .hero-upload { width: 100%; max-width: 480px; height: 240px; }
-      .phone-preview { top: 0; width: 220px; }
-      .hero-btn { width: 100%; max-width: 480px; height: 56px; font-size: 1.05rem; }
-      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
-      .employee-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); }
-      .stats-grid { grid-template-columns: repeat(2,1fr); }
-      .sec { padding: 40px 0; }
-      .container { padding: 0 16px; }
+      .hero-dock { border-radius: 24px; }
+      .hero-content-row { flex-direction: column; }
+      .phone-preview { width: 180px; }
+      .steps-3 { flex-direction: column; }
+      .step-arrow { transform: rotate(90deg); }
     }
     @media (max-width:600px) {
       nav { padding: 10px 16px; height: auto; flex-wrap: wrap; gap: 6px; }
-      nav .menu { gap: 4px; }
-      nav .menu a { font-size: 0.7rem; padding: 6px 10px; }
+      nav .menu { gap: 2px; }
+      nav .menu a { font-size: 0.7rem; padding: 6px 8px; }
       .hero { margin-top: 80px; }
-      .section-title { font-size: 1.2rem; }
-      .section-sub { font-size: 0.82rem; margin-bottom: 24px; }
-      .ms-current { padding: 14px; }
-      .ms-current .msc-name { font-size: 1rem; }
-      .ms-upload-box { padding: 20px; }
-      .modal-content { padding: 20px; }
-      .employee-card .avatar { width: 100px; height: 100px; font-size: 2.2rem; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .pricing-card { padding: 24px; }
+      .sec { padding: 40px 0; }
+      .container { padding: 0 16px; }
+      .container { padding-left: 16px; padding-right: 12px; }
+      .hero .container { padding-left: 16px; padding-right: 12px; }
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
       .stat-card { padding: 24px 12px; }
       .stat-card .stat-num { font-size: 1.6rem; }
-      .steps-3 { flex-direction: column; }
-      .step-arrow { transform: rotate(90deg); }
-      .plat-item { padding: 12px 20px; font-size: 0.8rem; }
-    }
-    @media (max-width:992px) {
-      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
-      .phone-preview { top: 0; width: 220px; }
+      .pricing-card { padding: 24px 20px; }
+      .plat-item { padding: 12px 18px; font-size: 0.8rem; }
+      .employee-grid { grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); }
     }
   </style>
 </head>
@@ -491,6 +295,7 @@
 </video>
 <div class="overlay"></div>
 
+<!-- NAV -->
 <nav>
   <div class="logo">&#127916; <span>VideoSeller AI</span></div>
   <div class="menu">
@@ -498,65 +303,94 @@
     <a onclick="scrollToEl('sFeatures')">ตัวอย่างคลิป</a>
     <a onclick="scrollToEl('sPricing')">ราคา</a>
     <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
-    <a onclick="scrollToEl('sPlatforms')">FAQ</a>
+    <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
     <a onclick="scrollToEl('music')">เพลง</a>
-    <a id="authBtn" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
-    <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">&#128640; เริ่มใช้ฟรี</a>
+    <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
+    <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">เริ่มใช้ฟรี</a>
   </div>
 </nav>
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <div class="hero" id="heroTop">
   <div class="hero-glow blue"></div>
   <div class="hero-glow purple"></div>
-  <div class="hero-inner">
-    <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
-    <h1 class="hero-h1">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของ<br>ด้วย <span>AI</span></h1>
-    <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียงอัตโนมัติ สร้างซับ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
-    <div class="hero-chips">
-      <span>&#9889; สร้างไว 30 วินาที</span>
-      <span>&#127908; พากย์เสียงอัตโนมัติ</span>
-      <span>&#127991; พร้อมปักตะกร้า</span>
-      <span>&#128241; รองรับ TikTok Shop / Shopee</span>
-    </div>
-
-    <div class="hero-preview">
-      <div id="dropzone" class="hero-upload" onclick="document.getElementById('fileInput').click()">
-        <div class="hu-icon">&#128247;</div>
-        <div class="hu-title">ลากรูปสินค้ามาวางที่นี่</div>
-        <div class="hu-sub">หรือคลิกเพื่ออัปโหลด</div>
-        <div class="hu-fmts">PNG &bull; JPG &bull; WEBP &bull; สูงสุด 10MB</div>
+  <div class="container">
+    <div class="hero-layout">
+      <!-- LEFT: text -->
+      <div class="hero-left">
+        <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
+        <h1 class="hero-h1">
+          เปลี่ยนรูปสินค้า<br>
+          <span class="grad">เป็นวิดีโอขายของ</span><br>
+          ด้วย AI
+        </h1>
+        <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป AI จะสร้างวิดีโอรีวิว<br>พากย์เสียง ใส่ซับ พร้อมปักตะกร้าและโพสต์ได้ทันที</p>
+        <div class="hero-chips">
+          <span>&#9889; สร้างไว 30 วินาที</span>
+          <span>&#127908; พากย์เสียงอัตโนมัติ</span>
+          <span>&#127991; พร้อมปักตะกร้า</span>
+          <span>&#128241; รองรับ TikTok / Shopee</span>
+        </div>
       </div>
-      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
-
-      <div class="phone-preview">
-        <div class="pm-notch"></div>
-        <div class="pm-content">
-          <div class="pm-video">
-            <div class="pm-playbtn">&#9654;</div>
+      <!-- RIGHT: upload + phone -->
+      <div class="hero-right">
+        <img class="hero-anime" src="anime-bg.svg" alt="anime character" onerror="this.style.display='none'">
+        <div class="hero-dock">
+        <div class="hero-content-row">
+          <!-- Upload box -->
+          <div id="dropzone" class="hero-upload" onclick="document.getElementById('fileInput').click()">
+            <div class="hu-icon-wrap">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="7" width="34" height="26" rx="4" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                <circle cx="14" cy="17" r="3.5" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                <path d="M3 28l8-7 6 5 5-4 8 7" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="hu-title">ลากรูปสินค้ามาวางที่นี่</div>
+            <div class="hu-link">หรือคลิกเพื่ออัปโหลด</div>
+            <div class="hu-fmts">PNG &bull; JPG &bull; WEBP &bull; สูงสุด 10MB</div>
           </div>
-          <div class="pm-text">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
-          <div class="pm-cart">&#128722; หยิบใส่ตะกร้า</div>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+          <!-- Sample product (แก้รูปสินค้าได้ที่ product.png / จะเปลี่ยนตามรูปที่อัปโหลด) -->
+          <div class="hero-sample" title="ตัวอย่างรูปสินค้า">
+            <img id="heroSampleImg" src="product_upload_2.png" alt="ตัวอย่างสินค้า">
+          </div>
+          <!-- Arrow -->
+          <div class="hero-arrow">&rsaquo;&rsaquo;</div>
+          <!-- Phone preview -->
+          <div class="phone-preview">
+            <div class="pm-notch"></div>
+            <div class="pm-content">
+              <div class="pm-video-wrap">
+                <div class="pm-video-fallback" id="pmFallback"></div>
+                <div class="pm-playbtn">&#9654;</div>
+                <div class="pm-badge">
+                  <div class="pm-text">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
+                  <div class="pm-cart-btn">&#128722;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-btn-wrap">
+          <button id="mainGenBtn" class="hero-btn" onclick="generateVideo()">&#128640; สร้างวิดีโอฟรี</button>
+          <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);text-align:center;"></div>
+        </div>
         </div>
       </div>
     </div>
-
-    <button id="mainGenBtn" class="hero-btn" onclick="generateVideo()">&#128640; สร้างวิดีโอฟรี</button>
-    <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);text-align:center;"></div>
   </div>
 </div>
 
-<!-- Steps / How it works (shown during generation) -->
-<div id="genSteps" class="gen-steps" style="display:none;max-width:520px;margin:0 auto;padding:40px 24px;">
+<!-- GEN STEPS -->
+<div id="genSteps" class="gen-steps" style="display:none;max-width:520px;margin:0;padding:40px 24px 40px 15vw;">
   <div class="gen-step" id="step1"><span class="step-icon">&#128270;</span><span class="step-text">วิเคราะห์สินค้า</span></div>
   <div class="gen-step" id="step2"><span class="step-icon">&#128221;</span><span class="step-text">เขียนสคริปต์</span></div>
   <div class="gen-step" id="step3"><span class="step-icon">&#127908;</span><span class="step-text">สร้างเสียงพากย์</span></div>
   <div class="gen-step" id="step4"><span class="step-icon">&#127916;</span><span class="step-text">สร้างวิดีโอแนวไวรัล</span></div>
   <div class="gen-step" id="step5"><span class="step-icon">&#128640;</span><span class="step-text">พร้อมลง TikTok Shop</span></div>
 </div>
-
-<!-- Result -->
-<div id="videoResult" style="display:none;max-width:520px;margin:20px auto;padding:0 24px;">
+<div id="videoResult" style="display:none;max-width:520px;margin:20px 0 20px 0;padding:0 24px 0 15vw;">
   <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
       <span id="videoStatus" style="font-size:0.95rem;color:#0ff;font-weight:600;">&#9989; วิดีโอพร้อมแล้ว</span>
@@ -568,33 +402,27 @@
   </div>
 </div>
 
-<!-- ===== SECTION 2: 3 STEPS ===== -->
+<!-- SECTION: 3 STEPS -->
 <section class="sec" id="sFeatures">
-  <div class="container" style="text-align:center;">
-    <h2 class="sec-h2">สร้างวิดีโอง่ายๆ เพียง 3 ขั้นตอน</h2>
+  <div class="container" style="text-align:left;">
+    <h2 class="sec-h2">สร้างวิดีโอง่ายๆ เพียง <span class="grad" style="background:linear-gradient(90deg,#12d8ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">3 ขั้นตอน</span></h2>
     <div class="steps-3">
       <div class="step-card">
-        <div class="sc-num">
-          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">1</text></svg>
-        </div>
-        <div class="sc-icon">&#128247;</div>
+        <div class="sc-circle">1</div>
+        <div class="sc-icon">&#9729;</div>
         <div class="sc-title">อัปโหลดรูปสินค้า</div>
         <div class="sc-desc">อัปโหลดรูปสินค้า<br>ที่ต้องการขาย</div>
       </div>
       <div class="step-arrow">&#8594;</div>
       <div class="step-card">
-        <div class="sc-num">
-          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">2</text></svg>
-        </div>
+        <div class="sc-circle">2</div>
         <div class="sc-icon">&#129302;</div>
         <div class="sc-title">AI สร้างวิดีโอรีวิว</div>
         <div class="sc-desc">AI วิเคราะห์สินค้า<br>สร้างสคริปต์ พากย์เสียง<br>และตัดต่อวิดีโอ</div>
       </div>
       <div class="step-arrow">&#8594;</div>
       <div class="step-card">
-        <div class="sc-num">
-          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">3</text></svg>
-        </div>
+        <div class="sc-circle">3</div>
         <div class="sc-icon">&#127991;</div>
         <div class="sc-title">พร้อมขายทันที</div>
         <div class="sc-desc">ดาวน์โหลดวิดีโอ<br>หรือโพสต์ลง TikTok Shop<br>และ Shopee ได้ทันที</div>
@@ -603,15 +431,18 @@
   </div>
 </section>
 
-<!-- ===== SECTION 3: PRICING ===== -->
+<!-- SECTION: PRICING -->
 <section class="sec" id="sPricing">
-  <div class="container" style="text-align:center;">
-    <h2 class="sec-h2">เลือกแพ็กเกจที่ใช่สำหรับคุณ</h2>
+  <div class="container" style="text-align:left;">
+    <h2 class="sec-h2">เลือกแพ็กเกจที่<span style="background:linear-gradient(90deg,#12d8ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ใช่สำหรับคุณ</span></h2>
     <p class="sec-sub">เริ่มใช้ฟรี ไม่ต้องใช้บัตรเครดิต</p>
     <div class="pricing-grid">
+      <!-- FREE -->
       <div class="pricing-card">
+        <div class="p-tag">เหมาะสำหรับมือใหม่</div>
         <div class="p-name">ฟรีรายวัน</div>
-        <div class="p-price">&#3647;0 <span>/ เดือน</span></div>
+        <div class="p-price"><sup>฿</sup>0 <span class="per">/ เดือน</span></div>
+        <div class="p-divider"></div>
         <ul class="p-features">
           <li>สร้าง 3 คลิปต่อวัน</li>
           <li>ความยาว 30 วินาที</li>
@@ -619,12 +450,16 @@
           <li>วิดีโอ 720p</li>
           <li>มีลายน้ำ</li>
         </ul>
-        <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;">เริ่มใช้ฟรี</button>
+        <div class="p-divider"></div>
+        <button class="btn btn-outline" onclick="scrollToEl('heroTop')" style="width:100%;margin-top:8px;">เริ่มใช้ฟรี</button>
       </div>
+      <!-- PRO -->
       <div class="pricing-card featured">
-        <div class="badge-pro">&#11088; โปร (แนะนำ)</div>
+        <div class="badge-pro">&#11088; แนะนำ</div>
+        <div class="p-tag" style="margin-top:12px;">คุ้มค่า สำหรับนักขายออนไลน์</div>
         <div class="p-name">โปร</div>
-        <div class="p-price">&#3647;299 <span>/ เดือน</span></div>
+        <div class="p-price"><sup>฿</sup>299 <span class="per">/ เดือน</span></div>
+        <div class="p-divider"></div>
         <ul class="p-features">
           <li>สร้าง 100 คลิปต่อวัน</li>
           <li>ความยาว 3 นาที</li>
@@ -634,59 +469,95 @@
           <li>เทมเพลตไวรัล</li>
           <li>ตั้งเวลาโพสต์อัตโนมัติ</li>
         </ul>
-        <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;background:linear-gradient(90deg,#12d8ff,#8b5cf6);border:none;">สมัครโปร</button>
+        <div class="p-divider"></div>
+        <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;margin-top:8px;background:linear-gradient(90deg,#12d8ff,#8b5cf6);border:none;">สมัครโปร</button>
       </div>
-      <div class="pricing-card">
+      <!-- ULTRA -->
+      <div class="pricing-card ultra">
+        <div class="p-tag">สำหรับมืออาชีพ</div>
         <div class="p-name">อุลตร้า</div>
-        <div class="p-price">&#3647;999 <span>/ เดือน</span></div>
+        <div class="p-price"><sup>฿</sup>999 <span class="per">/ เดือน</span></div>
+        <div class="p-divider"></div>
         <ul class="p-features">
           <li>สร้างไม่จำกัด</li>
+          <li>ความยาวไม่จำกัด</li>
+          <li>เสียง AI ทุกเสียง</li>
           <li>วิดีโอ 4K</li>
-          <li>เสียง AI ทุกแบบ</li>
+          <li>ไม่มีลายน้ำ</li>
           <li>หลายบัญชี TikTok</li>
-          <li>สร้างแคปชันอัตโนมัติ</li>
-          <li>สร้างแฮชแท็กอัตโนมัติ</li>
-          <li>API Access</li>
-          <li>พื้นที่จัดเก็บไฟล์ 100GB</li>
-          <li>ฟีเจอร์ใหม่ก่อนใคร</li>
+          <li>สร้างแคปชันและแฮชแท็กอัตโนมัติ</li>
+          <li>พื้นที่จัดเก็บไฟล์ไม่จำกัด</li>
         </ul>
-        <button class="btn btn-outline" onclick="scrollToEl('heroTop')" style="width:100%;">สมัครอุลตร้า</button>
+        <div class="p-divider"></div>
+        <button class="btn btn-ultra" onclick="scrollToEl('heroTop')" style="width:100%;margin-top:8px;padding:12px 24px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.88rem;">สมัครอุลตร้า</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== SECTION 4: STATS ===== -->
+<!-- SECTION: STATS -->
 <section class="sec" id="sStats">
   <div class="container">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num">128,349+</div><div class="stat-lbl">คลิปที่สร้างแล้ว</div></div>
-      <div class="stat-card"><div class="stat-num">36,521</div><div class="stat-lbl">ผู้ใช้งาน</div></div>
-      <div class="stat-card"><div class="stat-num">12,850,000+</div><div class="stat-lbl">ยอดขายที่เพิ่มขึ้น</div></div>
-      <div class="stat-card"><div class="stat-num">99.9%</div><div class="stat-lbl">ความพึงพอใจ</div></div>
+      <div class="stat-card">
+        <div class="stat-icon">&#127968;</div>
+        <div class="stat-num">128,349+</div>
+        <div class="stat-lbl">คลิปที่สร้างแล้ว</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#128101;</div>
+        <div class="stat-num">36,521</div>
+        <div class="stat-lbl">ผู้ใช้งาน</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#128200;</div>
+        <div class="stat-num">12,850,000+</div>
+        <div class="stat-lbl">ยอดขายที่เพิ่มขึ้น (บาท)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">&#128149;</div>
+        <div class="stat-num">99.9%</div>
+        <div class="stat-lbl">ความพึงพอใจ</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ===== SECTION 5: PLATFORMS ===== -->
+<!-- SECTION: PLATFORMS -->
 <section class="sec" id="sPlatforms" style="padding-bottom:20px;">
   <div class="container" style="text-align:center;">
     <h2 class="sec-h2">รองรับทุกแพลตฟอร์ม</h2>
+    <p class="sec-sub" style="margin-bottom:28px;">สร้างวิดีโอให้ทุกแพลตฟอร์มที่คุณใช้งาน</p>
     <div class="plat-grid">
-      <div class="plat-item"><span>&#127991;</span> TikTok Shop</div>
-      <div class="plat-item"><span>&#128722;</span> Shopee Affiliate</div>
-      <div class="plat-item"><span>&#128214;</span> Facebook</div>
-      <div class="plat-item"><span>&#128247;</span> Instagram</div>
-      <div class="plat-item"><span>&#127916;</span> YouTube Shorts</div>
+      <div class="plat-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.85 1.56V6.79a4.84 4.84 0 0 1-1.08-.1z" fill="white"/></svg>
+        <span>TikTok<br><span class="plat-sub">Shop</span></span>
+      </div>
+      <div class="plat-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#EE4D2D"/><path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Shopee<br><span class="plat-sub">Affiliate</span></span>
+      </div>
+      <div class="plat-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        <span>Facebook<br><span class="plat-sub">&nbsp;</span></span>
+      </div>
+      <div class="plat-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="url(#ig)"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="white"/><defs><radialGradient id="ig" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#ffd600"/><stop offset="30%" stop-color="#ff7a00"/><stop offset="60%" stop-color="#ff0069"/><stop offset="100%" stop-color="#d300c5"/></radialGradient></defs></svg>
+        <span>Instagram<br><span class="plat-sub">&nbsp;</span></span>
+      </div>
+      <div class="plat-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span>YouTube<br><span class="plat-sub">Shorts</span></span>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- MUSIC SECTION -->
 <section id="music" style="background:rgba(255,255,255,0.01);">
   <div class="container">
-    <div class="section-title"><span class="icon">&#127926;</span> เครื่องเล่นเพลง</div>
+    <div class="section-title"><span>&#127926;</span> เครื่องเล่นเพลง</div>
     <div class="section-sub">เพลงเล่นต่อเนื่องทุกหน้า — DEV เท่านั้นที่อัปโหลดเพลงได้</div>
-
     <div class="music-section">
       <div class="ms-left">
         <div class="ms-current">
@@ -718,6 +589,7 @@
   </div>
 </section>
 
+<!-- FIXED PLAYER -->
 <div class="fixed-player" id="fixedPlayer">
   <div class="fp-cover" id="fpCover">&#127925;</div>
   <div class="fp-info">
@@ -732,13 +604,14 @@
   <button class="fp-ctrl" id="fpPlay">&#9654;</button>
   <button class="fp-ctrl" id="fpNext">&#9197;</button>
   <button class="fp-ctrl" id="fpUpload" onclick="document.getElementById('musicFileInput').click()" title="DEV upload">&#128190;</button>
-  <button class="fp-ctrl" id="fpFullscreen" title="ดูวิดีโอเต็มจอ" style="display:none;">&#9974;</button>
+  <button class="fp-ctrl" id="fpFullscreen" title="ดูวิดีโอ" style="display:none;">&#9974;</button>
   <input type="range" id="fpVolume" min="0.3" max="1" step="0.05" value="1" style="width:60px;accent-color:#00f0ff;cursor:pointer;">
 </div>
 
+<!-- FLOAT VIDEO -->
 <div class="float-vid" id="floatVid">
   <div class="fv-header" id="fvHeader">
-    <span class="fv-title" id="fvTitle">▶ วิดีโอ</span>
+    <span class="fv-title" id="fvTitle">&#9654; วิดีโอ</span>
     <span class="fv-close" id="fvCloseBtn">&times;</span>
   </div>
   <video id="videoPlayer" autoplay playsinline></video>
@@ -749,34 +622,35 @@
   </div>
 </div>
 
+<!-- EMPLOYEE SECTION -->
 <section id="employee">
   <div class="container">
-    <div class="section-title"><span class="icon">&#128101;</span> ทีมงานของเรา</div>
+    <div class="section-title"><span>&#128101;</span> ทีมงานของเรา</div>
     <div class="section-sub">พนักงานมืออาชีพพร้อมให้บริการ</div>
-
     <div style="margin-bottom:20px;">
       <button class="btn btn-primary" onclick="openModal('empModal')">+ เพิ่มพนักงาน</button>
     </div>
-
     <div class="employee-grid" id="employeeGrid"></div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="container" style="text-align:center;">
     <div style="font-size:1.2rem;font-weight:800;margin-bottom:4px;">&#127916; VideoSeller AI</div>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของด้วย AI</p>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);">เปลี่ยนรูปสินค้าเป็นวิดีโอขายของด้วย AI</p>
     <p style="margin-top:16px;font-size:0.75rem;color:rgba(255,255,255,0.3);">&copy; 2026 VideoSeller AI &bull; All Rights Reserved.</p>
     <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
       <span style="font-size:1rem;font-weight:700;background:linear-gradient(90deg,#12d8ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">นายชาเย็น</span>
-      <a id="fbLink" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:6px;color:#1877f2;font-size:0.82rem;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);transition:all 0.3s;">
-        <span style="font-size:1rem;">&#120143;</span> ติดต่อผ่าน Facebook
+      <a id="fbLink" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:6px;color:#1877f2;font-size:0.82rem;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);">
+        <span>&#120143;</span> ติดต่อผ่าน Facebook
       </a>
     </div>
   </div>
 </footer>
 
+<!-- MODALS -->
 <div class="modal" id="authModal">
   <div class="modal-content">
     <span class="modal-close" onclick="closeModal('authModal')">&times;</span>
@@ -835,48 +709,22 @@
 <audio id="audioPlayer"></audio>
 
 <script>
-  // ===== SCROLL =====
-  function scrollToEl(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  }
-
-  // ===== MODAL =====
+  // SCROLL
+  function scrollToEl(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+  // MODAL
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-  document.querySelectorAll('.modal').forEach(m => {
-    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-  });
-
-  // ===== AUTH =====
-  // Auto-create DEV account
+  document.querySelectorAll('.modal').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
+  // AUTH
   (function() {
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
-    if (!users.find(u => u.user === '1@1.1')) {
-      users.push({ user: '1@1.1', pass: '1' });
-      localStorage.setItem('cm_users', JSON.stringify(users));
-    }
+    if (!users.find(u => u.user === '1@1.1')) { users.push({ user: '1@1.1', pass: '1' }); localStorage.setItem('cm_users', JSON.stringify(users)); }
   })();
-
-  function getSession() {
-    return JSON.parse(localStorage.getItem('cm_session'));
-  }
-
-  function isDev() {
-    const s = getSession();
-    return s && s.user === '1@1.1';
-  }
-
+  function getSession() { return JSON.parse(localStorage.getItem('cm_session')); }
+  function isDev() { const s = getSession(); return s && s.user === '1@1.1'; }
   let isLogin = true;
-
-  function togglePassVisibility() {
-    const el = document.getElementById('regPass');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  }
-  function toggleConfirmVisibility() {
-    const el = document.getElementById('regPassConfirm');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  }
-
+  function togglePassVisibility() { const el = document.getElementById('regPass'); el.type = el.type === 'password' ? 'text' : 'password'; }
+  function toggleConfirmVisibility() { const el = document.getElementById('regPassConfirm'); el.type = el.type === 'password' ? 'text' : 'password'; }
   function toggleAuthMode() {
     isLogin = !isLogin;
     document.getElementById('authTitle').textContent = isLogin ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก';
@@ -886,14 +734,11 @@
       ? 'ยังไม่มีบัญชี? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">สมัครสมาชิก</a>'
       : 'มีบัญชีแล้ว? <a onclick="toggleAuthMode()" style="cursor:pointer;color:#00f0ff;">เข้าสู่ระบบ</a>';
   }
-
   function handleAuth() {
     const user = document.getElementById('regUser').value.trim();
     const pass = document.getElementById('regPass').value.trim();
     if (!user || !pass) { alert('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'); return; }
-
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
-
     if (isLogin) {
       const found = users.find(u => u.user === user && u.pass === pass);
       if (!found) { alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'); return; }
@@ -903,283 +748,175 @@
       if (!pass2) { alert('กรุณายืนยันรหัสผ่าน'); return; }
       if (pass !== pass2) { alert('รหัสผ่านไม่ตรงกัน'); return; }
       if (users.find(u => u.user === user)) { alert('ชื่อผู้ใช้นี้มีอยู่แล้ว'); return; }
-      users.push({ user, pass });
-      localStorage.setItem('cm_users', JSON.stringify(users));
+      users.push({ user, pass }); localStorage.setItem('cm_users', JSON.stringify(users));
       localStorage.setItem('cm_session', JSON.stringify({ user }));
     }
-
     closeModal('authModal');
     document.getElementById('regUser').value = '';
     document.getElementById('regPass').value = '';
     document.getElementById('regPassConfirm').value = '';
-    updateAuthUI();
-    updateMusicUI();
-    updateEmployeeUI();
+    updateAuthUI(); updateMusicUI(); updateEmployeeUI();
   }
-
   function updateAuthUI() {
     const session = getSession();
     const btn = document.getElementById('authBtn');
     if (session) {
       const badge = session.user === '1@1.1' ? '&#128272; DEV' : session.user;
-      btn.innerHTML = `<span class="auth-badge logout" onclick="logout()">${badge} (ออกจากระบบ)</span>`;
+      btn.innerHTML = '<span class="auth-badge logout" onclick="logout()">' + badge + ' (ออกจากระบบ)</span>';
+      btn.onclick = null;
     } else {
       btn.innerHTML = 'เข้าสู่ระบบ';
       btn.onclick = function() { openModal('authModal'); };
     }
   }
-
-  function logout() {
-    localStorage.removeItem('cm_session');
-    updateAuthUI();
-    updateMusicUI();
-    updateEmployeeUI();
-  }
+  function logout() { localStorage.removeItem('cm_session'); updateAuthUI(); updateMusicUI(); updateEmployeeUI(); }
   updateAuthUI();
 
-  // ==================== VIDEO GENERATOR ====================
+  // VIDEO GENERATOR
   let generatedVideoBlob = null;
   let uploadedImage = null;
-
-  // File input change handler
-  document.getElementById('fileInput').onchange = function(e) {
-    const file = e.target.files[0];
-    if (file) handleImage(file);
-  };
-
-  // Drag & drop
+  document.getElementById('fileInput').onchange = function(e) { const f = e.target.files[0]; if (f) handleImage(f); };
   const dz = document.getElementById('dropzone');
-  dz.ondragover = function(e) { e.preventDefault(); this.classList.add('dragover'); };
-  dz.ondragleave = function() { this.classList.remove('dragover'); };
+  dz.ondragover = function(e) { e.preventDefault(); this.style.borderColor = 'rgba(18,216,255,0.6)'; };
+  dz.ondragleave = function() { this.style.borderColor = ''; };
   dz.ondrop = function(e) {
-    e.preventDefault();
-    this.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) handleImage(file);
+    e.preventDefault(); this.style.borderColor = '';
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImage(f);
   };
-
   function handleImage(file) {
     if (!file.type.match(/image\/(png|jpeg|webp)/)) { alert('รองรับ PNG, JPG, WEBP เท่านั้น'); return; }
     uploadedImage = file;
     const reader = new FileReader();
     reader.onload = function(e) {
-      dz.innerHTML = '<img src="' + e.target.result + '" alt="สินค้า">';
+      dz.innerHTML = '<img src="' + e.target.result + '" alt="สินค้า" style="max-height:200px;border-radius:14px;display:block;margin:0 auto;">';
       dz.classList.add('has-image');
       document.getElementById('genHint').textContent = '✓ รูปสินค้า: ' + file.name;
+
+      // อัปเดตตัวอย่างรูปสินค้า + ตัวอย่างในมือถือ
+      const s = document.getElementById('heroSampleImg');
+      if (s) s.src = e.target.result;
+      const pm = document.getElementById('pmFallback');
+      if (pm) pm.style.backgroundImage = "linear-gradient(160deg,rgba(26,26,62,0.36) 0%,rgba(45,27,78,0.24) 40%,rgba(26,42,78,0.18) 100%), url('" + e.target.result + "')";
     };
     reader.readAsDataURL(file);
   }
-
   async function generateVideo() {
     if (!uploadedImage) { alert('กรุณาเลือกรูปสินค้าก่อน'); return; }
     const btn = document.getElementById('mainGenBtn');
     const hint = document.getElementById('genHint');
     const steps = document.getElementById('genSteps');
-
     btn.textContent = '⏳ กำลังสร้าง…';
     btn.disabled = true;
-    steps.style.display = 'block';
+    steps.style.display = 'flex';
     document.getElementById('videoResult').style.display = 'none';
-
-    // Mark all pending
-    for (let i = 1; i <= 5; i++) {
-      const s = document.getElementById('step' + i);
-      s.className = 'gen-step pending';
-    }
-
+    for (let i = 1; i <= 5; i++) document.getElementById('step' + i).className = 'gen-step';
     async function mark(i, text) {
       const s = document.getElementById('step' + i);
-      s.className = 'gen-step active';
-      await delay(400);
-      s.className = 'gen-step done';
-      hint.textContent = text;
-      await delay(600);
+      s.className = 'gen-step active'; await delay(400);
+      s.className = 'gen-step done'; hint.textContent = text; await delay(600);
     }
-
     await mark(1, '✓ วิเคราะห์สินค้า');
     await mark(2, '✓ เขียนสคริปต์รีวิว');
     await mark(3, '✓ สร้างเสียงพากย์');
     await mark(4, '✓ สร้างวิดีโอแนวไวรัล');
-
-    // Show result
     document.getElementById('videoResult').style.display = 'block';
     document.getElementById('videoStatus').textContent = '✅ วิดีโอพร้อมขาย — เสียงพากย์ + ซับไตเติล + ปักตะกร้า';
-
     const preview = document.getElementById('videoPreview');
     const canvas = document.createElement('canvas');
     canvas.width = 360; canvas.height = 640;
     const ctx = canvas.getContext('2d');
     const grad = ctx.createLinearGradient(0, 0, 0, 640);
-    grad.addColorStop(0, '#00f0ff');
-    grad.addColorStop(1, '#f0f');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 360, 640);
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 26px Inter, sans-serif';
-    ctx.textAlign = 'center';
+    grad.addColorStop(0, '#00f0ff'); grad.addColorStop(1, '#f0f');
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, 360, 640);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Inter, sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('VideoSeller AI', 180, 240);
-    ctx.font = '18px Inter, sans-serif';
-    ctx.fillText('รีวิวสินค้า', 180, 290);
-    ctx.font = '14px Inter, sans-serif';
-    ctx.fillStyle = '#b0e0ff';
+    ctx.font = '18px Inter, sans-serif'; ctx.fillText('รีวิวสินค้า', 180, 290);
+    ctx.font = '14px Inter, sans-serif'; ctx.fillStyle = '#b0e0ff';
     ctx.fillText('✓ เสียงพากย์ AI  ✓ ซับไตเติล', 180, 340);
     ctx.fillText('✓ พร้อมปักตะกร้า', 180, 370);
-
-    canvas.toBlob(function(blob) {
-      generatedVideoBlob = blob;
-    }, 'image/png');
-
+    canvas.toBlob(function(blob) { generatedVideoBlob = blob; }, 'image/png');
     preview.innerHTML = '<img src="' + canvas.toDataURL() + '" style="width:100%;height:100%;object-fit:cover;" alt="ตัวอย่างวิดีโอ">';
-
     await mark(5, '✅ พร้อมลง TikTok Shop!');
-    btn.textContent = '🎬 สร้างวิดีโอ';
-    btn.disabled = false;
+    btn.textContent = '🎬 สร้างวิดีโอ'; btn.disabled = false;
   }
-
   function downloadVideo() {
     if (!generatedVideoBlob) { alert('กรุณาสร้างวิดีโอก่อน'); return; }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(generatedVideoBlob);
     a.download = 'videoseller-review-' + Date.now() + '.png';
-    a.click();
-    URL.revokeObjectURL(a.href);
+    a.click(); URL.revokeObjectURL(a.href);
   }
-
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // ===== INDEXEDDB =====
-  let db;
-  let dbPromise = null;
-  const DB_NAME = 'cm_media';
-  const DB_VERSION = 3;
+  // INDEXEDDB
+  let db; let dbPromise = null;
+  const DB_NAME = 'cm_media'; const DB_VERSION = 3;
   function openDB() {
     if (dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
       const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onupgradeneeded = (e) => {
         const d = e.target.result;
-        if (!d.objectStoreNames.contains('files')) {
-          d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
-        }
-        if (!d.objectStoreNames.contains('backups')) {
-          d.createObjectStore('backups', { keyPath: 'id', autoIncrement: true });
-        }
-        if (!d.objectStoreNames.contains('settings')) {
-          d.createObjectStore('settings', { keyPath: 'key' });
-        }
+        if (!d.objectStoreNames.contains('files')) d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+        if (!d.objectStoreNames.contains('backups')) d.createObjectStore('backups', { keyPath: 'id', autoIncrement: true });
+        if (!d.objectStoreNames.contains('settings')) d.createObjectStore('settings', { keyPath: 'key' });
       };
       req.onsuccess = (e) => { db = e.target.result; resolve(db); };
       req.onerror = () => reject(req.error);
     });
     return dbPromise;
   }
-  function dbPut(data) {
-    return openDB().then(d => new Promise((res, rej) => {
-      const tx = d.transaction('files', 'readwrite');
-      const r = tx.objectStore('files').add({ data });
-      r.onsuccess = () => res(r.result);
-      r.onerror = () => rej(r.error);
-    }));
-  }
-  function dbGet(id) {
-    return openDB().then(d => new Promise((res, rej) => {
-      const tx = d.transaction('files', 'readonly');
-      const r = tx.objectStore('files').get(id);
-      r.onsuccess = () => res(r.result ? r.result.data : null);
-      r.onerror = () => rej(r.error);
-    }));
-  }
-  function dbDel(id) {
-    return openDB().then(d => new Promise((res, rej) => {
-      const tx = d.transaction('files', 'readwrite');
-      const r = tx.objectStore('files').delete(id);
-      r.onsuccess = () => res();
-      r.onerror = () => rej(r.error);
-    }));
-  }
+  function dbPut(data) { return openDB().then(d => new Promise((res, rej) => { const tx = d.transaction('files', 'readwrite'); const r = tx.objectStore('files').add({ data }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); })); }
+  function dbGet(id) { return openDB().then(d => new Promise((res, rej) => { const tx = d.transaction('files', 'readonly'); const r = tx.objectStore('files').get(id); r.onsuccess = () => res(r.result ? r.result.data : null); r.onerror = () => rej(r.error); })); }
+  function dbDel(id) { return openDB().then(d => new Promise((res, rej) => { const tx = d.transaction('files', 'readwrite'); const r = tx.objectStore('files').delete(id); r.onsuccess = () => res(); r.onerror = () => rej(r.error); })); }
 
-  // ===== MUSIC PLAYER =====
+  // MUSIC PLAYER
   const audio = document.getElementById('audioPlayer');
   audio.volume = 1; audio.muted = false;
   const videoPlayer = document.getElementById('videoPlayer');
-  const videoModal = document.getElementById('videoModal');
   let playlist = JSON.parse(localStorage.getItem('cm_playlist') || '[]');
   let currentTrack = parseInt(localStorage.getItem('cm_currentTrack') || '0');
   let savedTime = parseFloat(localStorage.getItem('cm_currentTime') || '0');
-
-  // Migrate old playlist data to IndexedDB
   (async function migratePlaylist() {
     let changed = false;
     for (const t of playlist) {
       if (t.data && !t.dbId) {
-        try {
-          t.dbId = await dbPut(t.data);
-          delete t.data;
-          changed = true;
-        } catch (e) {}
+        try { t.dbId = await dbPut(t.data); delete t.data; changed = true; } catch (e) {}
       }
     }
     if (changed) localStorage.setItem('cm_playlist', JSON.stringify(playlist));
   })();
-
   const el = {
-    fpName: document.getElementById('fpName'),
-    fpArtist: document.getElementById('fpArtist'),
-    fpCover: document.getElementById('fpCover'),
-    fpFill: document.getElementById('fpFill'),
-    fpTime: document.getElementById('fpTime'),
-    fpPlay: document.getElementById('fpPlay'),
-    fpPrev: document.getElementById('fpPrev'),
-    fpNext: document.getElementById('fpNext'),
-    fpUpload: document.getElementById('fpUpload'),
-    fpFullscreen: document.getElementById('fpFullscreen'),
-    fpPlayer: document.getElementById('fixedPlayer'),
-    fpProgress: document.getElementById('fpProgressWrap'),
-    mscName: document.getElementById('mscName'),
-    mscArtist: document.getElementById('mscArtist'),
-    mscFill: document.getElementById('mscFill'),
-    mscCur: document.getElementById('mscCur'),
-    mscDur: document.getElementById('mscDur'),
-    mscPlaylist: document.getElementById('msPlaylist'),
+    fpName: document.getElementById('fpName'), fpArtist: document.getElementById('fpArtist'),
+    fpCover: document.getElementById('fpCover'), fpFill: document.getElementById('fpFill'),
+    fpTime: document.getElementById('fpTime'), fpPlay: document.getElementById('fpPlay'),
+    fpPrev: document.getElementById('fpPrev'), fpNext: document.getElementById('fpNext'),
+    fpUpload: document.getElementById('fpUpload'), fpFullscreen: document.getElementById('fpFullscreen'),
+    fpPlayer: document.getElementById('fixedPlayer'), fpProgress: document.getElementById('fpProgressWrap'),
+    mscName: document.getElementById('mscName'), mscArtist: document.getElementById('mscArtist'),
+    mscFill: document.getElementById('mscFill'), mscCur: document.getElementById('mscCur'),
+    mscDur: document.getElementById('mscDur'), mscPlaylist: document.getElementById('msPlaylist'),
     msUploadBox: document.getElementById('msUploadBox'),
-    playBtn2: document.getElementById('playBtn2'),
-    prevBtn2: document.getElementById('prevBtn2'),
-    nextBtn2: document.getElementById('nextBtn2'),
+    playBtn2: document.getElementById('playBtn2'), prevBtn2: document.getElementById('prevBtn2'), nextBtn2: document.getElementById('nextBtn2'),
   };
-
   function formatTime(s) {
     if (!s || isNaN(s)) return '00:00';
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
   }
-
   let isFloatingMin = false;
-
-  function closeFloatVideo() {
-    document.getElementById('floatVid').classList.remove('open');
-    videoPlayer.pause();
-    videoPlayer.src = '';
-  }
-
+  function closeFloatVideo() { document.getElementById('floatVid').classList.remove('open'); videoPlayer.pause(); videoPlayer.src = ''; }
   function renderPlaylist() {
     el.mscPlaylist.innerHTML = '';
-    if (playlist.length === 0) {
-      el.mscPlaylist.innerHTML = '<div style="color:#444;font-size:0.82rem;text-align:center;padding:20px;">ยังไม่มีเพลง</div>';
-      return;
-    }
+    if (playlist.length === 0) { el.mscPlaylist.innerHTML = '<div style="color:#444;font-size:0.82rem;text-align:center;padding:20px;">ยังไม่มีเพลง</div>'; return; }
     playlist.forEach((track, i) => {
       const div = document.createElement('div');
       div.className = 'ms-track' + (i === currentTrack ? ' active' : '');
       const isVideo = track.type === 'video';
-      div.innerHTML = `
-        <span class="ms-num">${i + 1}</span>
-        <span class="ms-name">${track.name}</span>
-        ${isVideo ? '<span class="ms-tag">MP4</span>' : ''}
-        <span class="ms-dur" style="font-size:0.7rem;color:#666;">${track.dur || '--:--'}</span>
-        ${isDev() ? '<span class="ms-del" data-idx="'+i+'">&#10005;</span>' : ''}
-      `;
-      div.onclick = () => { if (isDev()) playTrack(i); };
+      div.innerHTML = '<span class="ms-num">' + (i+1) + '</span><span class="ms-name">' + track.name + '</span>' + (isVideo ? '<span class="ms-tag">MP4</span>' : '') + '<span style="font-size:0.7rem;color:#666;">' + (track.dur||'--:--') + '</span>' + (isDev() ? '<span class="ms-del" data-idx="'+i+'">&#10005;</span>' : '');
+      div.style.cursor = 'pointer';
+      div.onclick = () => playTrack(i);
       const del = div.querySelector('.ms-del');
       if (del) del.onclick = (e) => { e.stopPropagation(); deleteTrack(parseInt(del.dataset.idx)); };
       el.mscPlaylist.appendChild(div);
@@ -1191,119 +928,85 @@
     el.fpPlayer.classList.toggle('open', has);
     document.body.classList.toggle('has-player', has);
     if (!has) {
-      el.mscName.textContent = '—';
-      el.mscArtist.textContent = 'ยังไม่มีเพลง';
-      el.mscFill.style.width = '0%';
-      el.mscCur.textContent = '00:00';
-      el.mscDur.textContent = '00:00';
-      el.fpFill.style.width = '0%';
-      el.fpTime.textContent = '00:00 / 00:00';
-      el.fpName.textContent = '—';
-      el.fpArtist.textContent = 'VideoSeller AI';
-      el.playBtn2.textContent = '\u25B6';
-      el.fpPlay.textContent = '\u25B6';
-      return;
+      el.mscName.textContent = '—'; el.mscArtist.textContent = 'ยังไม่มีเพลง';
+      el.mscFill.style.width = '0%'; el.mscCur.textContent = '00:00'; el.mscDur.textContent = '00:00';
+      el.fpFill.style.width = '0%'; el.fpTime.textContent = '00:00 / 00:00';
+      el.fpName.textContent = '—'; el.fpArtist.textContent = 'VideoSeller AI';
+      el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; return;
     }
     const t = playlist[currentTrack];
-    el.mscName.textContent = t.name;
-    el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
-    el.fpName.textContent = t.name;
-    el.fpArtist.textContent = t.artist || 'VideoSeller AI';
+    el.mscName.textContent = t.name; el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
+    el.fpName.textContent = t.name; el.fpArtist.textContent = t.artist || 'VideoSeller AI';
     el.fpFullscreen.style.display = t.type === 'video' ? '' : 'none';
-
-    const cur = audio.currentTime || 0;
-    const dur = audio.duration || 0;
+    const cur = audio.currentTime || 0; const dur = audio.duration || 0;
     const pct = dur > 0 ? (cur / dur) * 100 : 0;
-    el.mscFill.style.width = pct + '%';
-    el.fpFill.style.width = pct + '%';
-    el.mscCur.textContent = formatTime(cur);
-    el.mscDur.textContent = formatTime(dur);
+    el.mscFill.style.width = pct + '%'; el.fpFill.style.width = pct + '%';
+    el.mscCur.textContent = formatTime(cur); el.mscDur.textContent = formatTime(dur);
     el.fpTime.textContent = formatTime(cur) + ' / ' + formatTime(dur);
   }
-
   async function playTrack(i) {
     if (i < 0 || i >= playlist.length) return;
-    currentTrack = i;
-    const track = playlist[i];
-    localStorage.setItem('cm_currentTrack', i);
-    localStorage.setItem('cm_currentTime', '0');
-
+    currentTrack = i; const track = playlist[i];
+    localStorage.setItem('cm_currentTrack', i); localStorage.setItem('cm_currentTime', '0');
     let src;
     if (track.data) src = track.data;
     else if (track.dbId) src = await dbGet(track.dbId);
     if (!src) {
-      alert('ไม่พบไฟล์เพลง — อาจถูกลบหรือยังไม่ได้บันทึก กรุณาอัปโหลดใหม่');
-      playlist.splice(i, 1); savePlaylist(); renderPlaylist(); updatePlayerUI();
-      return;
+      alert('ไม่พบไฟล์เพลง — กรุณาอัปโหลดใหม่');
+      playlist.splice(i, 1); savePlaylist(); renderPlaylist(); updatePlayerUI(); return;
     }
-
     if (track.type === 'video') {
       closeFloatVideo();
       document.getElementById('floatVid').classList.add('open');
       document.getElementById('fvTitle').textContent = '▶ ' + track.name;
-      videoPlayer.src = src;
-      videoPlayer.play();
-      el.fpCover.textContent = '\u127916';
+      videoPlayer.src = src; videoPlayer.play();
+      el.fpCover.textContent = '\u{1F4FA}';
       document.getElementById('fvPlayBtn').textContent = '\u23F8';
     } else {
-      closeFloatVideo();
-      audio.src = src;
-      audio.play().catch(e => {
-        if (e.name === 'NotAllowedError') {
-          el.playBtn2.textContent = '\u25B6';
-          el.fpPlay.textContent = '\u25B6';
-        }
-      });
-      el.fpCover.textContent = '\u127925';
+      closeFloatVideo(); audio.src = src;
+      audio.play().catch(e => { if (e.name === 'NotAllowedError') { el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; } });
+      el.fpCover.textContent = '\u{1F3B5}';
     }
-    el.playBtn2.textContent = '\u23F8';
-    el.fpPlay.textContent = '\u23F8';
-    updatePlayerUI();
-    renderPlaylist();
+    el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8';
+    updatePlayerUI(); renderPlaylist();
   }
-
   async function clearPlaylist() {
     if (!isDev() || !confirm('ล้างเพลย์ลิสต์ทั้งหมด?')) return;
     for (const t of playlist) { if (t.dbId) await dbDel(t.dbId); }
     playlist = []; currentTrack = 0;
     audio.pause(); audio.src = ''; closeFloatVideo();
-    localStorage.setItem('cm_currentTrack', '0');
-    localStorage.setItem('cm_currentTime', '0');
+    localStorage.setItem('cm_currentTrack', '0'); localStorage.setItem('cm_currentTime', '0');
     savePlaylist(); renderPlaylist(); updatePlayerUI();
   }
-
   function updateMusicUI() {
     const show = isDev();
-    document.getElementById('music').style.display = show ? '' : 'none';
+    // Section เพลงแสดงเสมอ, แต่ upload box ซ่อนถ้าไม่ใช่ DEV
+    document.getElementById('music').style.display = '';
     el.fpUpload.style.display = show ? '' : 'none';
     el.msUploadBox.style.display = show ? '' : 'none';
     document.getElementById('clearPlaylistBtn').style.display = show ? '' : 'none';
-    // Lock controls for non-DEV or not logged in
-    const locked = !isDev();
-    [el.fpPlay, el.playBtn2].forEach(b => { b.style.display = locked ? 'none' : ''; });
-    [el.fpPrev, el.prevBtn2, el.fpNext, el.nextBtn2].forEach(b => { b.style.display = locked ? 'none' : ''; });
-    el.fpProgress.style.pointerEvents = locked ? 'none' : '';
-    document.querySelectorAll('.ms-track').forEach(el => { el.style.cursor = locked ? 'default' : 'pointer'; });
-    // Override: locked users can only resume, never pause/skip
+    // ปุ่มเล่น/หยุด/ข้าม — DEV เท่านั้น
+    const locked = !show;
+    [el.fpPlay, el.playBtn2].forEach(b => { if(b) b.style.display = ''; });
+    [el.fpPrev, el.prevBtn2, el.fpNext, el.nextBtn2].forEach(b => { if(b) b.style.display = locked ? 'none' : ''; });
+    el.fpProgress.style.pointerEvents = locked ? 'none' : 'auto';
     if (locked) {
       [el.fpPlay, el.playBtn2].forEach(b => { if (b) b.onclick = (e) => { e.stopPropagation(); if (audio.paused || videoPlayer.paused) resumePlayback(); }; });
       [el.fpPrev, el.prevBtn2, el.fpNext, el.nextBtn2].forEach(b => { if (b) b.onclick = (e) => e.stopPropagation(); });
     }
   }
-
   function updateEmployeeUI() {
     const show = isDev();
     const addBtn = document.querySelector('[onclick*="empModal"]');
     if (addBtn) addBtn.style.display = show ? '' : 'none';
-    document.querySelectorAll('.e-del').forEach(el => { el.style.display = show ? '' : 'none'; });
+    document.querySelectorAll('.e-del').forEach(e => { e.style.display = show ? '' : 'none'; });
     updateFbLink();
   }
 
   async function deleteTrack(i) {
     if (!isDev()) return;
     if (!confirm('ลบรายการนี้?')) return;
-    const wasCurrent = i === currentTrack;
-    const tr = playlist[i];
+    const wasCurrent = i === currentTrack; const tr = playlist[i];
     if (i === currentTrack) { audio.pause(); audio.src = ''; closeFloatVideo(); }
     if (tr && tr.dbId) await dbDel(tr.dbId);
     playlist.splice(i, 1);
@@ -1312,62 +1015,37 @@
       if (currentTrack < 0) currentTrack = 0;
       if (playlist.length > 0) playTrack(currentTrack);
       else { localStorage.setItem('cm_currentTrack', '0'); localStorage.setItem('cm_currentTime', '0'); savePlaylist(); updatePlayerUI(); }
-    } else {
-      if (i < currentTrack) currentTrack--;
-      localStorage.setItem('cm_currentTrack', currentTrack);
-    }
-    savePlaylist();
-    renderPlaylist();
+    } else { if (i < currentTrack) currentTrack--; localStorage.setItem('cm_currentTrack', currentTrack); }
+    savePlaylist(); renderPlaylist();
   }
-
   document.getElementById('musicFileInput').onchange = function(e) {
     if (!isDev()) { alert('เฉพาะ DEV เท่านั้น'); this.value = ''; return; }
-    const files = Array.from(e.target.files);
-    let done = 0;
+    const files = Array.from(e.target.files); let done = 0;
     for (const file of files) {
       const reader = new FileReader();
       reader.onload = async function(ev) {
         const isMp4 = file.name.toLowerCase().endsWith('.mp4');
         try {
           const dbId = await dbPut(ev.target.result);
-          playlist.push({
-            name: file.name.replace(/\.(mp3|mp4)$/i, ''),
-            artist: isMp4 ? 'MP4 Video' : 'เพิ่มโดย DEV',
-            dur: '--:--',
-            dbId: dbId,
-            type: isMp4 ? 'video' : 'audio'
-          });
-          savePlaylist();
-          renderPlaylist();
+          playlist.push({ name: file.name.replace(/\.(mp3|mp4)$/i, ''), artist: isMp4 ? 'MP4 Video' : 'เพิ่มโดย DEV', dur: '--:--', dbId, type: isMp4 ? 'video' : 'audio' });
+          savePlaylist(); renderPlaylist();
           if (playlist.length === 1) playTrack(0);
-        } catch (err) {
-          alert('ไม่สามารถบันทึกไฟล์ได้: ' + err.message);
-        }
+        } catch (err) { alert('ไม่สามารถบันทึกไฟล์ได้: ' + err.message); }
         done++;
         if (done === files.length) document.getElementById('musicFileInput').value = '';
       };
       reader.readAsDataURL(file);
     }
   };
-
   function savePlaylist() {
-    // Strip any lingering data fields before saving to localStorage
     const clean = playlist.map(t => ({ name: t.name, artist: t.artist, dur: t.dur, dbId: t.dbId, type: t.type }));
-    try { localStorage.setItem('cm_playlist', JSON.stringify(clean)); }
-    catch (e) { alert('Storage full! ลบเพลงเก่าออกก่อน'); }
+    try { localStorage.setItem('cm_playlist', JSON.stringify(clean)); } catch (e) { alert('Storage full! ลบเพลงเก่าออกก่อน'); }
   }
-
   audio.addEventListener('loadedmetadata', () => {
-    const t = playlist[currentTrack];
-    if (t) { t.dur = formatTime(audio.duration); renderPlaylist(); }
+    const t = playlist[currentTrack]; if (t) { t.dur = formatTime(audio.duration); renderPlaylist(); }
     updatePlayerUI();
   });
-
-  audio.addEventListener('timeupdate', () => {
-    localStorage.setItem('cm_currentTime', audio.currentTime);
-    updatePlayerUI();
-  });
-
+  audio.addEventListener('timeupdate', () => { localStorage.setItem('cm_currentTime', audio.currentTime); updatePlayerUI(); });
   async function resumePlayback() {
     if (playlist.length === 0 || currentTrack >= playlist.length) return;
     const t = playlist[currentTrack];
@@ -1389,77 +1067,43 @@
         audio.play().catch(() => {});
       }
     }
-    el.playBtn2.textContent = '\u23F8';
-    el.fpPlay.textContent = '\u23F8';
+    el.playBtn2.textContent = '\u23F8'; el.fpPlay.textContent = '\u23F8';
   }
-
   audio.addEventListener('ended', () => {
     if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
     else { el.playBtn2.textContent = '\u25B6'; el.fpPlay.textContent = '\u25B6'; }
   });
-
-  videoPlayer.addEventListener('timeupdate', () => {
-    localStorage.setItem('cm_currentTime', videoPlayer.currentTime);
-    updatePlayerUI();
-  });
-  videoPlayer.addEventListener('ended', () => {
-    closeFloatVideo();
-    if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
-  });
-
+  videoPlayer.addEventListener('timeupdate', () => { localStorage.setItem('cm_currentTime', videoPlayer.currentTime); updatePlayerUI(); });
+  videoPlayer.addEventListener('ended', () => { closeFloatVideo(); if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1); });
   function togglePlay() {
     if (playlist.length === 0) return;
-    if (!isDev()) {
-      if (audio.paused || videoPlayer.paused) { resumePlayback(); }
-      return;
-    }
     const t = playlist[currentTrack];
     if (t.type === 'video') {
-      if (videoPlayer.paused) videoPlayer.play();
-      else videoPlayer.pause();
+      if (videoPlayer.paused) videoPlayer.play(); else videoPlayer.pause();
     } else {
-      if (audio.paused) audio.play();
-      else audio.pause();
+      if (audio.paused) audio.play().catch(() => {}); else audio.pause();
     }
     const playing = t.type === 'video' ? !videoPlayer.paused : !audio.paused;
-    el.playBtn2.textContent = playing ? '\u23F8' : '\u25B6';
-    el.fpPlay.textContent = playing ? '\u23F8' : '\u25B6';
+    el.playBtn2.textContent = playing ? '\u23F8' : '\u25B6'; el.fpPlay.textContent = playing ? '\u23F8' : '\u25B6';
   }
-
-  function prevTrack() {
-    if (!isDev()) return;
-    if (currentTrack > 0) playTrack(currentTrack - 1);
-  }
-
-  function nextTrack() {
-    if (!isDev()) return;
-    if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1);
-  }
-
+  function prevTrack() { if (!isDev()) return; if (currentTrack > 0) playTrack(currentTrack - 1); }
+  function nextTrack() { if (!isDev()) return; if (currentTrack < playlist.length - 1) playTrack(currentTrack + 1); }
   [el.fpPlay, el.playBtn2].forEach(b => b.onclick = togglePlay);
   [el.fpPrev, el.prevBtn2].forEach(b => b.onclick = prevTrack);
   [el.fpNext, el.nextBtn2].forEach(b => b.onclick = nextTrack);
   updateMusicUI();
-
   el.fpProgress.onclick = function(e) {
     if (!audio.duration || !isDev()) return;
-    const rect = this.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
+    const rect = this.getBoundingClientRect(); const pct = (e.clientX - rect.left) / rect.width;
     audio.currentTime = pct * audio.duration;
   };
-
   document.getElementById('fpVolume').oninput = function() {
-    const v = Math.max(0.3, parseFloat(this.value));
-    this.value = v;
-    audio.volume = v;
-    videoPlayer.volume = v;
+    const v = Math.max(0.3, parseFloat(this.value)); this.value = v;
+    audio.volume = v; videoPlayer.volume = v;
   };
+  audio.onerror = function() { console.error('Audio error:', audio.error ? audio.error.message : 'unknown'); };
 
-  audio.onerror = function() {
-    console.error('Audio error:', audio.error ? audio.error.message : 'unknown');
-  };
-
-  // Floating video controls
+  // FLOAT VIDEO CONTROLS
   document.getElementById('fvCloseBtn').onclick = () => { if (isDev()) closeFloatVideo(); };
   document.getElementById('fvPlayBtn').onclick = () => {
     if (!isDev()) { if (videoPlayer.paused) { videoPlayer.play(); document.getElementById('fvPlayBtn').textContent = '\u23F8'; } return; }
@@ -1468,201 +1112,122 @@
   };
   videoPlayer.addEventListener('timeupdate', () => {
     const dur = videoPlayer.duration || 1;
-    const pct = (videoPlayer.currentTime / dur) * 100;
-    document.getElementById('fvFill').style.width = pct + '%';
+    document.getElementById('fvFill').style.width = ((videoPlayer.currentTime / dur) * 100) + '%';
   });
-  videoPlayer.addEventListener('ended', () => {
-    document.getElementById('fvPlayBtn').textContent = '\u25B6';
-  });
+  videoPlayer.addEventListener('ended', () => { document.getElementById('fvPlayBtn').textContent = '\u25B6'; });
   document.getElementById('fvProgress').onclick = function(e) {
     if (!videoPlayer.duration || !isDev()) return;
-    const rect = this.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
-    videoPlayer.currentTime = pct * videoPlayer.duration;
+    const rect = this.getBoundingClientRect(); videoPlayer.currentTime = ((e.clientX - rect.left) / rect.width) * videoPlayer.duration;
   };
   document.getElementById('fvMinBtn').onclick = function() {
     isFloatingMin = !isFloatingMin;
     document.getElementById('floatVid').classList.toggle('float-vid-min', isFloatingMin);
     this.textContent = isFloatingMin ? '\u25A1' : '\u2013';
   };
-
   el.fpFullscreen.onclick = () => {
     const fv = document.getElementById('floatVid');
-    if (fv.classList.contains('open')) {
-      isFloatingMin = false;
-      fv.classList.remove('float-vid-min');
-      document.getElementById('fvMinBtn').textContent = '\u2013';
-    }
+    if (fv.classList.contains('open')) { isFloatingMin = false; fv.classList.remove('float-vid-min'); document.getElementById('fvMinBtn').textContent = '\u2013'; }
   };
-
-  // Draggable floating video
+  // DRAGGABLE
   let dragOffX, dragOffY, isDrag = false;
   const fvHeader = document.getElementById('fvHeader');
   fvHeader.addEventListener('mousedown', e => {
-    if (!isDev()) return;
-    isDrag = true;
+    if (!isDev()) return; isDrag = true;
     const rect = document.getElementById('floatVid').getBoundingClientRect();
-    dragOffX = e.clientX - rect.left;
-    dragOffY = e.clientY - rect.top;
-    fvHeader.style.cursor = 'grabbing';
+    dragOffX = e.clientX - rect.left; dragOffY = e.clientY - rect.top; fvHeader.style.cursor = 'grabbing';
   });
   document.addEventListener('mousemove', e => {
     if (!isDrag) return;
     const fv = document.getElementById('floatVid');
-    let x = e.clientX - dragOffX;
-    let y = e.clientY - dragOffY;
-    x = Math.max(0, Math.min(x, window.innerWidth - fv.offsetWidth));
-    y = Math.max(0, Math.min(y, window.innerHeight - fv.offsetHeight));
-    fv.style.left = x + 'px';
-    fv.style.right = 'auto';
-    fv.style.bottom = 'auto';
-    fv.style.top = y + 'px';
+    let x = Math.max(0, Math.min(e.clientX - dragOffX, window.innerWidth - fv.offsetWidth));
+    let y = Math.max(0, Math.min(e.clientY - dragOffY, window.innerHeight - fv.offsetHeight));
+    fv.style.left = x + 'px'; fv.style.right = 'auto'; fv.style.bottom = 'auto'; fv.style.top = y + 'px';
   });
   document.addEventListener('mouseup', () => { isDrag = false; fvHeader.style.cursor = 'grab'; });
-
-  // Resume playback aggressively - try immediately, show overlay if blocked
-  let unlocked = false;
-  function tryResume() {
-    if (unlocked) return;
-    if (playlist.length === 0 || currentTrack >= playlist.length) return;
-    unlocked = true;
-    document.removeEventListener('pointerdown', tryResume);
-    document.getElementById('playOverlay').style.display = 'none';
-    resumePlayback();
-  }
-  // Try immediate play (silently fails if no user gesture yet)
+  // RESUME
   let autoPlayed = false;
   function onFirstTouch() {
-    if (autoPlayed) return;
-    autoPlayed = true;
+    if (autoPlayed) return; autoPlayed = true;
     document.removeEventListener('pointerdown', onFirstTouch);
-    // Just play — src+currentTime already set by resumePlayback
     if (audio.src && audio.paused) audio.play().catch(() => {});
     if (videoPlayer.src && videoPlayer.paused) videoPlayer.play().catch(() => {});
   }
-
   (async () => {
     if (playlist.length > 0 && currentTrack < playlist.length) {
       const t = playlist[currentTrack];
-      el.mscName.textContent = t.name;
-      el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
-      el.fpName.textContent = t.name;
-      el.fpArtist.textContent = t.artist || 'VideoSeller AI';
-      updatePlayerUI();
-      el.fpCover.textContent = t.type === 'video' ? '\u{1F4FA}' : '\u{1F3B5}';
-      renderPlaylist();
-      await resumePlayback();
-    } else {
-      updatePlayerUI();
-      renderPlaylist();
-    }
+      el.mscName.textContent = t.name; el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
+      el.fpName.textContent = t.name; el.fpArtist.textContent = t.artist || 'VideoSeller AI';
+      updatePlayerUI(); el.fpCover.textContent = t.type === 'video' ? '\u{1F4FA}' : '\u{1F3B5}';
+      renderPlaylist(); await resumePlayback();
+    } else { updatePlayerUI(); renderPlaylist(); }
   })();
   document.addEventListener('pointerdown', onFirstTouch);
-
-  // ===== EMPLOYEE =====
+  // EMPLOYEE
   let employees = JSON.parse(localStorage.getItem('cm_employees') || '[]');
   if (employees.length === 0) {
-    employees = [
-      { name: 'นาย ชาเย็น', role: 'สวยที่สุด โครตสวยเลย', photo: '' }
-    ];
+    employees = [{ name: 'นาย ชาเย็น', role: 'สวยที่สุด โครตสวยเลย', photo: '' }];
     localStorage.setItem('cm_employees', JSON.stringify(employees));
   }
-
   function renderEmployees() {
     const grid = document.getElementById('employeeGrid');
-    if (employees.length === 0) {
-      grid.innerHTML = '<div style="color:#444;text-align:center;padding:40px;">ยังไม่มีพนักงาน — กดเพิ่มพนักงาน</div>';
-      return;
-    }
-    grid.innerHTML = employees.map((emp, i) => `
-      <div class="employee-card">
-        <div class="avatar">
-          ${emp.photo ? `<img src="${emp.photo}" alt="${emp.name}">` : emp.name.charAt(0).toUpperCase()}
-        </div>
-        <div class="e-name">${emp.name}</div>
-        <div class="e-role">${emp.role}</div>
-        <div class="e-del" onclick="deleteEmployee(${i})">ลบ</div>
-      </div>
-    `).join('');
+    if (employees.length === 0) { grid.innerHTML = '<div style="color:#444;text-align:center;padding:40px;">ยังไม่มีพนักงาน</div>'; return; }
+    grid.innerHTML = employees.map((emp, i) => '<div class="employee-card"><div class="avatar">' + (emp.photo ? '<img src="' + emp.photo + '" alt="' + emp.name + '">' : emp.name.charAt(0).toUpperCase()) + '</div><div class="e-name">' + emp.name + '</div><div class="e-role">' + emp.role + '</div><div class="e-del" onclick="deleteEmployee(' + i + ')">ลบ</div></div>').join('');
     updateEmployeeUI();
   }
-
   function addEmployee() {
     const name = document.getElementById('empName').value.trim();
     const role = document.getElementById('empRole').value.trim();
     const file = document.getElementById('empPhoto').files[0];
     if (!name || !role) { alert('กรุณากรอกชื่อและตำแหน่ง'); return; }
-
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
         employees.push({ name, role, photo: e.target.result });
         localStorage.setItem('cm_employees', JSON.stringify(employees));
-        renderEmployees();
-        closeModal('empModal');
-        document.getElementById('empName').value = '';
-        document.getElementById('empRole').value = '';
-        document.getElementById('empPhoto').value = '';
+        renderEmployees(); closeModal('empModal');
+        document.getElementById('empName').value = ''; document.getElementById('empRole').value = ''; document.getElementById('empPhoto').value = '';
       };
       reader.readAsDataURL(file);
     } else {
       employees.push({ name, role, photo: '' });
       localStorage.setItem('cm_employees', JSON.stringify(employees));
-      renderEmployees();
-      closeModal('empModal');
-      document.getElementById('empName').value = '';
-      document.getElementById('empRole').value = '';
+      renderEmployees(); closeModal('empModal');
+      document.getElementById('empName').value = ''; document.getElementById('empRole').value = '';
     }
   }
-
   function deleteEmployee(i) {
     if (!confirm('ลบพนักงานคนนี้?')) return;
-    employees.splice(i, 1);
-    localStorage.setItem('cm_employees', JSON.stringify(employees));
-    renderEmployees();
+    employees.splice(i, 1); localStorage.setItem('cm_employees', JSON.stringify(employees)); renderEmployees();
   }
-
-  // Facebook link
   function updateFbLink() {
     const url = localStorage.getItem('cm_fbUrl') || '';
     const fbLink = document.getElementById('fbLink');
     const fbGroup = document.getElementById('fbLinkGroup');
     const fbInput = document.getElementById('fbUrl');
     fbGroup.style.display = isDev() ? '' : 'none';
-    if (url) {
-      fbLink.style.display = 'inline-flex';
-      fbLink.href = url;
-    } else {
-      fbLink.style.display = 'none';
-    }
+    if (url) { fbLink.style.display = 'inline-flex'; fbLink.href = url; } else { fbLink.style.display = 'none'; }
     if (fbInput) fbInput.value = url;
   }
   function saveFbLink() {
     const url = document.getElementById('fbUrl').value.trim();
     if (url && !url.startsWith('https://')) { alert('กรุณาใส่ลิงก์ที่ขึ้นต้นด้วย https://'); return; }
-    localStorage.setItem('cm_fbUrl', url);
-    updateFbLink();
-    alert('บันทึกลิงก์ Facebook แล้ว');
+    localStorage.setItem('cm_fbUrl', url); updateFbLink(); alert('บันทึกลิงก์ Facebook แล้ว');
   }
-
-  renderEmployees();
-  updateFbLink();
-  openDB().catch(() => {});
-
-  // ===== Auto-update checker =====
+  renderEmployees(); updateFbLink(); openDB().catch(() => {});
+  // AUTO-UPDATE
   (function() {
     const current = localStorage.getItem('vsa_version') || '0';
-    setInterval(async () => {
-      try {
-        const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
-        const d = await r.json();
-        const sv = String(d.version);
-        if (sv !== current) {
-          localStorage.setItem('vsa_version', sv);
-          location.reload(true);
-        }
-      } catch {}
-    }, 20000);
+    // หมายเหตุ: ถ้าเปิดผ่าน file:// จะ fetch ไฟล์ไม่ได้ (Origin เป็น null) ทำให้ขึ้น CORS error ใน Console
+    // ทางแก้: ปิด auto-update เมื่อเป็น file:// และแนะนำให้รันผ่าน http(s) แทน (เช่น python -m http.server)
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+      setInterval(async () => {
+        try {
+          const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+          const d = await r.json(); const sv = String(d.version);
+          if (sv !== current) { localStorage.setItem('vsa_version', sv); location.reload(); }
+        } catch {}
+      }, 20000);
+    }
   })();
 </script>
 </body>
