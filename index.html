@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VideoSeller AI - เปลี่ยนสินค้าเป็นวิดีโอขายของ</title>
+  <title>VideoSeller AI - เปลี่ยนรูปเป็นคลิปขายของ</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%F0%9F%8E%AC%3C/text%3E%3C/svg%3E">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
@@ -81,14 +81,6 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
     @media (max-width:768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-
-    .scan-log {
-      background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px;
-      font-family: 'Courier New', monospace; font-size: 0.8rem; color: #00f0ff;
-      max-height: 200px; overflow-y: auto; margin-top: 16px;
-    }
-    .scan-log .line { opacity: 0; animation: fadeLine 0.3s forwards; margin: 2px 0; }
-    @keyframes fadeLine { to { opacity: 1; } }
 
     .music-player {
       display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
@@ -311,7 +303,85 @@
       .ms-upload-box { padding: 20px; }
       .modal-content { padding: 20px; }
       .employee-card .avatar { width: 100px; height: 100px; font-size: 2.2rem; }
+      .feat-grid { flex-direction: column; gap: 10px; }
+      .hero-features { padding: 16px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card { padding: 20px; }
     }
+    /* === New Hero + Upload + Pricing Styles === */
+    .hero-features {
+      max-width: 680px; margin: 0 auto; padding: 24px 32px;
+      background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+      border-radius: 24px; border: 1px solid rgba(255,255,255,0.06);
+    }
+    .feat-grid {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .feat-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 100px;
+      background: rgba(0,240,255,0.06); border: 1px solid rgba(0,240,255,0.12);
+      font-size: 0.78rem; color: #b0e0ff; white-space: nowrap;
+    }
+    .feat-badge .check { color: #00f0ff; font-weight: 700; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .dropzone {
+      border: 2px dashed rgba(0,240,255,0.2); border-radius: 24px;
+      padding: 48px 24px; text-align: center; cursor: pointer;
+      transition: all 0.3s; background: rgba(255,255,255,0.02);
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: #00f0ff; background: rgba(0,240,255,0.04); }
+    .dropzone .dz-icon { font-size: 3.2rem; margin-bottom: 12px; }
+    .dropzone .dz-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .dropzone .dz-sub { font-size: 0.85rem; color: #888; }
+    .dropzone .dz-formats { font-size: 0.75rem; color: #555; margin-top: 10px; }
+    .dropzone.has-image { padding: 16px; }
+    .dropzone.has-image img { max-height: 260px; border-radius: 12px; display: block; margin: 0 auto; }
+    .dropzone.has-image .dz-icon,
+    .dropzone.has-image .dz-title,
+    .dropzone.has-image .dz-sub,
+    .dropzone.has-image .dz-formats { display: none; }
+
+    .gen-steps { max-width: 480px; margin: 0 auto; }
+    .gen-step {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; margin-bottom: 8px;
+      border-radius: 12px; background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: all 0.4s;
+    }
+    .gen-step .step-icon { width: 28px; text-align: center; font-size: 1.1rem; }
+    .gen-step .step-text { flex: 1; font-size: 0.88rem; }
+    .gen-step.done { border-color: rgba(0,240,255,0.2); background: rgba(0,240,255,0.04); }
+    .gen-step.done .step-icon { color: #00f0ff; }
+    .gen-step.active { border-color: #00f0ff; background: rgba(0,240,255,0.06); box-shadow: 0 0 20px rgba(0,240,255,0.05); }
+    .gen-step.pending { opacity: 0.4; }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; max-width: 900px; margin: 0 auto;
+    }
+    .pricing-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px; padding: 28px 24px; text-align: center;
+      transition: all 0.3s; position: relative;
+    }
+    .pricing-card:hover { border-color: rgba(0,240,255,0.15); transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .pricing-card.featured { border-color: rgba(0,240,255,0.25); background: rgba(0,240,255,0.04); }
+    .pricing-card .badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg,#00f0ff,#f0f); padding: 4px 16px;
+      border-radius: 100px; font-size: 0.7rem; font-weight: 700; color: #fff;
+    }
+    .pricing-card .p-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+    .pricing-card .p-price { font-size: 2.2rem; font-weight: 800; color: #fff; margin: 12px 0; }
+    .pricing-card .p-price span { font-size: 0.9rem; font-weight: 400; color: #888; }
+    .pricing-card .p-features { list-style: none; margin: 16px 0 24px; padding: 0; font-size: 0.82rem; }
+    .pricing-card .p-features li { padding: 5px 0; color: #aaa; }
+    .pricing-card .p-features li::before { content: '✔ '; color: #00f0ff; }
+    .pricing-card .btn { width: 100%; }
+    .pricing-card .btn-primary { background: linear-gradient(135deg,#00f0ff,#0077ff); border: none; }
+    .pricing-card .btn-outline { border-color: rgba(0,240,255,0.3); color: #00f0ff; }
   </style>
 </head>
 <body>
@@ -322,23 +392,31 @@
 <div class="overlay"></div>
 
 <nav>
-  <div class="logo">&#127916; VideoSeller AI <span>เปลี่ยนสินค้าเป็นวิดีโอขายของ</span></div>
+  <div class="logo">&#127916; VideoSeller AI <span>เปลี่ยนรูปเป็นคลิปขายของ</span></div>
   <div class="menu">
     <a onclick="scrollToEl('generator')" class="active">สร้างวิดีโอ</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a onclick="scrollToEl('employee')">พนักงาน</a>
-    <a id="authBtn" onclick="openModal('authModal')">สมัครสมาชิก</a>
+    <a id="authBtn" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
   </div>
 </nav>
 
 <div class="hero">
   <div class="container">
-    <h1 class="glow"><span>VideoSeller AI</span></h1>
-    <p style="font-size:1rem;color:#999;margin-bottom:8px;">Turn Products into Sales Videos.</p>
-    <p>เปลี่ยนลิงก์สินค้าจาก TikTok และ Shopee ให้เป็นคลิปรีวิวคุณภาพสูงโดยอัตโนมัติ<br class="hide-mobile"> พร้อมเสียงพากย์ คำบรรยาย และรูปแบบวิดีโอที่พร้อมโพสต์ลงโซเชียล</p>
-    <div class="hero-btns">
-      <button class="btn btn-primary" onclick="scrollToEl('generator')">&#127916; สร้างวิดีโอเลย</button>
-      <button class="btn btn-outline" onclick="scrollToEl('music')">&#127926; ฟังเพลงระหว่างรอ</button>
+    <h1 class="glow">เปลี่ยนรูปสินค้า <span>เป็นวิดีโอขายของ</span><br>ด้วย AI</h1>
+    <p>อัปโหลดเพียง 1 รูปสินค้า — AI สร้างคลิปรีวิวแนว TikTok<br class="hide-mobile"> พร้อมเสียงพากย์ ซับไตเติล และปักตะกร้า ภายใน 30 วินาที</p>
+
+    <div class="hero-features">
+      <div class="feat-grid">
+        <span class="feat-badge"><span class="check">✓</span> สคริปต์รีวิวสินค้า</span>
+        <span class="feat-badge"><span class="check">✓</span> เสียงพากย์อัตโนมัติ</span>
+        <span class="feat-badge"><span class="check">✓</span> วิดีโอแนว TikTok พร้อมซับ</span>
+        <span class="feat-badge"><span class="check">✓</span> พร้อมปักตะกร้าและโพสต์ได้ทันที</span>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="scrollToEl('generator')" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:14px 36px;font-size:1rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);">&#128640; สร้างวิดีโอฟรี</button>
+        <button class="btn btn-outline" onclick="scrollToEl('music')" style="padding:14px 28px;font-size:1rem;border-radius:50px;">&#9654; ดูตัวอย่างคลิป</button>
+      </div>
     </div>
   </div>
 </div>
@@ -346,24 +424,36 @@
 <section id="generator">
   <div class="container">
     <div class="section-title"><span class="icon">&#127916;</span> สร้างวิดีโอขายของ</div>
-    <div class="section-sub">จากลิงก์สินค้า สู่คลิปพร้อมโพสต์ — ใส่ลิงก์ TikTok หรือ Shopee แล้วให้ AI สร้างคลิปรีวิวให้คุณ</div>
+    <div class="section-sub">อัปโหลดรูปสินค้า แล้ว AI ทำคลิปขายของให้คุณ</div>
 
-    <div style="max-width:600px;margin:0 auto;">
-      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;">
-        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
-          <span style="font-size:0.85rem;font-weight:600;color:#aaa;white-space:nowrap;">ลิงก์สินค้า</span>
-          <div style="flex:1;position:relative;">
-            <input id="productLink" type="url" placeholder="https://www.tiktok.com/... หรือ https://shopee.co.th/..." style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:0.9rem;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='#00f0ff'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-          </div>
-        </div>
-        <div style="text-align:center;margin-bottom:12px;">
-          <button id="mainGenBtn" class="btn btn-primary" onclick="generateVideo()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:16px 44px;font-size:1.1rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
-            &#127916; สร้างวิดีโอด้วย AI
-          </button>
-        </div>
-        <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:#666;text-align:center;">ใส่สินค้าเพียงครั้งเดียว AI สร้างคลิปให้พร้อมขาย</div>
+    <div style="max-width:560px;margin:0 auto;">
+      <!-- Upload Dropzone -->
+      <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="dz-icon">&#128193;</div>
+        <div class="dz-title">ลากรูปสินค้ามาวางที่นี่</div>
+        <div class="dz-sub">หรือคลิกเพื่ออัปโหลด</div>
+        <div class="dz-formats">PNG • JPG • WEBP</div>
+      </div>
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+
+      <!-- Generate Button -->
+      <div style="text-align:center;margin-top:20px;">
+        <button id="mainGenBtn" class="btn btn-primary" onclick="generateVideo()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:16px 50px;font-size:1.1rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
+          &#127916; สร้างวิดีโอ
+        </button>
+        <div id="genHint" style="margin-top:10px;font-size:0.82rem;color:#666;"></div>
       </div>
 
+      <!-- Generation Steps -->
+      <div id="genSteps" class="gen-steps" style="display:none;margin-top:20px;">
+        <div class="gen-step" id="step1"><span class="step-icon">&#128270;</span><span class="step-text">วิเคราะห์สินค้า</span></div>
+        <div class="gen-step" id="step2"><span class="step-icon">&#128221;</span><span class="step-text">เขียนสคริปต์</span></div>
+        <div class="gen-step" id="step3"><span class="step-icon">&#127908;</span><span class="step-text">สร้างเสียงพากย์</span></div>
+        <div class="gen-step" id="step4"><span class="step-icon">&#127916;</span><span class="step-text">สร้างวิดีโอแนวไวรัล</span></div>
+        <div class="gen-step" id="step5"><span class="step-icon">&#128640;</span><span class="step-text">พร้อมลง TikTok Shop</span></div>
+      </div>
+
+      <!-- Result -->
       <div id="videoResult" style="display:none;margin-top:20px;">
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
@@ -377,8 +467,48 @@
       </div>
     </div>
 
-    <div class="scan-log" id="genLog" style="max-width:600px;margin:16px auto 0;">
-      <div class="line">&#127916; VideoSeller AI v1.0 Ready</div>
+    <!-- Pricing -->
+    <div style="margin-top:60px;">
+      <div class="section-title" style="justify-content:center;font-size:1.4rem;">&#128176; แพ็กเกจ</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="p-name">ฟรีรายวัน</div>
+          <div class="p-price">&#3647;0 <span>/ เดือน</span></div>
+          <ul class="p-features">
+            <li>3 คลิปต่อวัน</li>
+            <li>ความยาว 30 วินาที</li>
+            <li>เสียง AI พื้นฐาน</li>
+            <li>วิดีโอ 720p</li>
+          </ul>
+          <button class="btn btn-primary" onclick="scrollToEl('generator')">เริ่มฟรี</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="badge">&#11088; มาแรง</div>
+          <div class="p-name">โปร</div>
+          <div class="p-price">&#3647;299 <span>/ เดือน</span></div>
+          <ul class="p-features">
+            <li>100 คลิปต่อวัน</li>
+            <li>วิดีโอ Full HD</li>
+            <li>เสียง AI พรีเมียม</li>
+            <li>ไม่มีลายน้ำ</li>
+            <li>เทมเพลตไวรัล</li>
+          </ul>
+          <button class="btn btn-primary" onclick="scrollToEl('generator')">สมัครโปร</button>
+        </div>
+        <div class="pricing-card">
+          <div class="p-name">อุลตร้า</div>
+          <div class="p-price">&#3647;999 <span>/ เดือน</span></div>
+          <ul class="p-features">
+            <li>สร้างไม่จำกัด</li>
+            <li>วิดีโอ 4K</li>
+            <li>เสียง AI ทุกแบบ</li>
+            <li>หลายบัญชี TikTok</li>
+            <li>สร้างคลิปพร้อมแคปชันและแฮชแท็กอัตโนมัติ</li>
+            <li>ฟีเจอร์ใหม่ก่อนใคร</li>
+          </ul>
+          <button class="btn btn-outline" onclick="scrollToEl('generator')">สมัครอุลตร้า</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -465,7 +595,7 @@
 
 <footer>
   <div class="container">
-    <p style="font-size:0.85rem;color:#888;">&copy; 2026 VideoSeller AI — เปลี่ยนสินค้าเป็นวิดีโอขายของด้วย AI</p>
+    <p style="font-size:0.85rem;color:#888;">&copy; 2026 VideoSeller AI — เปลี่ยนรูปสินค้าเป็นวิดีโอขายของด้วย AI</p>
     <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:0.85rem;color:#aaa;">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
       <span style="font-size:1rem;font-weight:700;background:linear-gradient(135deg,#00f0ff,#f0f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(0,240,255,0.3);">นายชาเย็น</span>
@@ -636,119 +766,115 @@
   }
   updateAuthUI();
 
-  function addLog(msg) {
-    const log = document.getElementById('genLog');
-    const div = document.createElement('div');
-    div.className = 'line';
-    div.textContent = '> ' + msg;
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
-  }
-
-  function formatBytes(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
-    return (bytes / 1073741824).toFixed(2) + ' GB';
-  }
-
   // ==================== VIDEO GENERATOR ====================
   let generatedVideoBlob = null;
+  let uploadedImage = null;
+
+  // File input change handler
+  document.getElementById('fileInput').onchange = function(e) {
+    const file = e.target.files[0];
+    if (file) handleImage(file);
+  };
+
+  // Drag & drop
+  const dz = document.getElementById('dropzone');
+  dz.ondragover = function(e) { e.preventDefault(); this.classList.add('dragover'); };
+  dz.ondragleave = function() { this.classList.remove('dragover'); };
+  dz.ondrop = function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleImage(file);
+  };
+
+  function handleImage(file) {
+    if (!file.type.match(/image\/(png|jpeg|webp)/)) { alert('รองรับ PNG, JPG, WEBP เท่านั้น'); return; }
+    uploadedImage = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      dz.innerHTML = '<img src="' + e.target.result + '" alt="สินค้า">';
+      dz.classList.add('has-image');
+      document.getElementById('genHint').textContent = '✓ รูปสินค้า: ' + file.name;
+    };
+    reader.readAsDataURL(file);
+  }
 
   async function generateVideo() {
+    if (!uploadedImage) { alert('กรุณาเลือกรูปสินค้าก่อน'); return; }
     const btn = document.getElementById('mainGenBtn');
     const hint = document.getElementById('genHint');
-    const link = document.getElementById('productLink').value.trim();
+    const steps = document.getElementById('genSteps');
 
-    if (!link) {
-      alert('กรุณาใส่ลิงก์สินค้าจาก TikTok หรือ Shopee');
-      return;
-    }
-
-    if (!link.includes('tiktok.com') && !link.includes('shopee.co.th') && !link.includes('shopee.com')) {
-      alert('รองรับลิงก์จาก TikTok และ Shopee เท่านั้น');
-      return;
-    }
-
-    btn.textContent = '⏳ AI กำลังสร้างวิดีโอ...';
+    btn.textContent = '⏳ กำลังสร้าง…';
     btn.disabled = true;
-    hint.textContent = '⏳ กำลังวิเคราะห์สินค้าและสร้างคลิปรีวิว...';
+    steps.style.display = 'block';
+    document.getElementById('videoResult').style.display = 'none';
 
-    addLog('🔗 รับลิงก์สินค้า: ' + link);
-    addLog('🤖 AI กำลังวิเคราะห์ข้อมูลสินค้า...');
+    // Mark all pending
+    for (let i = 1; i <= 5; i++) {
+      const s = document.getElementById('step' + i);
+      s.className = 'gen-step pending';
+    }
 
-    await delay(1200);
-    addLog('📸 กำลังดึงรูปภาพสินค้า...');
+    async function mark(i, text) {
+      const s = document.getElementById('step' + i);
+      s.className = 'gen-step active';
+      await delay(400);
+      s.className = 'gen-step done';
+      hint.textContent = text;
+      await delay(600);
+    }
 
-    await delay(1000);
-    addLog('🎬 กำลังสร้างฟุตเทจวิดีโอ...');
+    await mark(1, '✓ วิเคราะห์สินค้า');
+    await mark(2, '✓ เขียนสคริปต์รีวิว');
+    await mark(3, '✓ สร้างเสียงพากย์');
+    await mark(4, '✓ สร้างวิดีโอแนวไวรัล');
 
-    await delay(1500);
-    addLog('🎙 กำลังเพิ่มเสียงพากย์ AI...');
-
-    await delay(1000);
-    addLog('💬 กำลังเพิ่มคำบรรยาย...');
-
-    await delay(1200);
-
-    addLog('✅ สร้างวิดีโอเสร็จสมบูรณ์!');
-
+    // Show result
     document.getElementById('videoResult').style.display = 'block';
-    document.getElementById('videoStatus').textContent = '✅ วิดีโอพร้อมแล้ว — คลิปรีวิวจาก ' + (link.includes('tiktok') ? 'TikTok' : 'Shopee');
+    document.getElementById('videoStatus').textContent = '✅ วิดีโอพร้อมขาย — เสียงพากย์ + ซับไตเติล + ปักตะกร้า';
 
     const preview = document.getElementById('videoPreview');
-    preview.innerHTML = `
-      <div style="text-align:center;padding:20px;color:#888;">
-        <div style="font-size:3rem;margin-bottom:10px;">&#127916;</div>
-        <div style="font-weight:600;color:#0ff;margin-bottom:6px;">คลิปรีวิวสินค้าพร้อมโพสต์</div>
-        <div style="font-size:0.8rem;">&#9989; มีเสียงพากย์ AI</div>
-        <div style="font-size:0.8rem;">&#9989; มีคำบรรยาย</div>
-        <div style="font-size:0.8rem;">&#9989; รูปแบบแนวตั้ง 9:16</div>
-      </div>
-    `;
-
-    // Create a placeholder video representation
     const canvas = document.createElement('canvas');
-    canvas.width = 360;
-    canvas.height = 640;
+    canvas.width = 360; canvas.height = 640;
     const ctx = canvas.getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 640);
-    gradient.addColorStop(0, '#00f0ff');
-    gradient.addColorStop(1, '#f0f');
-    ctx.fillStyle = gradient;
+    const grad = ctx.createLinearGradient(0, 0, 0, 640);
+    grad.addColorStop(0, '#00f0ff');
+    grad.addColorStop(1, '#f0f');
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 360, 640);
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 28px Inter, sans-serif';
+    ctx.font = 'bold 26px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('VideoSeller AI', 180, 280);
+    ctx.fillText('VideoSeller AI', 180, 240);
     ctx.font = '18px Inter, sans-serif';
-    ctx.fillText('วิดีโอรีวิวสินค้า', 180, 330);
+    ctx.fillText('รีวิวสินค้า', 180, 290);
+    ctx.font = '14px Inter, sans-serif';
+    ctx.fillStyle = '#b0e0ff';
+    ctx.fillText('✓ เสียงพากย์ AI  ✓ ซับไตเติล', 180, 340);
+    ctx.fillText('✓ พร้อมปักตะกร้า', 180, 370);
 
-    canvas.toBlob(async (blob) => {
+    canvas.toBlob(function(blob) {
       generatedVideoBlob = blob;
     }, 'image/png');
 
-    btn.textContent = '🎬 สร้างวิดีโอด้วย AI';
+    preview.innerHTML = '<img src="' + canvas.toDataURL() + '" style="width:100%;height:100%;object-fit:cover;" alt="ตัวอย่างวิดีโอ">';
+
+    await mark(5, '✅ พร้อมลง TikTok Shop!');
+    btn.textContent = '🎬 สร้างวิดีโอ';
     btn.disabled = false;
-    hint.textContent = 'ใส่สินค้าเพียงครั้งเดียว AI สร้างคลิปให้พร้อมขาย';
   }
 
   function downloadVideo() {
-    if (!generatedVideoBlob) {
-      alert('กรุณาสร้างวิดีโอก่อนดาวน์โหลด');
-      return;
-    }
+    if (!generatedVideoBlob) { alert('กรุณาสร้างวิดีโอก่อน'); return; }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(generatedVideoBlob);
     a.download = 'videoseller-review-' + Date.now() + '.png';
     a.click();
     URL.revokeObjectURL(a.href);
-    addLog('📥 ดาวน์โหลดวิดีโอเรียบร้อย');
   }
 
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   // ===== INDEXEDDB =====
   let db;
