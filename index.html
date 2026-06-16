@@ -12,10 +12,11 @@
     ::-webkit-scrollbar-track { background: #0a0a1a; }
     ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 3px; }
     body {
-      font-family: 'Inter', sans-serif; background: #0a0a1a; color: #e0e0e0;
+      font-family: 'Inter', sans-serif; background: #070a15; color: #e0e0e0;
       overflow-x: hidden; min-height: 100vh;
     }
-    a { color: #00f0ff; text-decoration: none; }
+    a { color: #12d8ff; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
     #bgVideo {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -30,59 +31,219 @@
       z-index: 1; pointer-events: none;
     }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
-
     nav {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 24px; background: rgba(10,10,26,0.85); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,240,255,0.15); position: sticky; top: 0; z-index: 100;
+      padding: 12px 32px; height: 72px;
+      background: rgba(5,10,25,0.75); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     }
-    nav .logo { font-size: 1.4rem; font-weight: 800; color: #00f0ff; display: flex; align-items: center; gap: 10px; }
-    nav .logo span { color: #fff; }
-    nav .menu { display: flex; gap: 20px; align-items: center; }
+    nav .logo { font-size: 1.3rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    nav .logo span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    nav .menu { display: flex; gap: 6px; align-items: center; }
     nav .menu a {
-      color: #888; font-size: 0.85rem; font-weight: 600; transition: color 0.3s;
-      cursor: pointer; padding: 6px 0; border-bottom: 2px solid transparent;
+      color: rgba(255,255,255,0.7); font-size: 0.82rem; font-weight: 500;
+      cursor: pointer; padding: 8px 14px; border-radius: 10px;
+      transition: all 0.2s;
     }
-    nav .menu a:hover, nav .menu a.active { color: #00f0ff; border-bottom-color: #00f0ff; }
+    nav .menu a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .btn-nav-cta {
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6) !important;
+      color: #fff !important; font-weight: 700 !important; padding: 8px 18px !important;
+      border-radius: 10px !important;
+    }
+    .btn-nav-cta:hover { opacity: 0.9; }
     .btn {
-      padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+      padding: 10px 24px; border-radius: 10px; font-weight: 700; font-size: 0.85rem;
       cursor: pointer; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-primary { background: linear-gradient(135deg, #00f0ff, #0077ff); color: #fff; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,240,255,0.3); }
-    .btn-outline { background: transparent; border: 1px solid #00f0ff; color: #00f0ff; }
-    .btn-outline:hover { background: rgba(0,240,255,0.1); }
+    .btn-primary { background: linear-gradient(135deg, #12d8ff, #8b5cf6); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(18,216,255,0.3); }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: #12d8ff; }
     .btn-danger { background: #ff3366; color: #fff; }
     .btn-danger:hover { box-shadow: 0 4px 20px rgba(255,51,102,0.3); }
-    .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+    .btn-sm { padding: 6px 14px; font-size: 0.78rem; border-radius: 8px; }
 
+    /* ===== HERO ===== */
     .hero {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 80px 0 60px;
+      position: relative; min-height: 100vh; display: flex; align-items: center;
+      padding: 80px 24px 60px; margin-top: 72px; overflow: hidden;
     }
-    .hero .container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .hero-logo { font-size: 1.1rem; color: #00f0ff; font-weight: 700; margin-bottom: 16px; letter-spacing: 2px; }
-    .hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 32px; line-height: 1.3; }
-    .hero h1 span { background: linear-gradient(135deg, #00f0ff, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .glow { text-shadow: 0 0 40px rgba(0,240,255,0.15); }
-    .hero-sub { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 0.82rem; color: #aaa; margin: 8px 0 24px; }
-    .hero-sub span { display: flex; align-items: center; gap: 4px; }
-    .hero-flow {
-      display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center;
-      padding: 16px 24px; background: rgba(255,255,255,0.03); border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.05); margin-top: 12px;
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
+        url('anime-bg.webp') center/cover no-repeat;
+      z-index: 0;
     }
-    .hero-flow .hf-item { font-size: 0.78rem; color: #888; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-    .hero-flow .hf-item span { font-size: 1rem; }
-    .hero-flow .hf-arrow { color: #444; font-size: 0.8rem; margin: 0 2px; }
-    .hero-flow .hf-item { animation: flowIn 0.5s ease both; }
-    .hero-flow .hf-item:nth-child(1) { animation-delay: 0s; }
-    .hero-flow .hf-item:nth-child(3) { animation-delay: 0.8s; }
-    .hero-flow .hf-item:nth-child(5) { animation-delay: 1.6s; }
-    .hero-flow .hf-item:nth-child(7) { animation-delay: 2.4s; }
-    .hero-flow .hf-item:nth-child(9) { animation-delay: 3.2s; }
-    @keyframes flowIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-inner {
+      position: relative; z-index: 1; display: flex; align-items: center;
+      width: 100%; max-width: 1300px; margin: 0 auto; gap: 40px;
+    }
+    .hero-left { flex: 0 0 58%; max-width: 58%; }
+    .hero-right { flex: 0 0 42%; max-width: 42%; position: relative; min-height: 500px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
+      font-size: 0.82rem; color: #b0e0ff; margin-bottom: 28px;
+    }
+    .hero-h1 {
+      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+      font-weight: 900; line-height: 1.05; margin-bottom: 20px;
+    }
+    .hero-h1 span {
+      background: linear-gradient(90deg,#fff,#6ed7ff,#7c6dff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: clamp(1rem, 1.4vw, 1.3rem); line-height: 1.8;
+      color: rgba(255,255,255,0.82); margin-bottom: 24px;
+    }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .hero-chips span {
+      padding: 10px 20px; border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.82rem; color: #b0e0ff;
+    }
+
+    .hero-upload {
+      width: 100%; max-width: 520px; height: 300px;
+      background: rgba(18,20,35,0.62); backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 32px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s; margin-bottom: 18px;
+    }
+    .hero-upload:hover { border-color: rgba(255,255,255,0.25); background: rgba(18,20,35,0.75); }
+    .hero-upload.has-image { padding: 12px; height: auto; }
+    .hero-upload.has-image img { max-height: 260px; border-radius: 16px; display:block; margin:0 auto; }
+    .hero-upload.has-image .hu-icon,
+    .hero-upload.has-image .hu-title,
+    .hero-upload.has-image .hu-sub,
+    .hero-upload.has-image .hu-fmts { display: none; }
+    .hu-icon { font-size: 3.6rem; margin-bottom: 10px; }
+    .hu-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .hu-sub { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+    .hu-fmts { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 10px; }
+
+    .hero-btn {
+      width: 100%; max-width: 520px; height: 68px;
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6,#ff2ec4);
+      border: none; border-radius: 20px;
+      color: #fff; font-size: 1.3rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 0 50px rgba(0,212,255,0.35);
+      transition: all 0.3s;
+    }
+    .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 0 70px rgba(0,212,255,0.5); }
+    .hero-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .hero-character {
+      position: absolute; right: 0; bottom: 0; height: 95%; width: 50%;
+      pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at center bottom, rgba(18,216,255,0.06), transparent 70%);
+    }
+    .phone-mockup {
+      position: absolute; left: 10%; bottom: 5%; z-index: 1;
+      width: 260px; height: 540px;
+      background: rgba(15,18,25,0.75); backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 42px; border: 2px solid rgba(255,255,255,0.10);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+    }
+    .pm-notch {
+      width: 100px; height: 24px; background: #000; border-radius: 0 0 16px 16px;
+      margin-bottom: 12px; flex-shrink: 0;
+    }
+    .pm-content { flex: 1; width: 100%; padding: 0 12px 14px; display: flex; flex-direction: column; align-items: center; }
+    .pm-video {
+      width: 100%; aspect-ratio: 9/16; border-radius: 16px;
+      background: linear-gradient(135deg,#12d8ff,#8b5cf6,#ff2ec4);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+    }
+    .pm-playbtn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #fff;
+    }
+    .pm-text { font-size: 0.85rem; font-weight: 600; text-align: center; margin-bottom: 8px; color: #fff; }
+    .pm-cart {
+      padding: 8px 20px; border-radius: 20px;
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6); font-size: 0.75rem;
+      color: #fff; font-weight: 600;
+    }
+
+    /* ===== SECTIONS ===== */
+    .sec { padding: 70px 0; }
+    .sec-h2 {
+      font-size: clamp(1.6rem, 2.2vw, 2.2rem); font-weight: 800; margin-bottom: 16px;
+      background: linear-gradient(90deg,#fff,#6ed7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sec-sub { color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-bottom: 40px; }
+
+    .steps-3 { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+    .step-card {
+      background: rgba(255,255,255,0.04); border-radius: 24px; padding: 36px 28px;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06); width: 260px; text-align: center;
+      transition: all 0.3s;
+    }
+    .step-card:hover { border-color: rgba(18,216,255,0.2); transform: translateY(-4px); }
+    .sc-num { margin-bottom: 12px; }
+    .sc-icon { font-size: 2.8rem; margin-bottom: 14px; }
+    .sc-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .sc-desc { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+    .step-arrow { font-size: 1.6rem; color: rgba(255,255,255,0.15); }
+
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
+    .pricing-card {
+      background: rgba(18,20,35,0.62); backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255,255,255,0.10); border-radius: 32px;
+      padding: 40px 32px; text-align: center; transition: all 0.3s; position: relative;
+    }
+    .pricing-card:hover { border-color: rgba(18,216,255,0.2); transform: translateY(-6px); box-shadow: 0 16px 60px rgba(0,0,0,0.3); }
+    .pricing-card.featured { border-color: rgba(18,216,255,0.15); }
+    .badge-pro {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6); padding: 4px 20px;
+      border-radius: 100px; font-size: 0.7rem; font-weight: 700; color: #fff;
+      white-space: nowrap;
+    }
+    .pricing-card .p-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+    .pricing-card .p-price { font-size: 2.4rem; font-weight: 800; color: #fff; margin: 12px 0; }
+    .pricing-card .p-price span { font-size: 0.9rem; font-weight: 400; color: rgba(255,255,255,0.4); }
+    .pricing-card .p-features { list-style: none; margin: 16px 0 28px; padding: 0; font-size: 0.85rem; }
+    .pricing-card .p-features li { padding: 6px 0; color: rgba(255,255,255,0.7); }
+    .pricing-card .p-features li::before { content: '✓ '; color: #12d8ff; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .stat-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px; padding: 36px 20px; text-align: center;
+    }
+    .stat-card .stat-num {
+      font-size: 2.2rem; font-weight: 800;
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .stat-card .stat-lbl { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+    .plat-grid { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .plat-item {
+      padding: 16px 28px; border-radius: 16px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8);
+      display: flex; align-items: center; gap: 8px; transition: all 0.3s;
+    }
+    .plat-item:hover { border-color: rgba(18,216,255,0.2); background: rgba(18,216,255,0.04); }
 
     section { padding: 60px 0; }
     .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
@@ -181,17 +342,6 @@
     }
     .auth-badge.logout { cursor: pointer; }
     .auth-badge.logout:hover { background: rgba(255,51,102,0.15); color: #ff3366; }
-
-    .total-stats {
-      display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;
-    }
-    .stat-box {
-      flex: 1; min-width: 120px; padding: 20px; border-radius: 12px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-    }
-    .stat-box .num { font-size: 1.8rem; font-weight: 800; color: #00f0ff; }
-    .stat-box .lbl { font-size: 0.78rem; color: #666; margin-top: 4px; }
 
     footer {
       text-align: center; padding: 32px; border-top: 1px solid rgba(255,255,255,0.05);
@@ -301,93 +451,43 @@
       .float-vid { width: 240px; right: 10px; bottom: 70px; }
       .float-vid video { max-height: 160px; }
       .hide-mobile { display: none; }
-      .hero { padding: 60px 0 40px; min-height: 90vh; }
-      .hero h1 { font-size: 1.6rem; }
-      .hero-flow { border-radius: 16px; padding: 12px 16px; gap: 2px; }
-      .hero-flow .hf-item { font-size: 0.7rem; }
-      .hero-flow .hf-arrow { font-size: 0.6rem; }
-      .hero-sub { gap: 10px; font-size: 0.75rem; }
+      .hero { padding: 60px 16px 40px; min-height: auto; }
+      .hero-inner { flex-direction: column; gap: 24px; }
+      .hero-left, .hero-right { flex: 0 0 100%; max-width: 100%; }
+      .hero-right { min-height: 300px; }
+      .hero-h1 { font-size: 1.8rem; }
+      .hero-desc { font-size: 0.95rem; }
+      .hero-badge { font-size: 0.75rem; padding: 8px 16px; }
+      .hero-chips span { font-size: 0.75rem; padding: 8px 14px; }
+      .hero-upload { height: 220px; }
+      .hero-btn { height: 56px; font-size: 1.1rem; }
+      .phone-mockup { width: 200px; height: 420px; left: 5%; }
       .employee-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); }
-      section { padding: 40px 0; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .sec { padding: 40px 0; }
       .container { padding: 0 16px; }
     }
     @media (max-width:600px) {
-      nav { flex-direction: column; gap: 10px; padding: 12px 16px; }
-      nav .menu { flex-wrap: wrap; justify-content: center; gap: 10px; }
-      nav .menu a { font-size: 0.72rem; }
-      nav .logo { font-size: 1.1rem; }
+      nav { padding: 10px 16px; height: auto; flex-wrap: wrap; gap: 6px; }
+      nav .menu { gap: 4px; }
+      nav .menu a { font-size: 0.7rem; padding: 6px 10px; }
+      .hero { margin-top: 80px; }
       .section-title { font-size: 1.2rem; }
       .section-sub { font-size: 0.82rem; margin-bottom: 24px; }
-      .total-stats { gap: 10px; }
-      .stat-box { min-width: 80px; padding: 14px; }
-      .stat-box .num { font-size: 1.2rem; }
       .ms-current { padding: 14px; }
       .ms-current .msc-name { font-size: 1rem; }
       .ms-upload-box { padding: 20px; }
       .modal-content { padding: 20px; }
       .employee-card .avatar { width: 100px; height: 100px; font-size: 2.2rem; }
       .pricing-grid { grid-template-columns: 1fr; }
-      .pricing-card { padding: 20px; }
+      .pricing-card { padding: 24px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 24px 12px; }
+      .stat-card .stat-num { font-size: 1.6rem; }
+      .steps-3 { flex-direction: column; }
+      .step-arrow { transform: rotate(90deg); }
+      .plat-item { padding: 12px 20px; font-size: 0.8rem; }
     }
-    /* === New Hero + Upload + Pricing Styles === */
-
-    .hero-upload { width: 100%; max-width: 420px; }
-    .dropzone {
-      border: 2px dashed rgba(0,240,255,0.2); border-radius: 24px;
-      padding: 48px 24px; text-align: center; cursor: pointer;
-      transition: all 0.3s; background: rgba(255,255,255,0.02);
-    }
-    .dropzone:hover, .dropzone.dragover { border-color: #00f0ff; background: rgba(0,240,255,0.04); }
-    .dropzone .dz-icon { font-size: 3.2rem; margin-bottom: 12px; }
-    .dropzone .dz-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
-    .dropzone .dz-sub { font-size: 0.85rem; color: #888; }
-    .dropzone .dz-formats { font-size: 0.75rem; color: #555; margin-top: 10px; }
-    .dropzone.has-image { padding: 16px; }
-    .dropzone.has-image img { max-height: 260px; border-radius: 12px; display: block; margin: 0 auto; }
-    .dropzone.has-image .dz-icon,
-    .dropzone.has-image .dz-title,
-    .dropzone.has-image .dz-sub,
-    .dropzone.has-image .dz-formats { display: none; }
-
-    .gen-steps { max-width: 480px; margin: 0 auto; }
-    .gen-step {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px; margin-bottom: 8px;
-      border-radius: 12px; background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      transition: all 0.4s;
-    }
-    .gen-step .step-icon { width: 28px; text-align: center; font-size: 1.1rem; }
-    .gen-step .step-text { flex: 1; font-size: 0.88rem; }
-    .gen-step.done { border-color: rgba(0,240,255,0.2); background: rgba(0,240,255,0.04); }
-    .gen-step.done .step-icon { color: #00f0ff; }
-    .gen-step.active { border-color: #00f0ff; background: rgba(0,240,255,0.06); box-shadow: 0 0 20px rgba(0,240,255,0.05); }
-    .gen-step.pending { opacity: 0.4; }
-
-    .pricing-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; max-width: 900px; margin: 0 auto;
-    }
-    .pricing-card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px; padding: 28px 24px; text-align: center;
-      transition: all 0.3s; position: relative;
-    }
-    .pricing-card:hover { border-color: rgba(0,240,255,0.15); transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-    .pricing-card.featured { border-color: rgba(0,240,255,0.25); background: rgba(0,240,255,0.04); }
-    .pricing-card .badge {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg,#00f0ff,#f0f); padding: 4px 16px;
-      border-radius: 100px; font-size: 0.7rem; font-weight: 700; color: #fff;
-    }
-    .pricing-card .p-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
-    .pricing-card .p-price { font-size: 2.2rem; font-weight: 800; color: #fff; margin: 12px 0; }
-    .pricing-card .p-price span { font-size: 0.9rem; font-weight: 400; color: #888; }
-    .pricing-card .p-features { list-style: none; margin: 16px 0 24px; padding: 0; font-size: 0.82rem; }
-    .pricing-card .p-features li { padding: 5px 0; color: #aaa; }
-    .pricing-card .p-features li::before { content: '✔ '; color: #00f0ff; }
-    .pricing-card .btn { width: 100%; }
-    .pricing-card .btn-primary { background: linear-gradient(135deg,#00f0ff,#0077ff); border: none; }
-    .pricing-card .btn-outline { border-color: rgba(0,240,255,0.3); color: #00f0ff; }
   </style>
 </head>
 <body>
@@ -398,124 +498,189 @@
 <div class="overlay"></div>
 
 <nav>
-  <div class="logo">&#127916; VideoSeller AI <span>เปลี่ยนรูปเป็นคลิปขายของ</span></div>
+  <div class="logo">&#127916; <span>VideoSeller AI</span></div>
   <div class="menu">
-    <a onclick="scrollToEl('heroTop')" class="active">สร้างวิดีโอ</a>
+    <a onclick="scrollToEl('sFeatures')">ฟีเจอร์</a>
+    <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
+    <a onclick="scrollToEl('sPricing')">ราคา</a>
+    <a onclick="scrollToEl('sStats')">สถิติ</a>
     <a onclick="scrollToEl('music')">เพลง</a>
-    <a onclick="scrollToEl('employee')">พนักงาน</a>
     <a id="authBtn" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
+    <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">&#128640; เริ่มใช้ฟรี</a>
   </div>
 </nav>
 
+<!-- ===== HERO ===== -->
 <div class="hero" id="heroTop">
-  <div class="container">
-    <div class="hero-logo">&#127916; VideoSeller AI</div>
-    <h1 class="glow">เปลี่ยนรูปสินค้า 1 รูป<br>ให้กลายเป็น<span>คลิปขายของ</span>พร้อมโพสต์</h1>
-
-    <div class="hero-upload">
-      <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
-        <div class="dz-icon">&#128247;</div>
-        <div class="dz-title">ลากรูปสินค้ามาวางที่นี่</div>
-        <div class="dz-sub">หรือคลิกเพื่ออัปโหลด</div>
-        <div class="dz-formats">PNG • JPG • WEBP</div>
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
+      <h1 class="hero-h1">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของ<br>ด้วย <span>AI</span></h1>
+      <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียง สร้างซับอัตโนมัติ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
+      <div class="hero-chips">
+        <span>&#9889; สร้างไว 30 วินาที</span>
+        <span>&#127908; พากย์เสียงอัตโนมัติ</span>
+        <span>&#127991; พร้อมปักตะกร้า</span>
+        <span>&#128241; รองรับ TikTok / Shopee</span>
+      </div>
+      <div id="dropzone" class="hero-upload" onclick="document.getElementById('fileInput').click()">
+        <div class="hu-icon">&#128247;</div>
+        <div class="hu-title">ลากรูปสินค้ามาวางที่นี่</div>
+        <div class="hu-sub">หรือคลิกเพื่ออัปโหลด</div>
+        <div class="hu-fmts">PNG &bull; JPG &bull; WEBP &bull; สูงสุด 10MB</div>
       </div>
       <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+      <button id="mainGenBtn" class="hero-btn" onclick="generateVideo()">&#128640; สร้างวิดีโอฟรี</button>
+      <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);text-align:center;"></div>
     </div>
-
-    <button id="mainGenBtn" class="btn btn-primary" onclick="generateVideo()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:16px 50px;font-size:1.1rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;margin:16px 0 12px;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
-      &#128640; สร้างวิดีโอฟรี
-    </button>
-
-    <div class="hero-sub">
-      <span>&#9889; ใช้เวลาเพียง 30 วินาที</span>
-      <span>&#127908; มีเสียงพากย์อัตโนมัติ</span>
-      <span>&#127991; พร้อมโพสต์และปักตะกร้า</span>
+    <div class="hero-right">
+      <div class="hero-character"></div>
+      <div class="phone-mockup">
+        <div class="pm-notch"></div>
+        <div class="pm-content">
+          <div class="pm-video">
+            <div class="pm-playbtn">&#9654;</div>
+          </div>
+          <div class="pm-text">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
+          <div class="pm-cart">&#128722; หยิบใส่ตะกร้า</div>
+        </div>
+      </div>
     </div>
-
-    <div class="hero-flow">
-      <div class="hf-item"><span>&#128247;</span> รูปสินค้า</div>
-      <div class="hf-arrow">&#8595;</div>
-      <div class="hf-item"><span>&#129302;</span> AI วิเคราะห์</div>
-      <div class="hf-arrow">&#8595;</div>
-      <div class="hf-item"><span>&#127908;</span> พากย์เสียง</div>
-      <div class="hf-arrow">&#8595;</div>
-      <div class="hf-item"><span>&#127916;</span> สร้างคลิป</div>
-      <div class="hf-arrow">&#8595;</div>
-      <div class="hf-item"><span>&#127991;</span> พร้อมปักตะกร้า</div>
-    </div>
-
-    <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:#888;"></div>
   </div>
 </div>
 
-<section id="generator">
+<!-- Steps / How it works (shown during generation) -->
+<div id="genSteps" class="gen-steps" style="display:none;max-width:520px;margin:0 auto;padding:40px 24px;">
+  <div class="gen-step" id="step1"><span class="step-icon">&#128270;</span><span class="step-text">วิเคราะห์สินค้า</span></div>
+  <div class="gen-step" id="step2"><span class="step-icon">&#128221;</span><span class="step-text">เขียนสคริปต์</span></div>
+  <div class="gen-step" id="step3"><span class="step-icon">&#127908;</span><span class="step-text">สร้างเสียงพากย์</span></div>
+  <div class="gen-step" id="step4"><span class="step-icon">&#127916;</span><span class="step-text">สร้างวิดีโอแนวไวรัล</span></div>
+  <div class="gen-step" id="step5"><span class="step-icon">&#128640;</span><span class="step-text">พร้อมลง TikTok Shop</span></div>
+</div>
+
+<!-- Result -->
+<div id="videoResult" style="display:none;max-width:520px;margin:20px auto;padding:0 24px;">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <span id="videoStatus" style="font-size:0.95rem;color:#0ff;font-weight:600;">&#9989; วิดีโอพร้อมแล้ว</span>
+      <button class="btn btn-sm btn-primary" onclick="downloadVideo()" style="background:linear-gradient(135deg,#00f0ff,#0077ff);border:none;">&#128229; ดาวน์โหลด</button>
+    </div>
+    <div id="videoPreview" style="background:#000;border-radius:10px;overflow:hidden;aspect-ratio:9/16;max-height:420px;display:flex;align-items:center;justify-content:center;color:#444;font-size:0.9rem;">
+      <span>ตัวอย่างวิดีโอจะแสดงที่นี่</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: 3 STEPS ===== -->
+<section class="sec" id="sFeatures">
+  <div class="container" style="text-align:center;">
+    <h2 class="sec-h2">สร้างวิดีโอง่ายๆ เพียง 3 ขั้นตอน</h2>
+    <div class="steps-3">
+      <div class="step-card">
+        <div class="sc-num">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">1</text></svg>
+        </div>
+        <div class="sc-icon">&#128247;</div>
+        <div class="sc-title">อัปโหลดรูปสินค้า</div>
+        <div class="sc-desc">เลือกรูปสินค้าที่ต้องการ<br>เพียง 1 รูปก็เริ่มได้</div>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="sc-num">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">2</text></svg>
+        </div>
+        <div class="sc-icon">&#129302;</div>
+        <div class="sc-title">AI สร้างวิดีโอรีวิว</div>
+        <div class="sc-desc">AI วิเคราะห์สินค้า เขียนสคริปต์<br>พากย์เสียง และสร้างคลิป</div>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="sc-num">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="2"/><text x="28" y="34" text-anchor="middle" fill="#12d8ff" font-size="22" font-weight="700">3</text></svg>
+        </div>
+        <div class="sc-icon">&#127991;</div>
+        <div class="sc-title">พร้อมขายทันที</div>
+        <div class="sc-desc">คลิปพร้อมโพสต์ลง TikTok<br>Shopee พร้อมปักตะกร้า</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: PRICING ===== -->
+<section class="sec" id="sPricing">
+  <div class="container" style="text-align:center;">
+    <h2 class="sec-h2">เลือกแพ็กเกจที่ใช่สำหรับคุณ</h2>
+    <p class="sec-sub">เริ่มใช้ฟรี ไม่ต้องใช้บัตรเครดิต</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="p-name">ฟรีรายวัน</div>
+        <div class="p-price">&#3647;0 <span>/ เดือน</span></div>
+        <ul class="p-features">
+          <li>สร้าง 3 คลิปต่อวัน</li>
+          <li>ความยาว 30 วินาที</li>
+          <li>เสียง AI พื้นฐาน</li>
+          <li>วิดีโอ 720p</li>
+          <li>มีลายน้ำ</li>
+        </ul>
+        <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;">เริ่มใช้ฟรี</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="badge-pro">&#11088; โปร</div>
+        <div class="p-name">โปร</div>
+        <div class="p-price">&#3647;299 <span>/ เดือน</span></div>
+        <ul class="p-features">
+          <li>สร้าง 100 คลิปต่อวัน</li>
+          <li>ความยาว 3 นาที</li>
+          <li>เสียง AI พรีเมียม</li>
+          <li>Full HD</li>
+          <li>ไม่มีลายน้ำ</li>
+          <li>เทมเพลตไวรัล</li>
+          <li>ตั้งเวลาโพสต์</li>
+        </ul>
+        <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;background:linear-gradient(90deg,#12d8ff,#8b5cf6);border:none;">สมัครโปร</button>
+      </div>
+      <div class="pricing-card">
+        <div class="p-name">อุลตร้า</div>
+        <div class="p-price">&#3647;999 <span>/ เดือน</span></div>
+        <ul class="p-features">
+          <li>สร้างไม่จำกัด</li>
+          <li>วิดีโอ 4K</li>
+          <li>หลายบัญชี TikTok</li>
+          <li>สร้างแคปชันอัตโนมัติ</li>
+          <li>AI ทุกเสียง</li>
+          <li>ฟีเจอร์ใหม่ก่อนใคร</li>
+          <li>API Access</li>
+          <li>พื้นที่จัดเก็บ 100GB</li>
+        </ul>
+        <button class="btn btn-outline" onclick="scrollToEl('heroTop')" style="width:100%;">สมัครอุลตร้า</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: STATS ===== -->
+<section class="sec" id="sStats">
   <div class="container">
-    <div style="max-width:520px;margin:0 auto;">
-      <!-- Generation Steps (shown when generating) -->
-      <div id="genSteps" class="gen-steps" style="display:none;">
-        <div class="gen-step" id="step1"><span class="step-icon">&#128270;</span><span class="step-text">วิเคราะห์สินค้า</span></div>
-        <div class="gen-step" id="step2"><span class="step-icon">&#128221;</span><span class="step-text">เขียนสคริปต์</span></div>
-        <div class="gen-step" id="step3"><span class="step-icon">&#127908;</span><span class="step-text">สร้างเสียงพากย์</span></div>
-        <div class="gen-step" id="step4"><span class="step-icon">&#127916;</span><span class="step-text">สร้างวิดีโอแนวไวรัล</span></div>
-        <div class="gen-step" id="step5"><span class="step-icon">&#128640;</span><span class="step-text">พร้อมลง TikTok Shop</span></div>
-      </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">128,349+</div><div class="stat-lbl">คลิปที่สร้างแล้ว</div></div>
+      <div class="stat-card"><div class="stat-num">36,521</div><div class="stat-lbl">ผู้ใช้งาน</div></div>
+      <div class="stat-card"><div class="stat-num">12,850,000+</div><div class="stat-lbl">ยอดขายที่เพิ่มขึ้น</div></div>
+      <div class="stat-card"><div class="stat-num">99.9%</div><div class="stat-lbl">ความพึงพอใจ</div></div>
+    </div>
+  </div>
+</section>
 
-      <!-- Result -->
-      <div id="videoResult" style="display:none;">
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-            <span id="videoStatus" style="font-size:0.95rem;color:#0ff;font-weight:600;">&#9989; วิดีโอพร้อมแล้ว</span>
-            <button class="btn btn-sm btn-primary" onclick="downloadVideo()" style="background:linear-gradient(135deg,#00f0ff,#0077ff);border:none;">&#128229; ดาวน์โหลด</button>
-          </div>
-          <div id="videoPreview" style="background:#000;border-radius:10px;overflow:hidden;aspect-ratio:9/16;max-height:420px;display:flex;align-items:center;justify-content:center;color:#444;font-size:0.9rem;">
-            <span>ตัวอย่างวิดีโอจะแสดงที่นี่</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pricing -->
-      <div style="margin-top:60px;">
-        <div class="section-title" style="justify-content:center;font-size:1.4rem;">&#128176; แพ็กเกจ</div>
-        <div class="pricing-grid">
-          <div class="pricing-card">
-            <div class="p-name">ฟรีรายวัน</div>
-            <div class="p-price">&#3647;0 <span>/ เดือน</span></div>
-            <ul class="p-features">
-              <li>3 คลิปต่อวัน</li>
-              <li>ความยาว 30 วินาที</li>
-              <li>เสียง AI พื้นฐาน</li>
-              <li>วิดีโอ 720p</li>
-            </ul>
-            <button class="btn btn-primary" onclick="scrollToEl('heroTop')">เริ่มฟรี</button>
-          </div>
-          <div class="pricing-card featured">
-            <div class="badge">&#11088; มาแรง</div>
-            <div class="p-name">โปร</div>
-            <div class="p-price">&#3647;299 <span>/ เดือน</span></div>
-            <ul class="p-features">
-              <li>100 คลิปต่อวัน</li>
-              <li>วิดีโอ Full HD</li>
-              <li>เสียง AI พรีเมียม</li>
-              <li>ไม่มีลายน้ำ</li>
-              <li>เทมเพลตไวรัล</li>
-            </ul>
-            <button class="btn btn-primary" onclick="scrollToEl('heroTop')">สมัครโปร</button>
-          </div>
-          <div class="pricing-card">
-            <div class="p-name">อุลตร้า</div>
-            <div class="p-price">&#3647;999 <span>/ เดือน</span></div>
-            <ul class="p-features">
-              <li>สร้างไม่จำกัด</li>
-              <li>วิดีโอ 4K</li>
-              <li>เสียง AI ทุกแบบ</li>
-              <li>หลายบัญชี TikTok</li>
-              <li>สร้างคลิปพร้อมแคปชันและแฮชแท็กอัตโนมัติ</li>
-              <li>ฟีเจอร์ใหม่ก่อนใคร</li>
-            </ul>
-            <button class="btn btn-outline" onclick="scrollToEl('heroTop')">สมัครอุลตร้า</button>
-          </div>
-        </div>
-      </div>
+<!-- ===== SECTION 5: PLATFORMS ===== -->
+<section class="sec" id="sPlatforms" style="padding-bottom:20px;">
+  <div class="container" style="text-align:center;">
+    <h2 class="sec-h2">รองรับทุกแพลตฟอร์ม</h2>
+    <div class="plat-grid">
+      <div class="plat-item"><span>&#127760;</span> TikTok Shop</div>
+      <div class="plat-item"><span>&#128722;</span> Shopee Affiliate</div>
+      <div class="plat-item"><span>&#128421;</span> Facebook</div>
+      <div class="plat-item"><span>&#128247;</span> Instagram</div>
+      <div class="plat-item"><span>&#9654;</span> YouTube Shorts</div>
     </div>
   </div>
 </section>
@@ -601,13 +766,15 @@
 </section>
 
 <footer>
-  <div class="container">
-    <p style="font-size:0.85rem;color:#888;">&copy; 2026 VideoSeller AI — เปลี่ยนรูปสินค้าเป็นวิดีโอขายของด้วย AI</p>
+  <div class="container" style="text-align:center;">
+    <div style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">&#127916; VideoSeller AI</div>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);">เปลี่ยนรูปสินค้าเป็นวิดีโอขายของด้วย AI</p>
+    <p style="margin-top:16px;font-size:0.75rem;color:rgba(255,255,255,0.3);">&copy; 2026 VideoSeller AI &bull; All Rights Reserved.</p>
     <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
-      <span style="font-size:0.85rem;color:#aaa;">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
-      <span style="font-size:1rem;font-weight:700;background:linear-gradient(135deg,#00f0ff,#f0f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(0,240,255,0.3);">นายชาเย็น</span>
-      <a id="fbLink" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:6px;color:#1877f2;font-size:0.85rem;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);transition:all 0.3s;">
-        <span style="font-size:1.1rem;">&#120143;</span> ติดต่อผ่าน Facebook
+      <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
+      <span style="font-size:1rem;font-weight:700;background:linear-gradient(90deg,#12d8ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">นายชาเย็น</span>
+      <a id="fbLink" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:6px;color:#1877f2;font-size:0.82rem;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(24,119,242,0.1);border:1px solid rgba(24,119,242,0.3);transition:all 0.3s;">
+        <span style="font-size:1rem;">&#120143;</span> ติดต่อผ่าน Facebook
       </a>
     </div>
   </div>
