@@ -69,120 +69,111 @@
     /* ===== HERO ===== */
     .hero {
       position: relative; min-height: 100vh; display: flex; align-items: center;
-      padding: 140px 120px 60px; margin-top: 72px; overflow: hidden;
+      padding: 120px 24px 80px; margin-top: 72px; overflow: hidden;
     }
     .hero-glow {
       position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
     }
-    .hero-glow.blue { width: 600px; height: 600px; background: rgba(18,216,255,0.12); top: -200px; right: 20%; }
-    .hero-glow.purple { width: 500px; height: 500px; background: rgba(139,92,246,0.12); bottom: -150px; left: 10%; }
+    .hero-glow.blue { width: 600px; height: 600px; background: rgba(18,216,255,0.1); top: -200px; right: 20%; }
+    .hero-glow.purple { width: 500px; height: 500px; background: rgba(139,92,246,0.1); bottom: -150px; left: 10%; }
     .hero-inner {
-      position: relative; z-index: 2; display: flex; align-items: center;
-      width: 100%; max-width: 1300px; margin: 0 auto; gap: 40px;
+      position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+      width: 100%; max-width: 1100px; margin: 0 auto; text-align: center;
     }
-    .hero-left { flex: 0 0 58%; max-width: 58%; }
-    .hero-right { flex: 0 0 42%; max-width: 42%; position: relative; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
-    .hero-flow-arrow {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 0.82rem; color: rgba(255,255,255,0.5); z-index: 2;
-    }
-    .hero-flow-arrow .hfa-icon { color: #12d8ff; font-size: 1.1rem; }
-
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 22px; border-radius: 999px;
+      padding: 10px 20px; border-radius: 999px;
       background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
-      font-size: 0.82rem; color: #b0e0ff; margin-bottom: 28px;
+      font-size: 0.8rem; color: #b0e0ff; margin-bottom: 24px;
     }
     .hero-h1 {
-      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
-      font-weight: 900; line-height: 1.05; margin-bottom: 20px;
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 900; line-height: 1.08; margin-bottom: 18px; max-width: 800px;
     }
     .hero-h1 span {
       background: linear-gradient(90deg,#fff,#6ed7ff,#7c6dff);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .hero-desc {
-      font-size: clamp(1rem, 1.4vw, 1.3rem); line-height: 1.8;
-      color: rgba(255,255,255,0.82); margin-bottom: 24px;
+      font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.7;
+      color: rgba(255,255,255,0.7); margin-bottom: 24px; max-width: 640px;
     }
-    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
     .hero-chips span {
-      padding: 10px 20px; border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      font-size: 0.82rem; color: #b0e0ff;
+      padding: 8px 18px; border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.8rem; color: rgba(255,255,255,0.8);
+    }
+
+    .hero-preview {
+      display: grid; grid-template-columns: 520px 260px; gap: 48px;
+      align-items: center; margin-bottom: 32px;
     }
 
     .hero-upload {
-      width: 100%; max-width: 520px; height: 300px;
+      width: 520px; height: 280px;
       background: rgba(15,18,35,0.65); backdrop-filter: blur(35px);
       -webkit-backdrop-filter: blur(35px);
-      border: 1px solid rgba(255,255,255,0.10); border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.10); border-radius: 28px;
       box-shadow: 0 30px 80px rgba(0,0,0,0.45);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s; margin-bottom: 18px;
+      cursor: pointer; transition: all 0.3s;
     }
-    .hero-upload:hover { border-color: rgba(255,255,255,0.25); background: rgba(18,20,35,0.75); }
+    .hero-upload:hover { border-color: rgba(255,255,255,0.2); background: rgba(15,18,35,0.8); }
     .hero-upload.has-image { padding: 12px; height: auto; }
-    .hero-upload.has-image img { max-height: 260px; border-radius: 16px; display:block; margin:0 auto; }
+    .hero-upload.has-image img { max-height: 240px; border-radius: 14px; display:block; margin:0 auto; }
     .hero-upload.has-image .hu-icon,
     .hero-upload.has-image .hu-title,
     .hero-upload.has-image .hu-sub,
     .hero-upload.has-image .hu-fmts { display: none; }
-    .hu-icon { font-size: 3.6rem; margin-bottom: 10px; }
-    .hu-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
-    .hu-sub { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
-    .hu-fmts { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 10px; }
+    .hu-icon { font-size: 3.2rem; margin-bottom: 10px; }
+    .hu-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+    .hu-sub { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+    .hu-fmts { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 8px; }
+
+    .phone-preview {
+      width: 260px; flex-shrink: 0; position: relative; top: 30px;
+      background: rgba(15,18,25,0.75); backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 36px; border: 2px solid rgba(255,255,255,0.10);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+    }
+    .phone-preview .pm-notch {
+      width: 90px; height: 22px; background: #000; border-radius: 0 0 14px 14px;
+      flex-shrink: 0;
+    }
+    .phone-preview .pm-content { width: 100%; padding: 10px 12px 14px; display: flex; flex-direction: column; align-items: center; }
+    .phone-preview .pm-video {
+      width: 100%; aspect-ratio: 9/16; border-radius: 14px;
+      background: linear-gradient(135deg,#12d8ff,#8b5cf6,#ff2ec4);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+    }
+    .phone-preview .pm-playbtn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: #fff;
+    }
+    .phone-preview .pm-text { font-size: 0.82rem; font-weight: 600; text-align: center; margin-bottom: 8px; color: #fff; }
+    .phone-preview .pm-cart {
+      padding: 7px 18px; border-radius: 20px;
+      background: linear-gradient(90deg,#12d8ff,#8b5cf6); font-size: 0.72rem;
+      color: #fff; font-weight: 600;
+    }
 
     .hero-btn {
-      width: 100%; max-width: 520px; height: 68px;
+      width: 520px; height: 64px;
       background: linear-gradient(90deg,#12d8ff,#8b5cf6,#ff2ec4);
-      border: none; border-radius: 20px;
-      color: #fff; font-size: 1.3rem; font-weight: 700;
+      border: none; border-radius: 18px;
+      color: #fff; font-size: 1.2rem; font-weight: 700;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-      box-shadow: 0 0 50px rgba(0,212,255,0.35);
+      box-shadow: 0 0 50px rgba(0,212,255,0.3);
       transition: all 0.3s;
     }
     .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 0 70px rgba(0,212,255,0.5); }
     .hero-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    .hero-character {
-      position: absolute; right: 0; bottom: 0; height: 95%; width: 50%;
-      pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse at center bottom, rgba(18,216,255,0.06), transparent 70%);
-    }
-    .phone-mockup {
-      position: absolute; left: 10%; bottom: 5%; z-index: 1;
-      width: 260px; height: 540px;
-      background: rgba(15,18,25,0.75); backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-radius: 42px; border: 2px solid rgba(255,255,255,0.10);
-      overflow: hidden; display: flex; flex-direction: column; align-items: center;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
-    }
-    .pm-notch {
-      width: 100px; height: 24px; background: #000; border-radius: 0 0 16px 16px;
-      margin-bottom: 12px; flex-shrink: 0;
-    }
-    .pm-content { flex: 1; width: 100%; padding: 0 12px 14px; display: flex; flex-direction: column; align-items: center; }
-    .pm-video {
-      width: 100%; aspect-ratio: 9/16; border-radius: 16px;
-      background: linear-gradient(135deg,#12d8ff,#8b5cf6,#ff2ec4);
-      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
-    }
-    .pm-playbtn {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; color: #fff;
-    }
-    .pm-text { font-size: 0.85rem; font-weight: 600; text-align: center; margin-bottom: 8px; color: #fff; }
-    .pm-cart {
-      padding: 8px 20px; border-radius: 20px;
-      background: linear-gradient(90deg,#12d8ff,#8b5cf6); font-size: 0.75rem;
-      color: #fff; font-weight: 600;
-    }
 
     /* ===== SECTIONS ===== */
     .sec { padding: 70px 0; }
@@ -455,17 +446,12 @@
       .float-vid { width: 240px; right: 10px; bottom: 70px; }
       .float-vid video { max-height: 160px; }
       .hide-mobile { display: none; }
-      .hero { padding: 60px 16px 40px; min-height: auto; }
-      .hero-inner { flex-direction: column; gap: 24px; }
-      .hero-left, .hero-right { flex: 0 0 100%; max-width: 100%; }
-      .hero-right { min-height: 300px; }
-      .hero-h1 { font-size: 1.8rem; }
-      .hero-desc { font-size: 0.95rem; }
-      .hero-badge { font-size: 0.75rem; padding: 8px 16px; }
-      .hero-chips span { font-size: 0.75rem; padding: 8px 14px; }
-      .hero-upload { height: 220px; }
-      .hero-btn { height: 56px; font-size: 1.1rem; }
-      .phone-mockup { width: 200px; height: 420px; left: 5%; }
+      .hero { padding: 80px 16px 60px; min-height: auto; }
+      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
+      .hero-upload { width: 100%; max-width: 480px; height: 240px; }
+      .phone-preview { top: 0; width: 220px; }
+      .hero-btn { width: 100%; max-width: 480px; height: 56px; font-size: 1.05rem; }
+      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
       .employee-grid { grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); }
       .stats-grid { grid-template-columns: repeat(2,1fr); }
       .sec { padding: 40px 0; }
@@ -491,6 +477,10 @@
       .steps-3 { flex-direction: column; }
       .step-arrow { transform: rotate(90deg); }
       .plat-item { padding: 12px 20px; font-size: 0.8rem; }
+    }
+    @media (max-width:992px) {
+      .hero-preview { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
+      .phone-preview { top: 0; width: 220px; }
     }
   </style>
 </head>
@@ -520,16 +510,17 @@
   <div class="hero-glow blue"></div>
   <div class="hero-glow purple"></div>
   <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
-      <h1 class="hero-h1">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของ<br>ด้วย <span>AI</span></h1>
-      <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียงอัตโนมัติ สร้างซับ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
-      <div class="hero-chips">
-        <span>&#9889; สร้างไว 30 วินาที</span>
-        <span>&#127908; พากย์เสียงอัตโนมัติ</span>
-        <span>&#127991; พร้อมปักตะกร้า</span>
-        <span>&#128241; รองรับ TikTok Shop / Shopee</span>
-      </div>
+    <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
+    <h1 class="hero-h1">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของ<br>ด้วย <span>AI</span></h1>
+    <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียงอัตโนมัติ สร้างซับ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
+    <div class="hero-chips">
+      <span>&#9889; สร้างไว 30 วินาที</span>
+      <span>&#127908; พากย์เสียงอัตโนมัติ</span>
+      <span>&#127991; พร้อมปักตะกร้า</span>
+      <span>&#128241; รองรับ TikTok Shop / Shopee</span>
+    </div>
+
+    <div class="hero-preview">
       <div id="dropzone" class="hero-upload" onclick="document.getElementById('fileInput').click()">
         <div class="hu-icon">&#128247;</div>
         <div class="hu-title">ลากรูปสินค้ามาวางที่นี่</div>
@@ -537,12 +528,8 @@
         <div class="hu-fmts">PNG &bull; JPG &bull; WEBP &bull; สูงสุด 10MB</div>
       </div>
       <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
-      <button id="mainGenBtn" class="hero-btn" onclick="generateVideo()">&#128640; สร้างวิดีโอฟรี</button>
-      <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);text-align:center;"></div>
-    </div>
-    <div class="hero-right">
-      <div class="hero-character"></div>
-      <div class="phone-mockup">
+
+      <div class="phone-preview">
         <div class="pm-notch"></div>
         <div class="pm-content">
           <div class="pm-video">
@@ -552,12 +539,10 @@
           <div class="pm-cart">&#128722; หยิบใส่ตะกร้า</div>
         </div>
       </div>
-      <div class="hero-flow-arrow">
-        <span>&#128247; รูปสินค้า</span>
-        <span class="hfa-icon">&rarr;</span>
-        <span>&#127916; คลิปรีวิว</span>
-      </div>
     </div>
+
+    <button id="mainGenBtn" class="hero-btn" onclick="generateVideo()">&#128640; สร้างวิดีโอฟรี</button>
+    <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.5);text-align:center;"></div>
   </div>
 </div>
 
