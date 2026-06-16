@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b0e2a"/>
+      <stop offset="35%" stop-color="#1a1f5e"/>
+      <stop offset="55%" stop-color="#2d3a8f"/>
+      <stop offset="75%" stop-color="#5b4fa8"/>
+      <stop offset="88%" stop-color="#e8756a"/>
+      <stop offset="95%" stop-color="#f4a36a"/>
+      <stop offset="100%" stop-color="#f4d08a"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff7d6"/>
+      <stop offset="100%" stop-color="#f4a36a"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="rgba(244,161,106,0.4)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <circle cx="1440" cy="780" r="180" fill="url(#sunGlow)"/>
+  <circle cx="1440" cy="800" r="60" fill="url(#sun)"/>
+  <ellipse cx="1440" cy="810" rx="100" ry="20" fill="rgba(244,161,106,0.15)"/>
+  <!-- Stars -->
+  <g fill="#fff" opacity="0.6">
+    <circle cx="120" cy="80" r="1.5"/><circle cx="340" cy="45" r="1"/><circle cx="560" cy="120" r="1.8"/>
+    <circle cx="780" cy="60" r="1.2"/><circle cx="200" cy="180" r="1"/><circle cx="900" cy="90" r="1.5"/>
+    <circle cx="1100" cy="50" r="1"/><circle cx="1300" cy="110" r="1.8"/><circle cx="1500" cy="40" r="1.2"/>
+    <circle cx="1700" cy="95" r="1.5"/><circle cx="450" cy="200" r="0.8"/><circle cx="650" cy="170" r="1"/>
+    <circle cx="100" cy="250" r="1.2"/><circle cx="350" cy="300" r="0.8"/><circle cx="550" cy="260" r="1"/>
+    <circle cx="1600" cy="200" r="1.3"/><circle cx="1800" cy="170" r="0.9"/><circle cx="250" cy="380" r="1"/>
+  </g>
+  <!-- Clouds -->
+  <g fill="rgba(255,255,255,0.04)">
+    <ellipse cx="300" cy="420" rx="200" ry="30"/>
+    <ellipse cx="350" cy="400" rx="120" ry="25"/>
+    <ellipse cx="1500" cy="460" rx="180" ry="28"/>
+    <ellipse cx="1450" cy="440" rx="100" ry="20"/>
+    <ellipse cx="800" cy="500" rx="220" ry="32"/>
+  </g>
+  <!-- Mountains background -->
+  <path d="M0 680 L120 580 L280 620 L400 530 L540 590 L680 480 L800 560 L950 510 L1100 570 L1250 490 L1400 550 L1560 500 L1700 560 L1840 520 L1920 600 L1920 1080 L0 1080Z" fill="rgba(20,15,40,0.35)"/>
+  <!-- Mountains mid -->
+  <path d="M0 720 L180 650 L320 680 L480 600 L600 660 L760 570 L920 630 L1060 580 L1200 640 L1380 560 L1500 620 L1660 570 L1800 640 L1920 600 L1920 1080 L0 1080Z" fill="rgba(15,10,30,0.45)"/>
+  <!-- City silhouette -->
+  <path d="M0 780 L60 760 L60 780 L100 740 L100 780 L150 720 L150 780 L200 750 L200 780 L250 730 L250 780 L310 760 L310 780 L370 710 L370 780 L430 740 L430 780 L500 720 L500 780 L560 760 L560 780 L620 730 L620 780 L680 700 L680 780 L740 740 L740 780 L800 720 L800 780 L860 750 L860 780 L920 710 L920 780 L980 760 L980 780 L1040 730 L1040 780 L1100 700 L1100 780 L1160 740 L1160 780 L1220 720 L1220 780 L1280 750 L1280 780 L1340 710 L1340 780 L1400 730 L1400 780 L1460 760 L1460 780 L1520 720 L1520 780 L1580 740 L1580 780 L1640 700 L1640 780 L1700 750 L1700 780 L1760 730 L1760 780 L1820 710 L1820 780 L1920 760 L1920 1080 L0 1080Z" fill="rgba(8,5,18,0.7)"/>
+  <!-- Light points (windows) -->
+  <g fill="#f4d08a" opacity="0.3">
+    <rect x="170" y="740" width="3" height="5"/><rect x="185" y="745" width="3" height="5"/>
+    <rect x="390" y="730" width="3" height="5"/><rect x="405" y="735" width="3" height="5"/>
+    <rect x="520" y="740" width="3" height="5"/><rect x="535" y="745" width="3" height="5"/>
+    <rect x="700" y="720" width="3" height="5"/><rect x="715" y="725" width="3" height="5"/>
+    <rect x="820" y="740" width="3" height="5"/><rect x="835" y="745" width="3" height="5"/>
+    <rect x="940" y="730" width="3" height="5"/><rect x="955" y="735" width="3" height="5"/>
+    <rect x="1120" y="720" width="3" height="5"/><rect x="1135" y="725" width="3" height="5"/>
+    <rect x="1280" y="740" width="3" height="5"/><rect x="1295" y="745" width="3" height="5"/>
+    <rect x="1420" y="730" width="3" height="5"/><rect x="1435" y="735" width="3" height="5"/>
+    <rect x="1540" y="740" width="3" height="5"/><rect x="1555" y="745" width="3" height="5"/>
+    <rect x="1660" y="720" width="3" height="5"/><rect x="1675" y="725" width="3" height="5"/>
+    <rect x="1780" y="730" width="3" height="5"/><rect x="1795" y="735" width="3" height="5"/>
+  </g>
+  <!-- Ground -->
+  <rect x="0" y="780" width="1920" height="300" fill="rgba(5,3,12,0.85)"/>
+  <!-- Reflection on ground -->
+  <rect x="1380" y="820" width="120" height="4" rx="2" fill="rgba(244,161,106,0.08)"/>
+  <rect x="1400" y="835" width="80" height="3" rx="1.5" fill="rgba(244,161,106,0.05)"/>
+</svg>
