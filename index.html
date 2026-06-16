@@ -69,14 +69,25 @@
     /* ===== HERO ===== */
     .hero {
       position: relative; min-height: 100vh; display: flex; align-items: center;
-      padding: 80px 24px 60px; margin-top: 72px; overflow: hidden;
+      padding: 140px 120px 60px; margin-top: 72px; overflow: hidden;
     }
+    .hero-glow {
+      position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+    }
+    .hero-glow.blue { width: 600px; height: 600px; background: rgba(18,216,255,0.08); top: -200px; right: 20%; }
+    .hero-glow.purple { width: 500px; height: 500px; background: rgba(139,92,246,0.08); bottom: -150px; left: 10%; }
     .hero-inner {
       position: relative; z-index: 2; display: flex; align-items: center;
       width: 100%; max-width: 1300px; margin: 0 auto; gap: 40px;
     }
     .hero-left { flex: 0 0 58%; max-width: 58%; }
     .hero-right { flex: 0 0 42%; max-width: 42%; position: relative; min-height: 500px; }
+    .hero-flow-arrow {
+      position: absolute; bottom: 0; left: 0; right: 0; text-align: center; z-index: 2;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 12px; font-size: 0.85rem; color: rgba(255,255,255,0.6);
+    }
+    .hero-flow-arrow .hfa-icon { color: #12d8ff; font-size: 1.2rem; }
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -494,9 +505,10 @@
   <div class="logo">&#127916; <span>VideoSeller AI</span></div>
   <div class="menu">
     <a onclick="scrollToEl('sFeatures')">ฟีเจอร์</a>
-    <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
+    <a onclick="scrollToEl('sFeatures')">ตัวอย่างคลิป</a>
     <a onclick="scrollToEl('sPricing')">ราคา</a>
-    <a onclick="scrollToEl('sStats')">สถิติ</a>
+    <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
+    <a onclick="scrollToEl('sPlatforms')">FAQ</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a id="authBtn" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
     <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">&#128640; เริ่มใช้ฟรี</a>
@@ -505,16 +517,18 @@
 
 <!-- ===== HERO ===== -->
 <div class="hero" id="heroTop">
+  <div class="hero-glow blue"></div>
+  <div class="hero-glow purple"></div>
   <div class="hero-inner">
     <div class="hero-left">
       <div class="hero-badge">&#9889; AI สร้างคลิปอัตโนมัติภายใน 30 วินาที</div>
       <h1 class="hero-h1">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของ<br>ด้วย <span>AI</span></h1>
-      <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียง สร้างซับอัตโนมัติ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
+      <p class="hero-desc">อัปโหลดรูปสินค้าเพียง 1 รูป<br>AI สร้างสคริปต์รีวิว พากย์เสียงอัตโนมัติ สร้างซับ<br>และเตรียมคลิปพร้อมปักตะกร้า ภายใน 30 วินาที</p>
       <div class="hero-chips">
         <span>&#9889; สร้างไว 30 วินาที</span>
         <span>&#127908; พากย์เสียงอัตโนมัติ</span>
         <span>&#127991; พร้อมปักตะกร้า</span>
-        <span>&#128241; รองรับ TikTok / Shopee</span>
+        <span>&#128241; รองรับ TikTok Shop / Shopee</span>
       </div>
       <div id="dropzone" class="hero-upload" onclick="document.getElementById('fileInput').click()">
         <div class="hu-icon">&#128247;</div>
@@ -537,6 +551,11 @@
           <div class="pm-text">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
           <div class="pm-cart">&#128722; หยิบใส่ตะกร้า</div>
         </div>
+      </div>
+      <div class="hero-flow-arrow">
+        <span>&#128247; รูปสินค้า</span>
+        <span class="hfa-icon">&rarr;</span>
+        <span>&#127916; คลิปรีวิว</span>
       </div>
     </div>
   </div>
@@ -575,7 +594,7 @@
         </div>
         <div class="sc-icon">&#128247;</div>
         <div class="sc-title">อัปโหลดรูปสินค้า</div>
-        <div class="sc-desc">เลือกรูปสินค้าที่ต้องการ<br>เพียง 1 รูปก็เริ่มได้</div>
+        <div class="sc-desc">อัปโหลดรูปสินค้า<br>ที่ต้องการขาย</div>
       </div>
       <div class="step-arrow">&#8594;</div>
       <div class="step-card">
@@ -584,7 +603,7 @@
         </div>
         <div class="sc-icon">&#129302;</div>
         <div class="sc-title">AI สร้างวิดีโอรีวิว</div>
-        <div class="sc-desc">AI วิเคราะห์สินค้า เขียนสคริปต์<br>พากย์เสียง และสร้างคลิป</div>
+        <div class="sc-desc">AI วิเคราะห์สินค้า<br>สร้างสคริปต์ พากย์เสียง<br>และตัดต่อวิดีโอ</div>
       </div>
       <div class="step-arrow">&#8594;</div>
       <div class="step-card">
@@ -593,7 +612,7 @@
         </div>
         <div class="sc-icon">&#127991;</div>
         <div class="sc-title">พร้อมขายทันที</div>
-        <div class="sc-desc">คลิปพร้อมโพสต์ลง TikTok<br>Shopee พร้อมปักตะกร้า</div>
+        <div class="sc-desc">ดาวน์โหลดวิดีโอ<br>หรือโพสต์ลง TikTok Shop<br>และ Shopee ได้ทันที</div>
       </div>
     </div>
   </div>
@@ -618,17 +637,17 @@
         <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;">เริ่มใช้ฟรี</button>
       </div>
       <div class="pricing-card featured">
-        <div class="badge-pro">&#11088; โปร</div>
+        <div class="badge-pro">&#11088; โปร (แนะนำ)</div>
         <div class="p-name">โปร</div>
         <div class="p-price">&#3647;299 <span>/ เดือน</span></div>
         <ul class="p-features">
           <li>สร้าง 100 คลิปต่อวัน</li>
           <li>ความยาว 3 นาที</li>
           <li>เสียง AI พรีเมียม</li>
-          <li>Full HD</li>
+          <li>วิดีโอ Full HD</li>
           <li>ไม่มีลายน้ำ</li>
           <li>เทมเพลตไวรัล</li>
-          <li>ตั้งเวลาโพสต์</li>
+          <li>ตั้งเวลาโพสต์อัตโนมัติ</li>
         </ul>
         <button class="btn btn-primary" onclick="scrollToEl('heroTop')" style="width:100%;background:linear-gradient(90deg,#12d8ff,#8b5cf6);border:none;">สมัครโปร</button>
       </div>
@@ -638,12 +657,13 @@
         <ul class="p-features">
           <li>สร้างไม่จำกัด</li>
           <li>วิดีโอ 4K</li>
+          <li>เสียง AI ทุกแบบ</li>
           <li>หลายบัญชี TikTok</li>
           <li>สร้างแคปชันอัตโนมัติ</li>
-          <li>AI ทุกเสียง</li>
-          <li>ฟีเจอร์ใหม่ก่อนใคร</li>
+          <li>สร้างแฮชแท็กอัตโนมัติ</li>
           <li>API Access</li>
-          <li>พื้นที่จัดเก็บ 100GB</li>
+          <li>พื้นที่จัดเก็บไฟล์ 100GB</li>
+          <li>ฟีเจอร์ใหม่ก่อนใคร</li>
         </ul>
         <button class="btn btn-outline" onclick="scrollToEl('heroTop')" style="width:100%;">สมัครอุลตร้า</button>
       </div>
@@ -668,11 +688,11 @@
   <div class="container" style="text-align:center;">
     <h2 class="sec-h2">รองรับทุกแพลตฟอร์ม</h2>
     <div class="plat-grid">
-      <div class="plat-item"><span>&#127760;</span> TikTok Shop</div>
+      <div class="plat-item"><span>&#127991;</span> TikTok Shop</div>
       <div class="plat-item"><span>&#128722;</span> Shopee Affiliate</div>
-      <div class="plat-item"><span>&#128421;</span> Facebook</div>
+      <div class="plat-item"><span>&#128214;</span> Facebook</div>
       <div class="plat-item"><span>&#128247;</span> Instagram</div>
-      <div class="plat-item"><span>&#9654;</span> YouTube Shorts</div>
+      <div class="plat-item"><span>&#127916;</span> YouTube Shorts</div>
     </div>
   </div>
 </section>
@@ -759,8 +779,8 @@
 
 <footer>
   <div class="container" style="text-align:center;">
-    <div style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">&#127916; VideoSeller AI</div>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);">เปลี่ยนรูปสินค้าเป็นวิดีโอขายของด้วย AI</p>
+    <div style="font-size:1.2rem;font-weight:800;margin-bottom:4px;">&#127916; VideoSeller AI</div>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);">เปลี่ยนรูปสินค้า<br>เป็นวิดีโอขายของด้วย AI</p>
     <p style="margin-top:16px;font-size:0.75rem;color:rgba(255,255,255,0.3);">&copy; 2026 VideoSeller AI &bull; All Rights Reserved.</p>
     <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
