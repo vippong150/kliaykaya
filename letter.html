@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ถึงทุกคนที่แวะมาอ่านข้อความนี้ 💞</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&family=Sarabun:wght@300;400;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+      background: #0a0a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 40px 20px;
+    }
+    .stars {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+    .glow-1 {
+      position: fixed;
+      top: -30%;
+      left: -20%;
+      width: 80vmax; height: 80vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,105,180,0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatGlow 20s ease-in-out infinite alternate;
+    }
+    .glow-2 {
+      position: fixed;
+      bottom: -30%;
+      right: -20%;
+      width: 80vmax; height: 80vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatGlow 25s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 5%) scale(1.1); }
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      width: 100%;
+      background: rgba(12, 12, 30, 0.7);
+      backdrop-filter: blur(24px) saturate(1.1);
+      -webkit-backdrop-filter: blur(24px) saturate(1.1);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 32px;
+      padding: 48px 40px;
+      box-shadow:
+        0 24px 80px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 0 60px rgba(255,105,180,0.04);
+      animation: fadeUp 1.2s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .heart {
+      text-align: center;
+      font-size: 2.4rem;
+      margin-bottom: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+    .content {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: rgba(255,255,255,0.88);
+      white-space: pre-line;
+      letter-spacing: 0.01em;
+    }
+    .content p {
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeInLine 0.8s ease forwards;
+    }
+    .content p:nth-child(1) { animation-delay: 0.2s; }
+    .content p:nth-child(2) { animation-delay: 0.6s; }
+    .content p:nth-child(3) { animation-delay: 1.0s; }
+    .content p:nth-child(4) { animation-delay: 1.4s; }
+    .content p:nth-child(5) { animation-delay: 1.8s; }
+    .content p:nth-child(6) { animation-delay: 2.2s; }
+    .content p:nth-child(7) { animation-delay: 2.6s; }
+    .content p:nth-child(8) { animation-delay: 3.0s; }
+    .content p:nth-child(9) { animation-delay: 3.4s; }
+    .content p:nth-child(10) { animation-delay: 3.8s; }
+    @keyframes fadeInLine {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,105,180,0.4), transparent);
+      margin: 24px auto;
+    }
+    .footer-text {
+      text-align: center;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 28px;
+      animation: fadeInLine 1s ease 4.2s forwards;
+      opacity: 0;
+    }
+    .footer-text span {
+      background: linear-gradient(90deg, #ff69b4, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 600;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 32px 24px; border-radius: 24px; }
+      .content { font-size: 0.95rem; line-height: 1.9; }
+      body { padding: 20px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="container">
+    <div class="heart">💞</div>
+    <div class="content" id="content"></div>
+    <div class="divider"></div>
+    <div class="footer-text">
+      — <span>นายชาเย็น</span> 💙
+    </div>
+  </div>
+  <script>
+    // Stars
+    const s = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const d = document.createElement('div');
+      d.className = 'star';
+      d.style.left = Math.random() * 100 + '%';
+      d.style.top = Math.random() * 100 + '%';
+      d.style.width = d.style.height = (Math.random() * 2.5 + 1) + 'px';
+      d.style.setProperty('--dur', (Math.random() * 4 + 2) + 's');
+      d.style.animationDelay = Math.random() * 4 + 's';
+      s.appendChild(d);
+    }
+    // Content
+    const text = `ถึงทุกคนที่แวะมาอ่านข้อความนี้ 💞
+
+ผมเคยมีวันที่เหนื่อย เคยท้อ และเคยคิดว่าถ้าหายไป ทุกอย่างอาจจะง่ายกว่านี้ แต่ผมก็ยังอยู่ตรงนี้ เพราะสุดท้ายแล้ว ผมรู้ว่าชีวิตหนึ่งชีวิตไม่ใช่เรื่องง่ายเลย
+
+ความจริงคือ ไม่มีใครรู้หรอกว่าตัวเองจะมีเวลาอีกนานแค่ไหน เราทุกคนต่างใช้ชีวิตไปทีละวัน โดยไม่รู้ว่าวันพรุ่งนี้จะเกิดอะไรขึ้น
+
+ถ้าวันหนึ่งผมไม่ได้อยู่ตรงนี้แล้ว ผมไม่ได้อยากให้ใครเสียใจนาน ๆ นะครับ แค่อยากให้ทุกคนดูแลตัวเองให้ดี ใช้เวลากับคนที่รัก และใช้ชีวิตให้มีความสุขเท่าที่จะทำได้
+
+อย่าเครียดจนลืมยิ้ม
+อย่าจมอยู่กับอดีต
+อย่าโกหกความรู้สึกของตัวเอง
+และอย่าลืมว่าทุกคนต่างมีเรื่องที่ต้องแบกอยู่เหมือนกัน
+
+ถ้าวันนี้เหนื่อย ก็พักได้
+ถ้าวันนี้ร้องไห้ ก็ร้องได้
+แต่เมื่อพร้อมแล้ว ก็ขอให้ค่อย ๆ เดินต่อไป
+
+ทุกอย่างที่เกิดขึ้นคือส่วนหนึ่งของชีวิต เราอาจไม่เข้าใจทุกอย่าง แต่เราสามารถยอมรับมันและใช้เวลาที่มีอยู่ให้ดีที่สุดได้
+
+ขอบคุณทุกคนที่เคยผ่านเข้ามาในชีวิตของผม
+และขอบคุณตัวเองที่พยายามมาถึงตรงนี้
+
+เราทุกคนต่างพยายามอย่างดีที่สุดแล้วครับ 💞`;
+
+    const lines = text.split('\n\n');
+    const container = document.getElementById('content');
+    lines.forEach(line => {
+      const p = document.createElement('p');
+      p.textContent = line;
+      container.appendChild(p);
+    });
+  </script>
+</body>
+</html>
