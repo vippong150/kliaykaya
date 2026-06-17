@@ -8,25 +8,57 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; }
   .top-bar { background: #fff; border-bottom: 1px solid #ddd; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .tb-logo { font-size: 1.3rem; font-weight: 800; color: #1877f2; display: flex; align-items: center; gap: 6px; }
+  .tb-logo { font-size: 1.3rem; font-weight: 800; color: #1877f2; display: flex; align-items: center; gap: 6px; cursor: pointer; }
   .tb-logo span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .tb-actions { display: flex; align-items: center; gap: 10px; }
+  .tb-actions { display: flex; align-items: center; gap: 8px; }
   .tb-btn { padding: 6px 14px; border-radius: 8px; border: none; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.15s; }
   .tb-btn-primary { background: #1877f2; color: #fff; }
   .tb-btn-primary:hover { background: #166fe5; }
   .tb-btn-outline { background: transparent; border: 1px solid #ddd; color: #606770; }
   .tb-btn-outline:hover { background: #f0f2f5; }
-  .container { max-width: 640px; margin: 0 auto; padding: 16px; }
+  .tb-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #606770; font-size: 1.1rem; transition: background 0.15s; position: relative; }
+  .tb-icon:hover { background: #f0f2f5; }
+  .tb-chat-badge { position: absolute; top: -2px; right: -2px; background: #e41e3f; color: #fff; font-size: 0.6rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; display: none; }
+  /* Search */
+  .search-bar { background: #f0f2f5; border-radius: 24px; padding: 0 14px; display: flex; align-items: center; flex: 1; max-width: 400px; margin: 0 12px; }
+  .search-bar input { border: none; background: transparent; padding: 10px 8px; font-size: 0.85rem; outline: none; flex: 1; font-family: inherit; }
+  .search-bar input::placeholder { color: #8a8d91; }
+  .search-bar span { color: #8a8d91; font-size: 0.9rem; }
+  /* Layout */
+  .layout { display: flex; max-width: 1100px; margin: 0 auto; padding: 16px; gap: 16px; }
+  .left-sidebar { width: 260px; flex-shrink: 0; }
+  .center { flex: 1; min-width: 0; max-width: 640px; }
+  .right-sidebar { width: 260px; flex-shrink: 0; }
+  /* Profile mini */
+  .profile-mini { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 20px; text-align: center; margin-bottom: 12px; cursor: pointer; transition: box-shadow 0.2s; }
+  .profile-mini:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .pm-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 8px; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 2rem; overflow: hidden; cursor: pointer; }
+  .pm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pm-name { font-size: 0.95rem; font-weight: 600; color: #1c1e21; }
+  .pm-name:hover { text-decoration: underline; }
+  .pm-bio { font-size: 0.75rem; color: #65676b; margin-top: 2px; }
+  /* Menu items */
+  .menu-items { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 8px 0; margin-bottom: 12px; }
+  .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; font-size: 0.88rem; color: #1c1e21; transition: background 0.15s; }
+  .menu-item:hover { background: #f0f2f5; }
+  .menu-item.active { background: #e7f3ff; color: #1877f2; font-weight: 600; }
+  .menu-item .mi-icon { font-size: 1.2rem; width: 28px; text-align: center; }
   /* Profile card */
   .profile-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 16px; }
-  .pc-cover { height: 180px; background: linear-gradient(135deg, #1877f2, #8b5cf6); position: relative; }
+  .pc-cover { height: 200px; background: linear-gradient(135deg, #1877f2, #8b5cf6); position: relative; }
   .pc-avatar { position: absolute; bottom: -40px; left: 24px; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 2.4rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; }
   .pc-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .pc-info { padding: 44px 24px 16px; }
-  .pc-name { font-size: 1.2rem; font-weight: 700; color: #1c1e21; }
-  .pc-bio { font-size: 0.85rem; color: #606770; margin-top: 2px; }
+  .pc-name { font-size: 1.3rem; font-weight: 700; color: #1c1e21; }
+  .pc-bio { font-size: 0.85rem; color: #65676b; margin-top: 2px; }
+  .pc-stats { display: flex; gap: 16px; margin-top: 8px; font-size: 0.82rem; color: #65676b; }
+  .pc-stats span { cursor: pointer; }
+  .pc-stats span:hover { text-decoration: underline; }
+  .pc-stats strong { color: #1c1e21; }
   .pc-edit-cover { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 8px; background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.7); font-size: 0.7rem; cursor: pointer; border: none; }
   .pc-edit-cover:hover { background: rgba(0,0,0,0.5); color: #fff; }
+  .pc-edit-pencil { position: absolute; bottom: -12px; right: 4px; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; color: #606770; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .pc-edit-pencil:hover { background: #f0f2f5; }
   /* Post box */
   .post-box { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 16px; }
   .pb-header { display: flex; align-items: center; gap: 10px; }
@@ -34,111 +66,245 @@
   .pb-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .pb-input { flex: 1; padding: 10px 16px; border-radius: 20px; border: 1px solid #ddd; background: #f0f2f5; font-size: 0.9rem; outline: none; font-family: inherit; }
   .pb-input:focus { border-color: #1877f2; background: #fff; }
-  .pb-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-  .pb-actions { display: flex; gap: 12px; }
-  .pb-btn { font-size: 0.82rem; color: #606770; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: all 0.15s; }
-  .pb-btn:hover { background: #f0f2f5; }
-  .pb-submit { padding: 8px 24px; border-radius: 8px; border: none; background: #1877f2; color: #fff; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-  .pb-submit:hover { background: #166fe5; }
-  .pb-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pb-divider { height: 1px; background: #e4e6eb; margin: 12px 0; }
+  .pb-actions { display: flex; gap: 4px; }
+  .pb-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #65676b; transition: background 0.15s; }
+  .pb-action:hover { background: #f0f2f5; }
   .pb-img-preview { margin-top: 10px; position: relative; display: none; }
   .pb-img-preview img { max-height: 240px; border-radius: 10px; width: 100%; object-fit: cover; }
   .pb-img-close { position: absolute; top: 6px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.5); color: #fff; border: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   /* Post */
-  .post { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 12px; }
-  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; overflow: hidden; }
+  .post { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 12px; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .post-header { display: flex; align-items: center; gap: 10px; padding: 16px 16px 0; }
+  .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; overflow: hidden; cursor: pointer; }
   .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .post-name { font-size: 0.9rem; font-weight: 600; color: #1c1e21; }
   .post-name:hover { text-decoration: underline; cursor: pointer; }
   .post-time { font-size: 0.7rem; color: #65676b; }
-  .post-text { font-size: 0.92rem; color: #1c1e21; line-height: 1.5; margin-bottom: 10px; white-space: pre-wrap; }
-  .post-img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-  .post-stats { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e4e6eb; margin-bottom: 6px; font-size: 0.78rem; color: #65676b; }
+  .post-body { padding: 10px 16px 0; }
+  .post-text { font-size: 0.92rem; color: #1c1e21; line-height: 1.5; white-space: pre-wrap; }
+  .post-img { width: calc(100% + 32px); margin: 10px -16px 0; max-height: 400px; object-fit: cover; }
+  .post-footer { padding: 8px 16px 12px; }
+  .post-stats { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e4e6eb; margin-bottom: 4px; font-size: 0.78rem; color: #65676b; }
+  .post-react-icons { display: flex; }
+  .post-react-icons span { margin-right: -4px; font-size: 1rem; }
   .post-actions { display: flex; gap: 4px; }
-  .post-action { flex: 1; text-align: center; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: #65676b; font-weight: 600; transition: all 0.15s; }
+  .post-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: #65676b; font-weight: 600; transition: all 0.15s; position: relative; }
   .post-action:hover { background: #f0f2f5; }
   .post-action.liked { color: #1877f2; }
-  .post-action.liked::before { content: '❤️ '; }
+  .post-action .pa-react-popup { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 30px; padding: 6px 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.15); white-space: nowrap; z-index: 10; margin-bottom: 6px; }
+  .post-action:hover .pa-react-popup { display: flex; gap: 2px; }
+  .pa-react-popup span { font-size: 1.6rem; cursor: pointer; padding: 2px; border-radius: 50%; transition: transform 0.15s; line-height: 1; }
+  .pa-react-popup span:hover { transform: scale(1.3); }
+  .post-delete { color: #999; font-size: 0.7rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; margin-left: auto; }
+  .post-delete:hover { color: #e41e3f; background: rgba(228,30,63,0.06); }
   .empty-feed { text-align: center; padding: 40px 20px; color: #65676b; font-size: 0.9rem; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  @media (max-width:600px) {
-    .pc-cover { height: 120px; }
-    .pc-avatar { width: 60px; height: 60px; font-size: 1.8rem; bottom: -30px; left: 16px; }
-    .pc-info { padding: 34px 16px 12px; }
-    .container { padding: 12px; }
-  }
+  /* Chat */
+  .chat-panel { display: none; position: fixed; bottom: 0; right: 20px; width: 340px; height: 420px; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -2px 24px rgba(0,0,0,0.12); z-index: 200; flex-direction: column; }
+  .chat-panel.open { display: flex; }
+  .chat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #e4e6eb; cursor: pointer; }
+  .chat-header .ch-title { font-weight: 600; font-size: 0.95rem; }
+  .chat-header .ch-close { cursor: pointer; color: #65676b; font-size: 1.2rem; padding: 0 4px; }
+  .chat-msgs { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .chat-msg { max-width: 80%; padding: 8px 14px; border-radius: 18px; font-size: 0.85rem; line-height: 1.4; word-wrap: break-word; }
+  .chat-msg.incoming { background: #f0f2f5; align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-msg.outgoing { background: #1877f2; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-msg .cm-time { font-size: 0.6rem; opacity: 0.6; margin-top: 4px; }
+  .chat-input-row { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-top: 1px solid #e4e6eb; }
+  .chat-input-row input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #ddd; background: #f0f2f5; outline: none; font-size: 0.85rem; font-family: inherit; }
+  .chat-input-row input:focus { border-color: #1877f2; background: #fff; }
+  .chat-input-row button { padding: 8px 16px; border-radius: 20px; border: none; background: #1877f2; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.82rem; }
+  .chat-input-row button:hover { background: #166fe5; }
+  .chat-float-btn { display: flex; align-items: center; gap: 6px; background: #fff; border-radius: 30px; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); cursor: pointer; font-weight: 600; font-size: 0.85rem; color: #1c1e21; border: none; }
+  .chat-float-btn:hover { background: #f0f2f5; }
+  /* Modal */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; }
+  .modal.open { display: flex; }
+  .modal-content { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; }
+  .modal-content h3 { margin-bottom: 16px; font-size: 1.1rem; }
+  .modal-close { float: right; cursor: pointer; color: #65676b; font-size: 1.3rem; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #65676b; margin-bottom: 4px; }
+  .form-group input, .form-group textarea { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; outline: none; font-family: inherit; }
+  .form-group input:focus, .form-group textarea:focus { border-color: #1877f2; }
+  .form-group textarea { resize: vertical; min-height: 60px; }
+  .modal-btn { width: 100%; padding: 10px; border-radius: 8px; border: none; background: #1877f2; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+  .modal-btn:hover { background: #166fe5; }
+  /* Suggestions */
+  .suggest-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 12px; }
+  .suggest-title { font-size: 0.9rem; font-weight: 600; color: #1c1e21; margin-bottom: 10px; }
+  .suggest-user { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .su-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .su-name { font-size: 0.82rem; font-weight: 500; flex: 1; }
+  .su-follow { font-size: 0.75rem; color: #1877f2; font-weight: 600; cursor: pointer; padding: 4px 10px; border-radius: 6px; }
+  .su-follow:hover { background: #e7f3ff; }
+  /* Responsive */
+  @media (max-width:900px) { .left-sidebar, .right-sidebar { display: none; } .layout { padding: 12px; } }
+  @media (max-width:600px) { .pc-cover { height: 140px; } .pc-avatar { width: 60px; height: 60px; font-size: 1.8rem; bottom: -30px; left: 16px; } .pc-info { padding: 34px 16px 12px; } .top-bar { padding: 0 10px; } .search-bar { max-width: 180px; } .chat-panel { right: 0; width: 100%; height: 60vh; } }
 </style>
 </head>
 <body>
 
 <div class="top-bar">
-  <div class="tb-logo">&#127916; <span>VideoSeller AI</span></div>
+  <div class="tb-logo" onclick="location='index.html'">&#127916; <span>VideoSeller AI</span></div>
+  <div class="search-bar">
+    <span>&#128269;</span>
+    <input id="searchInput" placeholder="ค้นหาโพสต์..." oninput="renderFeed()">
+  </div>
   <div class="tb-actions">
-    <a class="tb-btn tb-btn-outline" href="index.html">&#8592; กลับหน้าแรก</a>
+    <div class="tb-icon" onclick="openChat()" title="แชท">&#128172;<span class="tb-chat-badge" id="chatBadge">1</span></div>
+    <a class="tb-btn tb-btn-outline" href="index.html">&#8592; หน้าแรก</a>
   </div>
 </div>
 
-<div class="container">
-  <!-- Profile -->
-  <div class="profile-card">
-    <div class="pc-cover" id="pcCover">
-      <button class="pc-edit-cover" onclick="document.getElementById('coverColor').click()">🎨 เปลี่ยนสีปก</button>
-      <input type="color" id="coverColor" value="#1877f2" style="display:none">
+<div class="layout">
+  <!-- LEFT SIDEBAR -->
+  <div class="left-sidebar">
+    <div class="profile-mini" onclick="scrollToTop()">
+      <div class="pm-avatar" id="miniAvatar">&#128100;</div>
+      <div class="pm-name" id="miniName">เพื่อนนักพัฒนา</div>
+      <div class="pm-bio" id="miniBio">นักสร้างคอนเทนต์ตัวจิ๋ว</div>
     </div>
-    <div class="pc-avatar" id="pcAvatar" onclick="document.getElementById('avatarInput').click()">
-      <span id="pcAvatarText">👤</span>
-      <input type="file" id="avatarInput" accept="image/*" style="display:none">
-    </div>
-    <div class="pc-info">
-      <div class="pc-name" id="pcName">เพื่อนนักพัฒนา</div>
-      <div class="pc-bio" id="pcBio">นักสร้างคอนเทนต์ตัวจิ๋ว ✨</div>
+    <div class="menu-items">
+      <div class="menu-item active" onclick="setPage('feed')"><span class="mi-icon">&#127760;</span> ฟีด</div>
+      <div class="menu-item" onclick="setPage('profile')"><span class="mi-icon">&#128100;</span> โปรไฟล์</div>
+      <div class="menu-item" onclick="openChat()"><span class="mi-icon">&#128172;</span> แชท</div>
     </div>
   </div>
 
-  <!-- Create Post -->
-  <div class="post-box">
-    <div class="pb-header">
-      <div class="pb-avatar" id="pbAvatarDisplay">👤</div>
-      <input class="pb-input" id="postInput" placeholder="คุณกำลังคิดอะไรอยู่..." maxlength="500">
-    </div>
-    <div class="pb-footer">
-      <div class="pb-actions">
-        <label class="pb-btn" for="postImgInput">🖼 รูปภาพ</label>
-        <input type="file" id="postImgInput" accept="image/*" style="display:none">
-        <span class="pb-btn" onclick="document.getElementById('postInput').value=''">🗑 ล้าง</span>
+  <!-- CENTER -->
+  <div class="center">
+    <!-- Profile Card -->
+    <div class="profile-card" id="profileCard" style="display:none;">
+      <div class="pc-cover" id="pcCover">
+        <button class="pc-edit-cover" onclick="document.getElementById('coverColor').click()">🎨 เปลี่ยนสีปก</button>
+        <input type="color" id="coverColor" value="#1877f2" style="display:none">
       </div>
-      <button class="pb-submit" onclick="createPost()">โพสต์</button>
+      <div class="pc-avatar" id="pcAvatar" onclick="document.getElementById('avatarInput').click()">
+        <span id="pcAvatarText">&#128100;</span>
+        <div class="pc-edit-pencil">&#9998;</div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none">
+      </div>
+      <div class="pc-info">
+        <div class="pc-name" id="pcName">เพื่อนนักพัฒนา</div>
+        <div class="pc-bio" id="pcBio">นักสร้างคอนเทนต์ตัวจิ๋ว ✨</div>
+        <div class="pc-stats">
+          <span><strong id="postCount">0</strong> โพสต์</span>
+          <span><strong id="friendCount">133</strong> เพื่อน</span>
+        </div>
+        <button class="tb-btn tb-btn-outline" style="margin-top:10px;" onclick="openProfileModal()">&#9998; แก้ไขโปรไฟล์</button>
+      </div>
     </div>
-    <div class="pb-img-preview" id="postImgPreview">
-      <img id="postImg">
-      <button class="pb-img-close" onclick="clearPostImg()">✕</button>
+
+    <!-- Create Post -->
+    <div class="post-box" id="postBox">
+      <div class="pb-header">
+        <div class="pb-avatar" id="pbAvatar">&#128100;</div>
+        <input class="pb-input" id="postInput" placeholder="คุณกำลังคิดอะไรอยู่..." maxlength="500" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();createPost();}">
+      </div>
+      <div class="pb-img-preview" id="postImgPreview">
+        <img id="postImg">
+        <button class="pb-img-close" onclick="clearPostImg()">&#10005;</button>
+      </div>
+      <div class="pb-divider"></div>
+      <div class="pb-actions">
+        <div class="pb-action" onclick="document.getElementById('postImgInput').click()">&#128247; รูปภาพ</div>
+        <div class="pb-action" onclick="document.getElementById('postInput').value=''">&#128465; ล้าง</div>
+        <div class="pb-action" style="color:#1877f2;font-weight:700;" onclick="createPost()">&#128228; โพสต์</div>
+      </div>
+      <input type="file" id="postImgInput" accept="image/*" style="display:none">
     </div>
+
+    <!-- Feed -->
+    <div id="feed"></div>
   </div>
 
-  <!-- Feed -->
-  <div id="feed"></div>
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-sidebar">
+    <div class="suggest-card">
+      <div class="suggest-title">&#128101; ผู้คนที่คุณอาจรู้จัก</div>
+      <div class="suggest-user">
+        <div class="su-avatar">&#128104;</div>
+        <span class="su-name">สมชาย ใจดี</span>
+        <span class="su-follow">+ ติดตาม</span>
+      </div>
+      <div class="suggest-user">
+        <div class="su-avatar">&#128105;</div>
+        <span class="su-name">สาวสวย สมใจ</span>
+        <span class="su-follow">+ ติดตาม</span>
+      </div>
+      <div class="suggest-user">
+        <div class="su-avatar">&#128104;</div>
+        <span class="su-name">อัจฉริยะ พัฒน์</span>
+        <span class="su-follow">+ ติดตาม</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT PANEL -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header" onclick="toggleChat()">
+    <span class="ch-title">&#128172; แชท</span>
+    <span class="ch-close" onclick="event.stopPropagation();closeChat()">&#10005;</span>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="chat-msg incoming">สวัสดีครับ ยินดีต้อนรับ! <div class="cm-time">12:00</div></div>
+  </div>
+  <div class="chat-input-row">
+    <input id="chatInput" placeholder="พิมพ์ข้อความ..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendChat();}">
+    <button onclick="sendChat()">&#10148;</button>
+  </div>
+</div>
+<div style="position:fixed;bottom:16px;right:16px;z-index:150;">
+  <button class="chat-float-btn" onclick="openChat()">&#128172; แชท</button>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal" id="profileModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeProfileModal()">&#10005;</span>
+    <h3>&#128100; แก้ไขโปรไฟล์</h3>
+    <div class="form-group">
+      <label>ชื่อ</label>
+      <input id="editName" placeholder="ชื่อของคุณ">
+    </div>
+    <div class="form-group">
+      <label>คำอธิบาย</label>
+      <textarea id="editBio" placeholder="คำอธิบายสั้นๆ"></textarea>
+    </div>
+    <button class="modal-btn" onclick="saveProfile()">&#128190; บันทึก</button>
+  </div>
 </div>
 
 <script>
   let posts = JSON.parse(localStorage.getItem('sc_posts') || '[]');
   let profile = JSON.parse(localStorage.getItem('sc_profile') || '{"name":"เพื่อนนักพัฒนา","bio":"นักสร้างคอนเทนต์ตัวจิ๋ว ✨","cover":"#1877f2"}');
+  const reactions = [{e:'👍',t:'Like'},{e:'❤️',t:'Love'},{e:'😂',t:'Haha'},{e:'😮',t:'Wow'},{e:'😢',t:'Sad'},{e:'😡',t:'Angry'}];
 
-  (function() {
-    const p = profile;
-    document.getElementById('pcName').textContent = p.name;
-    document.getElementById('pcBio').textContent = p.bio;
-    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + p.cover + ',' + (p.cover === '#1877f2' ? '#8b5cf6' : p.cover) + ')';
-    if (p.avatar) {
-      document.getElementById('pcAvatarText').innerHTML = '<img src="' + p.avatar + '">';
-      document.getElementById('pbAvatarDisplay').innerHTML = '<img src="' + p.avatar + '">';
-    }
+  (function init() {
+    applyProfile();
     renderFeed();
   })();
+
+  function applyProfile() {
+    const p = profile;
+    ['miniName','pcName'].forEach(id => document.getElementById(id).textContent = p.name);
+    ['miniBio','pcBio'].forEach(id => document.getElementById(id).textContent = p.bio.replace(/\*\*/g,''));
+    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + p.cover + ',' + (p.cover==='#1877f2'?'#8b5cf6':p.cover)+ ')';
+    if (p.avatar) {
+      const h = '<img src="' + p.avatar + '">';
+      document.getElementById('pcAvatarText').innerHTML = h;
+      document.getElementById('pbAvatar').innerHTML = h;
+      document.getElementById('miniAvatar').innerHTML = h;
+    }
+  }
 
   document.getElementById('coverColor').onchange = function() {
     profile.cover = this.value;
     localStorage.setItem('sc_profile', JSON.stringify(profile));
-    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + this.value + ',' + (this.value === '#1877f2' ? '#8b5cf6' : this.value) + ')';
+    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + this.value + ',' + (this.value==='#1877f2'?'#8b5cf6':this.value)+ ')';
   };
 
   document.getElementById('avatarInput').onchange = function(e) {
@@ -147,9 +313,7 @@
     r.onload = function(ev) {
       profile.avatar = ev.target.result;
       localStorage.setItem('sc_profile', JSON.stringify(profile));
-      const html = '<img src="' + ev.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
-      document.getElementById('pcAvatarText').innerHTML = html;
-      document.getElementById('pbAvatarDisplay').innerHTML = html;
+      applyProfile();
     };
     r.readAsDataURL(f);
   };
@@ -157,25 +321,19 @@
   document.getElementById('postImgInput').onchange = function(e) {
     const f = e.target.files[0]; if (!f) return;
     const r = new FileReader();
-    r.onload = function(ev) {
-      document.getElementById('postImg').src = ev.target.result;
-      document.getElementById('postImgPreview').style.display = '';
-    };
+    r.onload = function(ev) { document.getElementById('postImg').src = ev.target.result; document.getElementById('postImgPreview').style.display = ''; };
     r.readAsDataURL(f);
   };
 
-  function clearPostImg() {
-    document.getElementById('postImgPreview').style.display = 'none';
-    document.getElementById('postImgInput').value = '';
-  }
+  function clearPostImg() { document.getElementById('postImgPreview').style.display = 'none'; document.getElementById('postImgInput').value = ''; }
 
   function createPost() {
     const input = document.getElementById('postInput');
     const text = input.value.trim();
     const img = document.getElementById('postImg');
     if (!text && !img.src) return;
-    const post = { id: Date.now(), text, time: Date.now(), likes: 0, liked: false };
-    if (img.src && document.getElementById('postImgPreview').style.display !== 'none') { post.img = img.src; }
+    const post = { id: Date.now(), text, time: Date.now(), reacts: {}, totalReacts: 0 };
+    if (img.src && document.getElementById('postImgPreview').style.display !== 'none') post.img = img.src;
     posts.unshift(post);
     localStorage.setItem('sc_posts', JSON.stringify(posts));
     input.value = '';
@@ -183,34 +341,126 @@
     renderFeed();
   }
 
-  function toggleLike(id) {
-    const p = posts.find(x => x.id === id);
-    if (!p) return;
-    p.liked = !p.liked;
-    p.likes += p.liked ? 1 : -1;
+  function deletePost(id) {
+    if (!confirm('ลบโพสต์นี้?')) return;
+    posts = posts.filter(p => p.id !== id);
     localStorage.setItem('sc_posts', JSON.stringify(posts));
     renderFeed();
   }
 
+  function reactPost(id, emoji) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    if (!p.reacts) p.reacts = {};
+    if (p.reacts[emoji]) { p.reacts[emoji]--; if (p.reacts[emoji] <= 0) delete p.reacts[emoji]; }
+    else p.reacts[emoji] = (p.reacts[emoji] || 0) + 1;
+    p.totalReacts = Object.values(p.reacts).reduce((a,b) => a + b, 0);
+    localStorage.setItem('sc_posts', JSON.stringify(posts));
+    renderFeed();
+  }
+
+  function getMainReact(reacts) {
+    if (!reacts || !Object.keys(reacts).length) return null;
+    return Object.entries(reacts).sort((a,b) => b[1] - a[1])[0][0];
+  }
+
   function renderFeed() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = q ? posts.filter(p => p.text && p.text.toLowerCase().includes(q)) : posts;
     const feed = document.getElementById('feed');
-    if (!posts.length) { feed.innerHTML = '<div class="empty-feed">📝 ยังไม่มีโพสต์ — เขียนอะไรสักหน่อยสิ</div>'; return; }
-    feed.innerHTML = posts.map(p => {
+    const profileCard = document.getElementById('profileCard');
+    document.getElementById('postCount').textContent = posts.length;
+    profileCard.style.display = '';
+
+    if (!filtered.length) {
+      feed.innerHTML = '<div class="empty-feed">' + (q ? '🔍 ไม่พบโพสต์ที่ค้นหา' : '📝 ยังไม่มีโพสต์ — เขียนอะไรสักหน่อยสิ') + '</div>';
+      return;
+    }
+    feed.innerHTML = filtered.map(p => {
       const time = new Date(p.time);
       const timeStr = time.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const mainReact = getMainReact(p.reacts);
+      const reactList = reactions.map(r => {
+        const count = p.reacts && p.reacts[r.e] ? p.reacts[r.e] : 0;
+        return '<span title="' + r.t + '" onclick="reactPost(' + p.id + ",'" + r.e + "')\">" + r.e + '</span>';
+      }).join('');
+      const shownReacts = p.reacts ? Object.entries(p.reacts).filter(([_,c]) => c > 0) : [];
       return '<div class="post">' +
         '<div class="post-header">' +
           '<div class="post-avatar' + (profile.avatar ? '" style="background:none' : '') + '">' + (profile.avatar ? '<img src="' + profile.avatar + '">' : '👤') + '</div>' +
-          '<div><div class="post-name">' + esc(profile.name) + '</div><div class="post-time">' + timeStr + '</div></div>' +
+          '<div style="flex:1"><div class="post-name">' + esc(profile.name) + '</div><div class="post-time">' + timeStr + '</div></div>' +
+          '<span class="post-delete" onclick="deletePost(' + p.id + ')">🗑</span>' +
         '</div>' +
-        (p.text ? '<div class="post-text">' + esc(p.text) + '</div>' : '') +
-        (p.img ? '<img class="post-img" src="' + p.img + '">' : '') +
-        '<div class="post-stats">❤️ ' + (p.likes || 0) + ' ครั้ง</div>' +
+        '<div class="post-body">' +
+          (p.text ? '<div class="post-text">' + esc(p.text) + '</div>' : '') +
+          (p.img ? '<img class="post-img" src="' + p.img + '">' : '') +
+        '</div>' +
+        (shownReacts.length || p.totalReacts ? '<div class="post-footer"><div class="post-stats"><div class="post-react-icons">' + shownReacts.map(([e,c]) => '<span title="' + c + ' คน">' + e + '</span>').join('') + '</div><span>' + (p.totalReacts || '') + ' ครั้ง</span></div>' : '<div class="post-footer">') +
         '<div class="post-actions">' +
-          '<div class="post-action' + (p.liked ? ' liked' : '') + '" onclick="toggleLike(' + p.id + ')">' + (p.liked ? '❤️ ถูกใจ' : '🤍 ถูกใจ') + '</div>' +
-        '</div>' +
-      '</div>';
+          '<div class="post-action' + (mainReact ? ' liked' : '') + '" style="position:relative;">' +
+            '<div class="pa-react-popup">' + reactList + '</div>' +
+            (mainReact || '👍') + ' ถูกใจ' +
+          '</div>' +
+        '</div></div></div>';
     }).join('');
+  }
+
+  // PAGE SWITCH
+  function setPage(page) {
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    if (page === 'feed') {
+      document.querySelector('.menu-item:first-child').classList.add('active');
+      document.getElementById('profileCard').style.display = '';
+      document.getElementById('postBox').style.display = '';
+    } else if (page === 'profile') {
+      document.querySelectorAll('.menu-item')[1].classList.add('active');
+      document.getElementById('profileCard').style.display = '';
+      document.getElementById('postBox').style.display = 'none';
+      document.getElementById('feed').innerHTML = '';
+    }
+  }
+
+  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+  // PROFILE MODAL
+  function openProfileModal() {
+    document.getElementById('editName').value = profile.name;
+    document.getElementById('editBio').value = profile.bio;
+    document.getElementById('profileModal').classList.add('open');
+  }
+  function closeProfileModal() { document.getElementById('profileModal').classList.remove('open'); }
+  function saveProfile() {
+    profile.name = document.getElementById('editName').value.trim() || profile.name;
+    profile.bio = document.getElementById('editBio').value.trim() || profile.bio;
+    localStorage.setItem('sc_profile', JSON.stringify(profile));
+    applyProfile();
+    renderFeed();
+    closeProfileModal();
+  }
+
+  // CHAT
+  let chatOpen = false;
+  function openChat() {
+    chatOpen = true;
+    document.getElementById('chatPanel').classList.add('open');
+    document.getElementById('chatBadge').style.display = 'none';
+  }
+  function closeChat() { chatOpen = false; document.getElementById('chatPanel').classList.remove('open'); }
+  function toggleChat() { if (chatOpen) closeChat(); else openChat(); }
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chatMsgs');
+    const time = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+    msgs.innerHTML += '<div class="chat-msg outgoing">' + esc(text) + '<div class="cm-time">' + time + '</div></div>';
+    input.value = '';
+    msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(() => {
+      const replies = ['👍','เข้าใจแล้วครับ','สุดยอด!','ครับ','เยี่ยมมาก!','ขอบคุณครับ','😊'];
+      msgs.innerHTML += '<div class="chat-msg incoming">' + replies[Math.floor(Math.random()*replies.length)] + '<div class="cm-time">' + new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' }) + '</div></div>';
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1000 + Math.random() * 2000);
   }
 
   function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
