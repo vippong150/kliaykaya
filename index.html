@@ -137,6 +137,7 @@
     .stat-card { background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 36px 20px; text-align: center; backdrop-filter: blur(18px); }
     .stat-card .stat-icon { font-size: 2rem; margin-bottom: 12px; }
     .stat-card .stat-num { font-size: 2.2rem; font-weight: 800; background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+    .stat-counter { display: inline-block; min-width: 0.4em; }
     .stat-card .stat-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
     /* platforms */
     .plat-grid { display: flex; gap: 16px; justify-content: flex-start; flex-wrap: wrap; }
@@ -560,22 +561,22 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon">&#127968;</div>
-        <div class="stat-num">128,349+</div>
+        <div class="stat-num"><span class="stat-counter" data-target="128349">0</span><span class="stat-suffix">+</span></div>
         <div class="stat-lbl">คลิปที่สร้างแล้ว</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">&#128101;</div>
-        <div class="stat-num">36,521</div>
+        <div class="stat-num"><span class="stat-counter" data-target="36521">0</span></div>
         <div class="stat-lbl">ผู้ใช้งาน</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">&#128200;</div>
-        <div class="stat-num">12,850,000+</div>
+        <div class="stat-num"><span class="stat-counter" data-target="12850000">0</span><span class="stat-suffix">+</span></div>
         <div class="stat-lbl">ยอดขายที่เพิ่มขึ้น (บาท)</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">&#128149;</div>
-        <div class="stat-num">99.9%</div>
+        <div class="stat-num"><span class="stat-counter" data-target="999" data-decimal="1">0</span><span class="stat-suffix">%</span></div>
         <div class="stat-lbl">ความพึงพอใจ</div>
       </div>
     </div>
@@ -1482,6 +1483,38 @@
       btn.disabled = false; btn.textContent = '&#9986; ตัด';
     };
   }
+  // STAT COUNTER
+  (function() {
+    const counters = document.querySelectorAll('.stat-counter');
+    if (!counters.length) return;
+    let animated = false;
+    function animateCounters() {
+      if (animated) return; animated = true;
+      counters.forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const decimal = parseInt(el.dataset.decimal) || 0;
+        const dur = 2000; const step = 16;
+        const total = Math.ceil(dur / step);
+        let cur = 0;
+        const interval = setInterval(() => {
+          cur++;
+          const progress = cur / total;
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const val = Math.round(eased * target);
+          if (decimal) {
+            el.textContent = (val / Math.pow(10, decimal)).toFixed(decimal);
+          } else {
+            el.textContent = val.toLocaleString();
+          }
+          if (cur >= total) { clearInterval(interval); el.textContent = decimal ? (target / Math.pow(10, decimal)).toFixed(decimal) : target.toLocaleString(); }
+        }, step);
+      });
+    }
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { animateCounters(); obs.disconnect(); } });
+    }, { threshold: 0.3 });
+    obs.observe(document.querySelector('.stats-grid'));
+  })();
   // AUTO-UPDATE
   (function() {
     const current = localStorage.getItem('vsa_version') || '0';
