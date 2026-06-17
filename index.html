@@ -728,7 +728,7 @@
       <div class="tool-card">
         <div class="tc-icon" style="background:linear-gradient(135deg,rgba(0,242,234,0.15),rgba(0,242,234,0.04));">&#127916;</div>
         <div class="tc-title">โหลด MP4</div>
-        <div class="tc-desc">วางลิงก์วิดีโอ หรืออัปโหลดไฟล์วิดีโอ</div>
+        <div class="tc-desc">วางลิงก์วิดีโอ หรืออัปโหลดไฟล์ → กดดาวน์โหลด</div>
         <div class="tt-input-row" style="margin-bottom:10px;">
           <input type="url" id="mp4UrlInput" placeholder="วางลิงก์วิดีโอที่นี่...">
           <button class="tt-btn" onclick="loadMp4Url()" style="padding:10px 18px;font-size:0.82rem;">&#128279; โหลด</button>
@@ -738,21 +738,9 @@
           <div class="tu-txt">หรืออัปโหลดไฟล์ MP4 / MOV</div>
         </div>
         <input type="file" id="mp4Input" accept="video/*" style="display:none">
-        <div id="mp4TrimArea" style="display:none;margin-top:10px;">
-          <div class="tt-trim-row" style="margin-bottom:10px;">
-            <label>ตัด</label><input type="number" id="mp4Start" min="0" step="0.5" value="0">
-            <label>ถึง</label><input type="number" id="mp4End" min="0" step="0.5" value="10">
-            <input type="range" class="tt-trim-slider" id="mp4Slider" min="0" max="30" step="0.5" value="0">
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <span id="mp4Info" style="font-size:0.78rem;color:rgba(255,255,255,0.3);">&#127916; <span id="mp4Name">-</span> | <span id="mp4Dur">00:00</span></span>
-            <button class="tt-trim-btn" id="mp4TrimBtn" onclick="trimMp4()">&#9986; ตัด MP4</button>
-          </div>
-          <div class="tt-trim-progress" id="mp4Progress"><div class="tt-trim-bar" id="mp4Bar"></div></div>
-          <div class="tt-trim-preview" id="mp4Preview"><div class="tt-trim-info" id="mp4Result"></div></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-          <button class="tt-dlbtn tt-dlbtn-mp4" id="mp4DlBtn" onclick="downloadMp4()" style="display:none;">&#128190; ดาวน์โหลด MP4</button>
+        <div id="mp4InfoBar" style="display:none;margin-top:10px;padding:12px;border-radius:10px;background:rgba(0,242,234,0.04);border:1px solid rgba(0,242,234,0.1);text-align:center;">
+          <span id="mp4Name" style="font-size:0.82rem;color:rgba(255,255,255,0.6);">video.mp4</span>
+          <button class="tt-dlbtn tt-dlbtn-mp4" id="mp4DlBtn" onclick="downloadMp4()" style="display:inline-flex;margin-left:10px;">&#128190; ดาวน์โหลด</button>
         </div>
       </div>
     </div>
@@ -1641,93 +1629,31 @@
     return wav;
   }
   // TOOLS: MP4 Downloader
-  let mp4Blob = null, mp4FileObj = null;
+  let mp4Blob = null;
   document.getElementById('mp4Input').onchange = function(e) {
     const f = e.target.files[0]; if (!f) return;
-    mp4FileObj = f; mp4Blob = f;
-    loadMp4Meta(f.name, f);
+    mp4Blob = f;
+    document.getElementById('mp4Upload').classList.add('has-file');
+    document.getElementById('mp4InfoBar').style.display = '';
+    document.getElementById('mp4Name').textContent = f.name;
   };
   async function loadMp4Url() {
     const url = document.getElementById('mp4UrlInput').value.trim();
     if (!url) { alert('ใส่ลิงก์ก่อน'); return; }
     try {
-      const res = await fetch(url); mp4Blob = await res.blob();
-      mp4FileObj = new File([mp4Blob], 'video.mp4', { type: mp4Blob.type });
-      loadMp4Meta('video.mp4', mp4FileObj);
+      const res = await fetch(url);
+      mp4Blob = await res.blob();
+      document.getElementById('mp4Upload').classList.add('has-file');
+      document.getElementById('mp4InfoBar').style.display = '';
+      document.getElementById('mp4Name').textContent = 'video.mp4 (' + (mp4Blob.size/1024/1024).toFixed(1) + ' MB)';
     } catch { alert('ไม่สามารถโหลดวิดีโอจากลิงก์นี้ได้'); }
   }
-  function loadMp4Meta(name, file) {
-    const area = document.getElementById('mp4TrimArea');
-    area.style.display = '';
-    document.getElementById('mp4Upload').classList.add('has-file');
-    document.getElementById('mp4Name').textContent = name;
-    document.getElementById('mp4DlBtn').style.display = '';
-    // Get duration
-    const url = URL.createObjectURL(file);
-    const v = document.createElement('video');
-    v.preload = 'metadata';
-    v.onloadedmetadata = function() {
-      const dur = v.duration;
-      document.getElementById('mp4Dur').textContent = formatTTTime(dur);
-      document.getElementById('mp4End').value = Math.ceil(dur);
-      document.getElementById('mp4End').max = Math.ceil(dur);
-      document.getElementById('mp4Slider').max = Math.ceil(dur);
-      URL.revokeObjectURL(url);
-    };
-    v.src = url;
-  }
-  document.getElementById('mp4Slider').oninput = function() { document.getElementById('mp4Start').value = this.value; };
-  document.getElementById('mp4Start').oninput = function() { document.getElementById('mp4Slider').value = this.value; };
   function downloadMp4() {
     if (!mp4Blob) { alert('ไม่มีไฟล์'); return; }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(mp4Blob);
     a.download = 'video-' + Date.now() + '.mp4';
     a.click(); URL.revokeObjectURL(a.href);
-  }
-  async function trimMp4() {
-    if (!mp4Blob) { alert('ไม่มีวิดีโอ'); return; }
-    const start = parseFloat(document.getElementById('mp4Start').value);
-    const end = parseFloat(document.getElementById('mp4End').value);
-    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
-    const btn = document.getElementById('mp4TrimBtn');
-    const bar = document.getElementById('mp4Bar');
-    const prog = document.getElementById('mp4Progress');
-    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
-    prog.classList.add('open'); bar.style.width = '0%';
-    const video = document.createElement('video');
-    video.preload = 'auto';
-    video.crossOrigin = 'anonymous';
-    video.src = URL.createObjectURL(mp4Blob);
-    await new Promise(r => { video.onloadedmetadata = r; });
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext('2d');
-    const stream = canvas.captureStream(30);
-    let mime = '';
-    for (const mt of ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4']) { if (MediaRecorder.isTypeSupported(mt)) { mime = mt; break; } }
-    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
-    const chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.start();
-    video.currentTime = start;
-    video.play().catch(() => {});
-    const total = end - start;
-    video.ontimeupdate = () => {
-      const cur = video.currentTime || 0;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      bar.style.width = Math.min(100, ((cur - start) / total) * 100) + '%';
-      if (cur >= end) { video.pause(); video.ontimeupdate = null; recorder.stop(); }
-    };
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
-      const preview = document.getElementById('mp4Preview');
-      preview.classList.add('open');
-      document.getElementById('mp4Result').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="trimmed-'+Date.now()+'.webm" style="color:#00f2ea;">&#128190; ดาวน์โหลดคลิปที่ตัดแล้ว</a>';
-      bar.style.width = '100%';
-      btn.disabled = false; btn.textContent = '&#9986; ตัด MP4';
-    };
   }
   // STAT COUNTER
   (function() {
