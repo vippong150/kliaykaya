@@ -1390,145 +1390,6 @@
     document.getElementById('ttProgress').classList.add('open');
     document.getElementById('ttBar').style.width = pct + '%';
   }
-  function generateTTAudio(durSec) {
-    const sr = 44100;
-    const offlineCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, sr * durSec, sr);
-    // Ambient noise floor (makes it sound like real recording)
-    const noiseLen = sr * durSec;
-    const noiseBuf = offlineCtx.createBuffer(1, noiseLen, sr);
-    const noiseData = noiseBuf.getChannelData(0);
-    for (let i = 0; i < noiseLen; i++) noiseData[i] = (Math.random() * 2 - 1) * 0.008;
-    const noiseSrc = offlineCtx.createBufferSource();
-    noiseSrc.buffer = noiseBuf;
-    const noiseGain = offlineCtx.createGain();
-    noiseGain.gain.value = 0.12;
-    noiseSrc.connect(noiseGain);
-    noiseGain.connect(offlineCtx.destination);
-    noiseSrc.start(0);
-    // Warm kick (soft, muffled - like real song)
-    const kick = offlineCtx.createOscillator();
-    kick.type = 'sine';
-    const kickGain = offlineCtx.createGain();
-    kickGain.gain.setValueAtTime(0, 0);
-    kick.connect(kickGain);
-    kickGain.connect(offlineCtx.destination);
-    kick.start(0);
-    const bpm = 82; const beat = 60 / bpm;
-    const kickBeats = Math.floor(durSec / (beat * 2));
-    for (let b = 0; b < kickBeats; b++) {
-      const t = b * beat * 2;
-      kick.frequency.setValueAtTime(80, t);
-      kick.frequency.exponentialRampToValueAtTime(35, t + 0.1);
-      kickGain.gain.setValueAtTime(0.28, t);
-      kickGain.gain.linearRampToValueAtTime(0, t + 0.18);
-    }
-    kick.stop(durSec);
-    // Snare/clap on 2 & 4
-    const noise2 = offlineCtx.createBufferSource();
-    const n2Buf = offlineCtx.createBuffer(1, sr, sr);
-    const n2Data = n2Buf.getChannelData(0);
-    for (let i = 0; i < sr * 0.15; i++) n2Data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.03));
-    noise2.buffer = n2Buf;
-    const snareGain = offlineCtx.createGain();
-    snareGain.gain.setValueAtTime(0, 0);
-    noise2.connect(snareGain);
-    snareGain.connect(offlineCtx.destination);
-    noise2.start(0);
-    const snareBeats = Math.floor(durSec / (beat * 2));
-    for (let b = 0; b < snareBeats; b++) {
-      const t = b * beat * 2 + beat;
-      snareGain.gain.setValueAtTime(0.18, t);
-      snareGain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
-    }
-    noise2.stop(durSec);
-    // Hi-hat
-    const hatOsc = offlineCtx.createOscillator();
-    hatOsc.type = 'square'; hatOsc.frequency.value = 4000;
-    const hatGain = offlineCtx.createGain();
-    hatGain.gain.setValueAtTime(0, 0);
-    hatOsc.connect(hatGain);
-    hatGain.connect(offlineCtx.destination);
-    hatOsc.start(0);
-    for (let b = 0; b < Math.floor(durSec / beat); b++) {
-      const t = b * beat;
-      hatGain.gain.setValueAtTime(0.035, t);
-      hatGain.gain.linearRampToValueAtTime(0, t + 0.03);
-    }
-    hatOsc.stop(durSec);
-    // Warm pad (low-pass feel - like real R&B/lo-fi)
-    const padFreqs = [196.00, 220.00, 261.63, 196.00];
-    const padLen = durSec / 4;
-    padFreqs.forEach((freq, ci) => {
-      const osc = offlineCtx.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.value = freq;
-      const gain = offlineCtx.createGain();
-      const tS = ci * padLen;
-      gain.gain.setValueAtTime(0, tS);
-      gain.gain.linearRampToValueAtTime(0.04, tS + 0.3);
-      gain.gain.linearRampToValueAtTime(0.03, tS + padLen - 0.3);
-      gain.gain.linearRampToValueAtTime(0, tS + padLen - 0.05);
-      osc.connect(gain);
-      gain.connect(offlineCtx.destination);
-      osc.start(tS); osc.stop(tS + padLen);
-    });
-    // Simple bass line
-    const bassNotes = [65.41, 73.42, 87.31, 65.41];
-    const bassLen = durSec / 4;
-    const bassOsc = offlineCtx.createOscillator();
-    bassOsc.type = 'triangle';
-    const bassGain = offlineCtx.createGain();
-    bassGain.gain.setValueAtTime(0.15, 0);
-    bassOsc.connect(bassGain);
-    bassGain.connect(offlineCtx.destination);
-    bassOsc.start(0);
-    bassNotes.forEach((freq, i) => {
-      const t = i * bassLen;
-      bassOsc.frequency.setValueAtTime(freq, t);
-      bassGain.gain.setValueAtTime(0.15, t);
-      bassGain.gain.linearRampToValueAtTime(0.08, t + bassLen - 0.05);
-    });
-    bassOsc.stop(durSec);
-    return offlineCtx.startRendering().then(buffer => {
-      const wav = bufferToWav(buffer);
-      return new Blob([wav], { type: 'audio/wav' });
-    });
-  }
-  function bufferToWav(buffer) {
-    const numChannels = buffer.numberOfChannels;
-    const sampleRate = buffer.sampleRate;
-    const format = 1; // PCM
-    const bitDepth = 16;
-    const data = buffer.getChannelData(0);
-    const dataLen = data.length * (bitDepth / 8);
-    const headerLen = 44;
-    const totalLen = headerLen + dataLen;
-    const wav = new ArrayBuffer(totalLen);
-    const view = new DataView(wav);
-    writeString(view, 0, 'RIFF');
-    view.setUint32(4, totalLen - 8, true);
-    writeString(view, 8, 'WAVE');
-    writeString(view, 12, 'fmt ');
-    view.setUint32(16, 16, true);
-    view.setUint16(20, format, true);
-    view.setUint16(22, numChannels, true);
-    view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
-    view.setUint16(32, numChannels * (bitDepth / 8), true);
-    view.setUint16(34, bitDepth, true);
-    writeString(view, 36, 'data');
-    view.setUint32(40, dataLen, true);
-    let offset = 44;
-    for (let i = 0; i < data.length; i++) {
-      const sample = Math.max(-1, Math.min(1, data[i]));
-      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-      offset += 2;
-    }
-    return wav;
-  }
-  function writeString(view, offset, str) {
-    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
-  }
   function formatTTTime(s) {
     const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
     return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
@@ -1544,30 +1405,46 @@
     preview.classList.remove('open');
     setTTProgress(0);
     setTTStatus('&#9889;', 'กำลังเชื่อมต่อ TikTok...');
-    await delay(600); setTTProgress(25);
-    setTTStatus('&#128270;', 'กำลังดาวน์โหลดเสียง...');
-    await delay(800); setTTProgress(50);
-    // Random duration
-    const dur = Math.floor(Math.random() * 45) + 20;
-    document.getElementById('ttVName').textContent = 'TikTok Audio - ' + (url.length > 30 ? url.slice(-20) : 'video');
-    document.getElementById('ttVAuthor').textContent = '@' + (['creator','tiktok','music','viral','fyp'][Math.floor(Math.random()*5)]);
-    document.getElementById('ttVDur').textContent = formatTTTime(dur);
-    document.getElementById('ttVLikes').textContent = (Math.floor(Math.random()*900)+100)+'K';
-    setTTStatus('&#127911;', 'กำลังสร้างไฟล์เสียง...');
-    setTTProgress(75);
-    await delay(1000);
-    ttAudioBlob = await generateTTAudio(dur);
-    setTTProgress(100);
-    setTTStatus('&#9989;', 'แปลงสำเร็จ! พร้อมดาวน์โหลด');
-    preview.classList.add('open');
-    dlBtn.disabled = false;
+    await delay(800); setTTProgress(20);
+    try {
+      // ใช้ TikTok API จริง
+      const formData = new URLSearchParams(); formData.append('url', url);
+      const res = await fetch('https://www.tikwm.com/api/', { method: 'POST', body: formData });
+      const json = await res.json();
+      if (!json.data) throw new Error('API error');
+      const data = json.data;
+      const musicUrl = data.music_info?.play || data.music;
+      const title = data.title || 'TikTok Audio';
+      const author = data.author?.nickname || 'tiktok';
+      const dur = data.duration || 30;
+      const likes = data.digg_count ? (data.digg_count >= 1000 ? (data.digg_count/1000).toFixed(1)+'K' : data.digg_count) : '--';
+      document.getElementById('ttVName').textContent = title;
+      document.getElementById('ttVAuthor').textContent = '@' + author;
+      document.getElementById('ttVDur').textContent = formatTTTime(dur);
+      document.getElementById('ttVLikes').textContent = likes;
+      setTTStatus('&#128270;', 'กำลังดาวน์โหลดเสียง...');
+      setTTProgress(50);
+      const audioRes = await fetch(musicUrl);
+      ttAudioBlob = await audioRes.blob();
+      setTTProgress(100);
+      setTTStatus('&#9989;', 'แปลงสำเร็จ! ดาวน์โหลด MP3 ได้เลย');
+      preview.classList.add('open');
+      dlBtn.disabled = false;
+    } catch (e) {
+      console.error(e);
+      setTTStatus('&#10060;', 'ดึงข้อมูลไม่ได้ — API อาจเปลี่ยนหรือลิงก์ไม่ถูกต้อง');
+      setTTProgress(0);
+      await delay(2000);
+      document.getElementById('ttStatus').classList.remove('open');
+    }
     btn.disabled = false; btn.textContent = '&#9889; แปลง';
   }
   function downloadTT() {
     if (!ttAudioBlob) { alert('กรุณาแปลงก่อนดาวน์โหลด'); return; }
+    const ext = ttAudioBlob.type.includes('mp3') ? 'mp3' : (ttAudioBlob.type.includes('wav') ? 'wav' : 'mp3');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(ttAudioBlob);
-    a.download = 'tiktok-audio-' + Date.now() + '.wav';
+    a.download = 'tiktok-audio-' + Date.now() + '.' + ext;
     a.click(); URL.revokeObjectURL(a.href);
   }
   // AUTO-UPDATE
