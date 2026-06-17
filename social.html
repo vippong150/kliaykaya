@@ -86,7 +86,7 @@
   .post-action:hover { background: #f0f2f5; }
   .post-action.liked { color: #1877f2; }
   .rp-wrap { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 30px; padding: 8px 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.18); white-space: nowrap; z-index: 10; margin-bottom: 8px; gap: 4px; }
-  .rp-wrap.open { display: flex; }
+  .post-action:hover .rp-wrap { display: flex; }
   .rp-wrap span { font-size: 1.8rem; cursor: pointer; padding: 2px; border-radius: 50%; transition: transform 0.15s; line-height: 1; }
   .rp-wrap span:hover { transform: scale(1.35); }
   .post-delete { color: #999; font-size: 0.7rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; margin-left: auto; }
@@ -275,15 +275,6 @@ localStorage.setItem('sc_posts', JSON.stringify(posts));
       this.classList.add('active');
       setPage(this.dataset.page);
     });
-  });
-  // Reaction popups: show on hover, hide on leave
-  document.addEventListener('mouseover', function(e) {
-    const btn = e.target.closest('[data-rid]');
-    if (btn) btn.querySelector('.rp-wrap').classList.add('open');
-  });
-  document.addEventListener('mouseout', function(e) {
-    const btn = e.target.closest('[data-rid]');
-    if (btn && !btn.contains(e.relatedTarget)) btn.querySelector('.rp-wrap').classList.remove('open');
   });
   // Reaction click
   document.addEventListener('click', function(e) {
