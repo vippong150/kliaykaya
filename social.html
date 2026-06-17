@@ -85,6 +85,7 @@
   .post-body { padding: 10px 16px 0; }
   .post-text { font-size: 0.92rem; color: #1c1e21; line-height: 1.5; white-space: pre-wrap; }
   .post-img { width: calc(100% + 32px); margin: 10px -16px 0; max-height: 400px; object-fit: cover; }
+  .post-video { width: calc(100% + 32px); margin: 10px -16px 0; max-height: 450px; display: block; background: #000; }
   .post-footer { padding: 8px 16px 12px; }
   .post-stats { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e4e6eb; margin-bottom: 4px; font-size: 0.78rem; color: #65676b; }
   .post-react-icons { display: flex; }
@@ -207,13 +208,19 @@
         <img id="postImg">
         <button class="pb-img-close" onclick="clearPostImg()">&#10005;</button>
       </div>
+      <div class="pb-img-preview" id="postVideoPreview">
+        <video id="postVideo" controls style="max-height:240px;border-radius:10px;width:100%;"></video>
+        <button class="pb-img-close" onclick="clearPostVideo()">&#10005;</button>
+      </div>
       <div class="pb-divider"></div>
       <div class="pb-actions">
         <div class="pb-action" onclick="document.getElementById('postImgInput').click()">&#128247; รูปภาพ</div>
+        <div class="pb-action" onclick="document.getElementById('postVideoInput').click()">&#127916; วิดีโอ</div>
         <div class="pb-action" onclick="document.getElementById('postInput').value=''">&#128465; ล้าง</div>
         <div class="pb-action" style="color:#1877f2;font-weight:700;" onclick="createPost()">&#128228; โพสต์</div>
       </div>
       <input type="file" id="postImgInput" accept="image/*" style="display:none">
+      <input type="file" id="postVideoInput" accept="video/*" style="display:none">
     </div>
 
     <!-- Feed -->
@@ -320,24 +327,41 @@
 
   document.getElementById('postImgInput').onchange = function(e) {
     const f = e.target.files[0]; if (!f) return;
+    clearPostVideo();
     const r = new FileReader();
     r.onload = function(ev) { document.getElementById('postImg').src = ev.target.result; document.getElementById('postImgPreview').style.display = ''; };
     r.readAsDataURL(f);
   };
 
+  document.getElementById('postVideoInput').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    clearPostImg();
+    const url = URL.createObjectURL(f);
+    document.getElementById('postVideo').src = url;
+    document.getElementById('postVideoPreview').style.display = '';
+    document.getElementById('postVideo')._blobUrl = url;
+  };
+
   function clearPostImg() { document.getElementById('postImgPreview').style.display = 'none'; document.getElementById('postImgInput').value = ''; }
+  function clearPostVideo() { const v = document.getElementById('postVideo'); if (v._blobUrl) URL.revokeObjectURL(v._blobUrl); v.src = ''; v._blobUrl = null; document.getElementById('postVideoPreview').style.display = 'none'; document.getElementById('postVideoInput').value = ''; }
 
   function createPost() {
     const input = document.getElementById('postInput');
     const text = input.value.trim();
     const img = document.getElementById('postImg');
-    if (!text && !img.src) return;
+    const vid = document.getElementById('postVideo');
+    if (!text && !img.src && !vid.src) return;
     const post = { id: Date.now(), text, time: Date.now(), reacts: {}, totalReacts: 0 };
     if (img.src && document.getElementById('postImgPreview').style.display !== 'none') post.img = img.src;
+    if (vid.src && document.getElementById('postVideoPreview').style.display !== 'none') {
+      post.video = vid.src;
+      post.videoType = 'blob';
+    }
     posts.unshift(post);
     localStorage.setItem('sc_posts', JSON.stringify(posts));
     input.value = '';
     clearPostImg();
+    clearPostVideo();
     renderFeed();
   }
 
@@ -364,6 +388,27 @@
     return Object.entries(reacts).sort((a,b) => b[1] - a[1])[0][0];
   }
 
+  // Event delegation for reactions
+  document.addEventListener('click', function(e) {
+    const target = e.target.closest('[data-react]');
+    if (target) {
+      const id = parseInt(target.dataset.post);
+      const emoji = target.dataset.react;
+      reactPost(id, emoji);
+      e.preventDefault();
+      return;
+    }
+    const likeBtn = e.target.closest('[data-like-btn]');
+    if (likeBtn) {
+      const id = parseInt(likeBtn.dataset.post);
+      const popup = likeBtn.querySelector('.pa-react-popup');
+      if (popup && popup.contains(e.target)) return;
+      // Quick like
+      reactPost(id, '👍');
+      e.preventDefault();
+    }
+  });
+
   function renderFeed() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const filtered = q ? posts.filter(p => p.text && p.text.toLowerCase().includes(q)) : posts;
@@ -382,10 +427,10 @@
       const mainReact = getMainReact(p.reacts);
       const reactList = reactions.map(r => {
         const count = p.reacts && p.reacts[r.e] ? p.reacts[r.e] : 0;
-        return '<span title="' + r.t + '" onclick="reactPost(' + p.id + ",'" + r.e + "')\">" + r.e + '</span>';
+        return '<span data-post="' + p.id + '" data-react="' + r.e + '" title="' + esc(r.t) + '">' + r.e + '</span>';
       }).join('');
       const shownReacts = p.reacts ? Object.entries(p.reacts).filter(([_,c]) => c > 0) : [];
-      return '<div class="post">' +
+      return '<div class="post" data-post-id="' + p.id + '">' +
         '<div class="post-header">' +
           '<div class="post-avatar' + (profile.avatar ? '" style="background:none' : '') + '">' + (profile.avatar ? '<img src="' + profile.avatar + '">' : '👤') + '</div>' +
           '<div style="flex:1"><div class="post-name">' + esc(profile.name) + '</div><div class="post-time">' + timeStr + '</div></div>' +
@@ -394,10 +439,11 @@
         '<div class="post-body">' +
           (p.text ? '<div class="post-text">' + esc(p.text) + '</div>' : '') +
           (p.img ? '<img class="post-img" src="' + p.img + '">' : '') +
+          (p.video ? '<video class="post-video" src="' + p.video + '" controls playsinline></video>' : '') +
         '</div>' +
         (shownReacts.length || p.totalReacts ? '<div class="post-footer"><div class="post-stats"><div class="post-react-icons">' + shownReacts.map(([e,c]) => '<span title="' + c + ' คน">' + e + '</span>').join('') + '</div><span>' + (p.totalReacts || '') + ' ครั้ง</span></div>' : '<div class="post-footer">') +
         '<div class="post-actions">' +
-          '<div class="post-action' + (mainReact ? ' liked' : '') + '" style="position:relative;">' +
+          '<div class="post-action' + (mainReact ? ' liked' : '') + '" data-like-btn data-post="' + p.id + '" style="position:relative;">' +
             '<div class="pa-react-popup">' + reactList + '</div>' +
             (mainReact || '👍') + ' ถูกใจ' +
           '</div>' +
