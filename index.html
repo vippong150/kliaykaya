@@ -1605,35 +1605,6 @@
   };
   document.getElementById('mp3Slider').oninput = function() { document.getElementById('mp3Start').value = this.value; };
   document.getElementById('mp3Start').oninput = function() { document.getElementById('mp3Slider').value = this.value; };
-  async function trimAudio() {
-    if (!mp3File) { alert('เลือกไฟล์ก่อน'); return; }
-    const start = parseFloat(document.getElementById('mp3Start').value);
-    const end = parseFloat(document.getElementById('mp3End').value);
-    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
-    const btn = document.getElementById('mp3TrimBtn');
-    const bar = document.getElementById('mp3Bar');
-    const prog = document.getElementById('mp3Progress');
-    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
-    prog.classList.add('open'); bar.style.width = '0%';
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const buf = await audioCtx.decodeAudioData(await mp3File.arrayBuffer());
-    const sr = buf.sampleRate;
-    const startSample = Math.floor(start * sr);
-    const endSample = Math.floor(end * sr);
-    const len = endSample - startSample;
-    const newBuf = audioCtx.createBuffer(1, len, sr);
-    const oldData = buf.getChannelData(0);
-    const newData = newBuf.getChannelData(0);
-    for (let i = 0; i < len; i++) newData[i] = oldData[startSample + i] || 0;
-    // Encode to WAV
-    const wav = bufferToWav(newBuf);
-    const blob = new Blob([wav], { type: 'audio/wav' });
-    const preview = document.getElementById('mp3Preview');
-    preview.classList.add('open');
-    document.getElementById('mp3Result').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="trimmed-'+Date.now()+'.wav" style="color:#00f2ea;">&#128190; ดาวน์โหลด MP3 ที่ตัดแล้ว</a>';
-    bar.style.width = '100%';
-    btn.disabled = false; btn.textContent = '&#9986; ตัด MP3';
-  }
   function bufferToWav(buffer) {
     const numChannels = buffer.numberOfChannels;
     const sampleRate = buffer.sampleRate;
@@ -1680,13 +1651,6 @@
       document.getElementById('mp4Name').textContent = 'video.mp4 (' + (mp4Blob.size/1024/1024).toFixed(1) + ' MB)';
     } catch { alert('ไม่สามารถโหลดวิดีโอจากลิงก์นี้ได้'); }
   }
-  function downloadMp4() {
-    if (!mp4Blob) { alert('ไม่มีไฟล์'); return; }
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(mp4Blob);
-    a.download = 'video-' + Date.now() + '.mp4';
-    a.click(); URL.revokeObjectURL(a.href);
-  }
   // CLIP LIBRARY
   const clipDB = (() => {
     let clips = JSON.parse(localStorage.getItem('vsa_clips') || '[]');
@@ -1732,15 +1696,12 @@
     clipDB.clear(); renderClips();
   }
   renderClips();
-  // Patch download functions to auto-save to library
-  const _origDownloadMp4 = downloadMp4;
   downloadMp4 = function() {
     if (!mp4Blob) { alert('ไม่มีไฟล์'); return; }
     const name = 'video-' + Date.now();
     saveClipToDb(name, 'mp4', mp4Blob);
     const a = document.createElement('a'); a.href = URL.createObjectURL(mp4Blob); a.download = name + '.mp4'; a.click(); URL.revokeObjectURL(a.href);
   };
-  const _origTrimAudio = trimAudio;
   trimAudio = async function() {
     if (!mp3File) { alert('เลือกไฟล์ก่อน'); return; }
     const start = parseFloat(document.getElementById('mp3Start').value);
@@ -1771,8 +1732,6 @@
     bar.style.width = '100%';
     btn.disabled = false; btn.textContent = '&#9986; ตัด MP3';
   };
-  // Patch TT download
-  const _origDlTT = downloadTT;
   downloadTT = function(type) {
     if (type === 'mp4') {
       if (!ttVideoUrl) { alert('ไม่มีลิงก์วิดีโอ'); return; }
