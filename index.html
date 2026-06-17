@@ -1391,36 +1391,104 @@
     document.getElementById('ttBar').style.width = pct + '%';
   }
   function generateTTAudio(durSec) {
-    const sampleRate = 44100;
-    const numSamples = sampleRate * durSec;
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const offlineCtx = new OfflineAudioContext(1, numSamples, sampleRate);
-    // Bass line
-    const bass = offlineCtx.createOscillator();
-    bass.type = 'sawtooth';
-    bass.frequency.value = 55;
-    const bassGain = offlineCtx.createGain();
-    bassGain.gain.setValueAtTime(0.08, 0);
-    bassGain.gain.linearRampToValueAtTime(0.02, durSec);
-    bass.connect(bassGain);
-    bassGain.connect(offlineCtx.destination);
-    bass.start(0); bass.stop(durSec);
-    // Melody
-    const notes = [262, 294, 330, 349, 392, 349, 330, 294];
-    const noteLen = durSec / notes.length;
-    const melody = offlineCtx.createOscillator();
-    melody.type = 'sine';
-    const melGain = offlineCtx.createGain();
-    melGain.gain.setValueAtTime(0.12, 0);
-    melGain.gain.linearRampToValueAtTime(0.04, durSec);
-    melody.connect(melGain);
-    melGain.connect(offlineCtx.destination);
-    melody.start(0);
-    notes.forEach((freq, i) => {
-      melody.frequency.setValueAtTime(freq, i * noteLen);
-      melody.frequency.linearRampToValueAtTime(freq, (i + 1) * noteLen);
+    const sr = 44100;
+    const offlineCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, sr * durSec, sr);
+    // Ambient noise floor (makes it sound like real recording)
+    const noiseLen = sr * durSec;
+    const noiseBuf = offlineCtx.createBuffer(1, noiseLen, sr);
+    const noiseData = noiseBuf.getChannelData(0);
+    for (let i = 0; i < noiseLen; i++) noiseData[i] = (Math.random() * 2 - 1) * 0.008;
+    const noiseSrc = offlineCtx.createBufferSource();
+    noiseSrc.buffer = noiseBuf;
+    const noiseGain = offlineCtx.createGain();
+    noiseGain.gain.value = 0.12;
+    noiseSrc.connect(noiseGain);
+    noiseGain.connect(offlineCtx.destination);
+    noiseSrc.start(0);
+    // Warm kick (soft, muffled - like real song)
+    const kick = offlineCtx.createOscillator();
+    kick.type = 'sine';
+    const kickGain = offlineCtx.createGain();
+    kickGain.gain.setValueAtTime(0, 0);
+    kick.connect(kickGain);
+    kickGain.connect(offlineCtx.destination);
+    kick.start(0);
+    const bpm = 82; const beat = 60 / bpm;
+    const kickBeats = Math.floor(durSec / (beat * 2));
+    for (let b = 0; b < kickBeats; b++) {
+      const t = b * beat * 2;
+      kick.frequency.setValueAtTime(80, t);
+      kick.frequency.exponentialRampToValueAtTime(35, t + 0.1);
+      kickGain.gain.setValueAtTime(0.28, t);
+      kickGain.gain.linearRampToValueAtTime(0, t + 0.18);
+    }
+    kick.stop(durSec);
+    // Snare/clap on 2 & 4
+    const noise2 = offlineCtx.createBufferSource();
+    const n2Buf = offlineCtx.createBuffer(1, sr, sr);
+    const n2Data = n2Buf.getChannelData(0);
+    for (let i = 0; i < sr * 0.15; i++) n2Data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.03));
+    noise2.buffer = n2Buf;
+    const snareGain = offlineCtx.createGain();
+    snareGain.gain.setValueAtTime(0, 0);
+    noise2.connect(snareGain);
+    snareGain.connect(offlineCtx.destination);
+    noise2.start(0);
+    const snareBeats = Math.floor(durSec / (beat * 2));
+    for (let b = 0; b < snareBeats; b++) {
+      const t = b * beat * 2 + beat;
+      snareGain.gain.setValueAtTime(0.18, t);
+      snareGain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    }
+    noise2.stop(durSec);
+    // Hi-hat
+    const hatOsc = offlineCtx.createOscillator();
+    hatOsc.type = 'square'; hatOsc.frequency.value = 4000;
+    const hatGain = offlineCtx.createGain();
+    hatGain.gain.setValueAtTime(0, 0);
+    hatOsc.connect(hatGain);
+    hatGain.connect(offlineCtx.destination);
+    hatOsc.start(0);
+    for (let b = 0; b < Math.floor(durSec / beat); b++) {
+      const t = b * beat;
+      hatGain.gain.setValueAtTime(0.035, t);
+      hatGain.gain.linearRampToValueAtTime(0, t + 0.03);
+    }
+    hatOsc.stop(durSec);
+    // Warm pad (low-pass feel - like real R&B/lo-fi)
+    const padFreqs = [196.00, 220.00, 261.63, 196.00];
+    const padLen = durSec / 4;
+    padFreqs.forEach((freq, ci) => {
+      const osc = offlineCtx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      const gain = offlineCtx.createGain();
+      const tS = ci * padLen;
+      gain.gain.setValueAtTime(0, tS);
+      gain.gain.linearRampToValueAtTime(0.04, tS + 0.3);
+      gain.gain.linearRampToValueAtTime(0.03, tS + padLen - 0.3);
+      gain.gain.linearRampToValueAtTime(0, tS + padLen - 0.05);
+      osc.connect(gain);
+      gain.connect(offlineCtx.destination);
+      osc.start(tS); osc.stop(tS + padLen);
     });
-    melody.stop(durSec);
+    // Simple bass line
+    const bassNotes = [65.41, 73.42, 87.31, 65.41];
+    const bassLen = durSec / 4;
+    const bassOsc = offlineCtx.createOscillator();
+    bassOsc.type = 'triangle';
+    const bassGain = offlineCtx.createGain();
+    bassGain.gain.setValueAtTime(0.15, 0);
+    bassOsc.connect(bassGain);
+    bassGain.connect(offlineCtx.destination);
+    bassOsc.start(0);
+    bassNotes.forEach((freq, i) => {
+      const t = i * bassLen;
+      bassOsc.frequency.setValueAtTime(freq, t);
+      bassGain.gain.setValueAtTime(0.15, t);
+      bassGain.gain.linearRampToValueAtTime(0.08, t + bassLen - 0.05);
+    });
+    bassOsc.stop(durSec);
     return offlineCtx.startRendering().then(buffer => {
       const wav = bufferToWav(buffer);
       return new Blob([wav], { type: 'audio/wav' });
