@@ -1054,6 +1054,13 @@
       updateAuthUI(); updateMusicUI(); updateEmployeeUI();
     }, 1200);
   }
+  function autoFillOtp(otp) {
+    const inputs = document.querySelectorAll('.otp-input');
+    otp.split('').forEach((d, i) => { inputs[i].value = d; inputs[i].classList.add('filled'); });
+    document.getElementById('regPassGroup').style.display = '';
+    document.getElementById('regSubmitBtn').style.display = '';
+    document.getElementById('regMsg').innerHTML = document.getElementById('regMsg').innerHTML.replace('👆 คลิกเพื่อเติม', '✅');
+  }
   let otpSent = false;
   function sendOtp() {
     const raw = document.getElementById('regPhone').value.trim().replace(/^0+/, '');
@@ -1070,15 +1077,9 @@
       document.getElementById('otpWaiting').style.display = 'none';
       document.getElementById('sendOtpBtn').textContent = '✅ ส่งแล้ว';
       document.getElementById('sendOtpBtn').disabled = true;
-      msg.textContent = 'รหัส OTP 6 หลักถูกส่งไปที่ ' + fullPhone;
+      const demoOtp = String(Math.floor(100000 + Math.random() * 900000));
+      msg.innerHTML = 'รหัส OTP 6 หลักถูกส่งไปที่ ' + fullPhone + '<br><span style="font-size:1.1rem;font-weight:700;color:#12d8ff;letter-spacing:4px;cursor:pointer;" onclick="autoFillOtp(\'' + demoOtp + '\')">' + demoOtp + ' 👆 คลิกเพื่อเติม</span>';
       msg.className = 'af-msg success';
-      // Auto-fill OTP for DEV (phone contains 000)
-      if (raw.includes('000')) {
-        const inputs = document.querySelectorAll('.otp-input');
-        '000000'.split('').forEach((d, i) => { inputs[i].value = d; inputs[i].classList.add('filled'); });
-        document.getElementById('regPassGroup').style.display = '';
-        document.getElementById('regSubmitBtn').style.display = '';
-      }
     }, 2500);
   }
   function otpInput(el, idx) {
