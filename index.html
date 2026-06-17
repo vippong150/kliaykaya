@@ -160,7 +160,7 @@
     .tt-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .tt-preview { margin-top: 16px; display: none; }
     .tt-preview.open { display: block; }
-    .tt-card { display: flex; gap: 14px; padding: 14px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); align-items: center; animation: ventFadeIn 0.4s ease; }
+    .tt-card { display: flex; gap: 14px; padding: 14px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); align-items: center; animation: fadeSlideIn 0.4s ease; }
     .tt-card .tt-thumb { width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #ff0050, #00f2ea); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
     .tt-card .tt-info { flex: 1; min-width: 0; }
     .tt-card .tt-info .tt-vname { font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -178,24 +178,7 @@
     .tt-examples { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
     .tt-examples span { font-size: 0.7rem; color: rgba(255,255,255,0.2); cursor: pointer; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); transition: all 0.2s; }
     .tt-examples span:hover { color: #ff0050; border-color: rgba(255,0,80,0.2); background: rgba(255,0,80,0.04); }
-    /* VENT SECTION */
-    .vent-section { max-width: 640px; }
-    .vent-input-wrap { display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-start; }
-    .vent-input-wrap textarea { flex: 1; min-height: 72px; max-height: 160px; padding: 14px 18px; border-radius: 16px; border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #e0e0e0; font-size: 0.9rem; font-family: inherit; resize: vertical; outline: none; transition: all 0.25s; backdrop-filter: blur(8px); }
-    .vent-input-wrap textarea:focus { border-color: rgba(139,92,246,0.5); background: rgba(255,255,255,0.06); box-shadow: 0 0 30px rgba(139,92,246,0.06); }
-    .vent-input-wrap textarea::placeholder { color: rgba(255,255,255,0.3); }
-    .vent-btn { padding: 12px 24px; border-radius: 16px; border: none; background: linear-gradient(135deg,#8b5cf6,#6366f1); color: #fff; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.25s; white-space: nowrap; height: fit-content; }
-    .vent-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.3); }
-    .vent-feed { display: flex; flex-direction: column; gap: 12px; }
-    .vent-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px 20px; backdrop-filter: blur(10px); animation: ventFadeIn 0.4s ease; position: relative; }
-    .vent-card:hover { border-color: rgba(139,92,246,0.2); }
-    @keyframes ventFadeIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .vent-card .vc-text { font-size: 0.92rem; line-height: 1.7; color: rgba(255,255,255,0.88); word-break: break-word; }
-    .vent-card .vc-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 0.72rem; color: rgba(255,255,255,0.3); }
-    .vent-card .vc-time { display: flex; align-items: center; gap: 6px; }
-    .vent-card .vc-del { color: rgba(255,80,80,0.5); cursor: pointer; padding: 2px 8px; border-radius: 8px; transition: all 0.2s; font-size: 0.7rem; }
-    .vent-card .vc-del:hover { color: #ff5050; background: rgba(255,80,80,0.1); }
-    .vent-empty { text-align: center; padding: 48px 20px; color: rgba(255,255,255,0.25); font-size: 0.9rem; }
+    @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
     /* GEN STEPS */
     .gen-steps { display: flex; flex-direction: column; gap: 10px; }
     .gen-step { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem; color: rgba(255,255,255,0.5); transition: all 0.4s; }
@@ -358,7 +341,6 @@
     <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
     <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
     <a onclick="scrollToEl('sTT')">TikTok MP3</a>
-    <a onclick="scrollToEl('sVent')">ระบาย</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
     <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">เริ่มใช้ฟรี</a>
@@ -651,23 +633,6 @@
         </div>
         <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
         <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- VENT SECTION -->
-<section id="sVent" class="sec">
-  <div class="container">
-    <div class="section-title"><span>&#128172;</span> ระบาย <span style="font-size:0.7rem;background:linear-gradient(90deg,#8b5cf6,#ff4fd8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">&#9889; โครตเทพ</span></div>
-    <p class="section-sub">พื้นที่ปลอดภัยสำหรับบอกเล่าความรู้สึก — ไม่มีชื่อ ไม่มี judg</p>
-    <div class="vent-section">
-      <div class="vent-input-wrap">
-        <textarea id="ventInput" placeholder="วันนี้เป็นยังไงบ้าง? มีอะไรอยากระบายไหม..." maxlength="500"></textarea>
-        <button class="vent-btn" onclick="postVent()">&#128139; ส่ง</button>
-      </div>
-      <div class="vent-feed" id="ventFeed">
-        <div class="vent-empty">&#128522; ยังไม่มีข้อความ — เป็นคนแรกที่แชร์ความรู้สึก</div>
       </div>
     </div>
   </div>
@@ -1335,49 +1300,6 @@
     localStorage.setItem('cm_fbUrl', url); updateFbLink(); alert('บันทึกลิงก์ Facebook แล้ว');
   }
   renderEmployees(); updateFbLink(); openDB().catch(() => {});
-  // VENT SYSTEM
-  let vents = JSON.parse(localStorage.getItem('vsa_vents') || '[]');
-  if (vents.length === 0) {
-    vents.push({ text: 'ถึงทุกคนที่แวะมาอ่านข้อความนี้ 💞\n\nผมเคยมีวันที่เหนื่อย เคยท้อ และเคยคิดว่าถ้าหายไป ทุกอย่างอาจจะง่ายกว่านี้ แต่ผมก็ยังอยู่ตรงนี้ เพราะสุดท้ายแล้ว ผมรู้ว่าชีวิตหนึ่งชีวิตไม่ใช่เรื่องง่ายเลย\n\nความจริงคือ ไม่มีใครรู้หรอกว่าตัวเองจะมีเวลาอีกนานแค่ไหน เราทุกคนต่างใช้ชีวิตไปทีละวัน โดยไม่รู้ว่าวันพรุ่งนี้จะเกิดอะไรขึ้น\n\nถ้าวันหนึ่งผมไม่ได้อยู่ตรงนี้แล้ว ผมไม่ได้อยากให้ใครเสียใจนาน ๆ นะครับ แค่อยากให้ทุกคนดูแลตัวเองให้ดี ใช้เวลากับคนที่รัก และใช้ชีวิตให้มีความสุขเท่าที่จะทำได้\n\nอย่าเครียดจนลืมยิ้ม\nอย่าจมอยู่กับอดีต\nอย่าโกหกความรู้สึกของตัวเอง\nและอย่าลืมว่าทุกคนต่างมีเรื่องที่ต้องแบกอยู่เหมือนกัน\n\nถ้าวันนี้เหนื่อย ก็พักได้\nถ้าวันนี้ร้องไห้ ก็ร้องได้\nแต่เมื่อพร้อมแล้ว ก็ขอให้ค่อย ๆ เดินต่อไป\n\nทุกอย่างที่เกิดขึ้นคือส่วนหนึ่งของชีวิต เราอาจไม่เข้าใจทุกอย่าง แต่เราสามารถยอมรับมันและใช้เวลาที่มีอยู่ให้ดีที่สุดได้\n\nขอบคุณทุกคนที่เคยผ่านเข้ามาในชีวิตของผม\nและขอบคุณตัวเองที่พยายามมาถึงตรงนี้\n\nเราทุกคนต่างพยายามอย่างดีที่สุดแล้วครับ 💞', time: Date.now() });
-    localStorage.setItem('vsa_vents', JSON.stringify(vents));
-  }
-  function renderVents() {
-    const feed = document.getElementById('ventFeed');
-    if (!feed) return;
-    if (vents.length === 0) { feed.innerHTML = '<div class="vent-empty">&#128522; ยังไม่มีข้อความ — เป็นคนแรกที่แชร์ความรู้สึก</div>'; return; }
-    feed.innerHTML = vents.slice().reverse().map((v, ri) => {
-      const idx = vents.length - 1 - ri;
-      const now = Date.now();
-      const mins = Math.floor((now - v.time) / 60000);
-      const hrs = Math.floor(mins / 60); const days = Math.floor(hrs / 24);
-      let timeStr;
-      if (days > 0) timeStr = days + ' วันที่แล้ว';
-      else if (hrs > 0) timeStr = hrs + ' ชม.ที่แล้ว';
-      else if (mins > 0) timeStr = mins + ' นาทีที่แล้ว';
-      else timeStr = 'เมื่อสักครู่';
-      const canDel = (now - v.time) < 600000;
-      return '<div class="vent-card"><div class="vc-text">' + v.text + '</div><div class="vc-meta"><span class="vc-time">&#128339; ' + timeStr + '</span>' + (canDel ? '<span class="vc-del" onclick="deleteVent(' + idx + ')">&#10005; ลบ</span>' : '') + '</div></div>';
-    }).join('');
-  }
-  function postVent() {
-    const inp = document.getElementById('ventInput');
-    const text = inp.value.trim();
-    if (!text) { alert('พิมพ์ข้อความก่อนส่ง'); return; }
-    vents.push({ text, time: Date.now() });
-    localStorage.setItem('vsa_vents', JSON.stringify(vents));
-    inp.value = '';
-    renderVents();
-    inp.focus();
-  }
-  function deleteVent(idx) {
-    if (idx < 0 || idx >= vents.length) return;
-    if ((Date.now() - vents[idx].time) >= 600000) { alert('ลบได้ภายใน 10 นาทีหลังโพสต์เท่านั้น'); renderVents(); return; }
-    vents.splice(idx, 1);
-    localStorage.setItem('vsa_vents', JSON.stringify(vents));
-    renderVents();
-  }
-  document.getElementById('ventInput').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postVent(); } });
-  renderVents();
   // TIKTOK MP3
   let ttAudioBlob = null;
   function setTTStatus(emoji, text) {
