@@ -323,6 +323,10 @@
     .auth-form .af-msg { text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 8px; min-height: 20px; }
     .auth-form .af-msg.success { color: #12d8ff; }
     .auth-form .af-msg.error { color: #ff5050; }
+    .otp-dots span { animation: otpDot 1.4s infinite; opacity:0; }
+    .otp-dots span:nth-child(2) { animation-delay:0.3s; }
+    .otp-dots span:nth-child(3) { animation-delay:0.6s; }
+    @keyframes otpDot { 0%,100%{opacity:0} 50%{opacity:1} }
     .auth-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(0,240,255,0.1); border-radius: 20px; font-size: 0.78rem; color: #00f0ff; }
     .auth-badge.logout { cursor: pointer; }
     .auth-badge.logout:hover { background: rgba(255,51,102,0.15); color: #ff3366; }
@@ -951,6 +955,13 @@
         <input class="af-input" id="loginPass" type="password" placeholder="DEV: 1" autocomplete="off">
       </div>
       <button class="af-btn" onclick="handleLogin()">&#128273; เข้าสู่ระบบ</button>
+      <div class="af-divider">หรือ</div>
+      <button class="af-btn" style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.08);color:#e0e0e0;font-weight:600;" onclick="handleGoogleLogin()">
+        <span style="display:inline-flex;align-items:center;gap:8px;justify-content:center;">
+          <span style="background:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#222;">G</span>
+          เข้าสู่ระบบด้วย Google
+        </span>
+      </button>
       <div class="af-msg" id="loginMsg"></div>
     </div>
     <!-- REGISTER FORM -->
@@ -958,7 +969,8 @@
       <div class="af-group">
         <label>เบอร์โทรศัพท์</label>
         <div class="af-row">
-          <input class="af-input" id="regPhone" placeholder="099-xxx-xxxx" style="flex:1;">
+          <span style="display:flex;align-items:center;gap:4px;padding:0 10px;background:rgba(255,255,255,0.04);border-radius:12px 0 0 12px;border:1.5px solid rgba(255,255,255,0.08);border-right:none;font-size:0.9rem;color:rgba(255,255,255,0.5);font-weight:600;">+66</span>
+          <input class="af-input" id="regPhone" placeholder="99-xxx-xxxx" style="flex:1;border-radius:0 12px 12px 0;">
           <button class="af-btn-outline" id="sendOtpBtn" onclick="sendOtp()">&#128222; ส่ง OTP</button>
         </div>
       </div>
@@ -970,9 +982,13 @@
         <input type="text" maxlength="1" class="otp-input" data-idx="4" oninput="otpInput(this,4)">
         <input type="text" maxlength="1" class="otp-input" data-idx="5" oninput="otpInput(this,5)">
       </div>
+      <!-- OTP WAITING STATE: animated dots -->
+      <div id="otpWaiting" style="display:none;text-align:center;padding:6px 0 2px;font-size:0.78rem;color:rgba(255,255,255,0.35);">
+        &#9203; กำลังส่งรหัส OTP <span class="otp-dots"><span>.</span><span>.</span><span>.</span></span>
+      </div>
       <div class="af-group" id="regPassGroup" style="display:none;">
         <label>ตั้งรหัสผ่าน</label>
-        <input class="af-input" id="regNewPass" type="password" placeholder="อย่างน้อย 4 ตัวอักษร">
+        <input class="af-input" id="regNewPass" type="password" placeholder="อย่างน้อย 4 ตัวอักษร" autocomplete="off">
       </div>
       <div class="af-msg" id="regMsg"></div>
       <button class="af-btn" id="regSubmitBtn" onclick="handleRegister()" style="display:none;">&#9989; สมัครสมาชิก</button>
@@ -1045,28 +1061,45 @@
     msg.textContent = ''; msg.className = 'af-msg';
     updateAuthUI(); updateMusicUI(); updateEmployeeUI();
   }
+  function handleGoogleLogin() {
+    const msg = document.getElementById('loginMsg');
+    msg.textContent = '⏳ กำลังเชื่อมต่อ Google...'; msg.className = 'af-msg';
+    setTimeout(() => {
+      // Simulate Google login popup
+      const email = 'user_' + Date.now().toString(36) + '@gmail.com';
+      localStorage.setItem('cm_session', JSON.stringify({ user: email, google: true }));
+      closeModal('authModal');
+      document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
+      msg.textContent = ''; msg.className = 'af-msg';
+      updateAuthUI(); updateMusicUI(); updateEmployeeUI();
+    }, 1200);
+  }
   let otpSent = false;
   function sendOtp() {
-    const phone = document.getElementById('regPhone').value.trim();
+    const raw = document.getElementById('regPhone').value.trim().replace(/^0+/, '');
+    const fullPhone = '+66' + raw;
     const msg = document.getElementById('regMsg');
-    if (!phone) { msg.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; msg.className = 'af-msg error'; return; }
+    if (!raw) { msg.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; msg.className = 'af-msg error'; return; }
+    if (raw.length < 8 || raw.length > 10) { msg.textContent = 'เบอร์โทรศัพท์ไม่ถูกต้อง'; msg.className = 'af-msg error'; return; }
     document.getElementById('otpBox').style.display = 'flex';
+    document.getElementById('otpWaiting').style.display = '';
     document.getElementById('sendOtpBtn').textContent = '⏳ กำลังส่ง...';
     document.getElementById('sendOtpBtn').disabled = true;
     setTimeout(() => {
       otpSent = true;
+      document.getElementById('otpWaiting').style.display = 'none';
       document.getElementById('sendOtpBtn').textContent = '✅ ส่งแล้ว';
       document.getElementById('sendOtpBtn').disabled = true;
-      msg.textContent = 'รหัส OTP 6 หลักถูกส่งไปที่ ' + phone;
+      msg.textContent = 'รหัส OTP 6 หลักถูกส่งไปที่ ' + fullPhone;
       msg.className = 'af-msg success';
-      // Auto-fill OTP for DEV
-      if (phone.includes('000')) {
+      // Auto-fill OTP for DEV (phone contains 000)
+      if (raw.includes('000')) {
         const inputs = document.querySelectorAll('.otp-input');
         '000000'.split('').forEach((d, i) => { inputs[i].value = d; inputs[i].classList.add('filled'); });
         document.getElementById('regPassGroup').style.display = '';
         document.getElementById('regSubmitBtn').style.display = '';
       }
-    }, 1500);
+    }, 2500);
   }
   function otpInput(el, idx) {
     if (el.value) { el.classList.add('filled'); const next = el.parentElement.querySelector('[data-idx="' + (idx+1) + '"]'); if (next) next.focus(); }
@@ -1079,7 +1112,8 @@
     }
   }
   function handleRegister() {
-    const phone = document.getElementById('regPhone').value.trim();
+    const raw = document.getElementById('regPhone').value.trim().replace(/^0+/, '');
+    const fullPhone = '+66' + raw;
     const pass = document.getElementById('regNewPass').value.trim();
     const msg = document.getElementById('regOtpMsg');
     if (!otpSent) { msg.textContent = 'กรุณาขอ OTP ก่อน'; msg.className = 'af-msg error'; return; }
@@ -1088,15 +1122,16 @@
     if (otp.length < 6) { msg.textContent = 'กรุณากรอกรหัส OTP ให้ครบ'; msg.className = 'af-msg error'; return; }
     if (!pass || pass.length < 4) { msg.textContent = 'รหัสผ่านต้องอย่างน้อย 4 ตัวอักษร'; msg.className = 'af-msg error'; return; }
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
-    if (users.find(u => u.user === phone)) { msg.textContent = 'เบอร์นี้ลงทะเบียนแล้ว'; msg.className = 'af-msg error'; return; }
-    users.push({ user: phone, pass, phone }); localStorage.setItem('cm_users', JSON.stringify(users));
-    localStorage.setItem('cm_session', JSON.stringify({ user: phone }));
+    if (users.find(u => u.user === fullPhone)) { msg.textContent = 'เบอร์นี้ลงทะเบียนแล้ว'; msg.className = 'af-msg error'; return; }
+    users.push({ user: fullPhone, pass, phone: fullPhone }); localStorage.setItem('cm_users', JSON.stringify(users));
+    localStorage.setItem('cm_session', JSON.stringify({ user: fullPhone }));
     closeModal('authModal');
     document.getElementById('regPhone').value = ''; document.getElementById('regNewPass').value = '';
     msg.textContent = ''; msg.className = 'af-msg';
     inputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
     document.getElementById('regPassGroup').style.display = 'none';
     document.getElementById('regSubmitBtn').style.display = 'none';
+    document.getElementById('otpWaiting').style.display = 'none';
     document.getElementById('sendOtpBtn').textContent = '📞 ส่ง OTP';
     document.getElementById('sendOtpBtn').disabled = false;
     updateAuthUI(); updateMusicUI(); updateEmployeeUI();
@@ -1105,7 +1140,7 @@
     const session = getSession();
     const btn = document.getElementById('authBtn');
     if (session) {
-      const badge = session.user === '1@1.1' ? '&#128272; DEV' : session.user;
+      const badge = session.user === '1@1.1' ? '&#128272; DEV' : session.google ? 'G ' + session.user : session.user;
       btn.innerHTML = '<span class="auth-badge logout" onclick="logout()">' + badge + ' (ออกจากระบบ)</span>';
       btn.onclick = null;
     } else {
