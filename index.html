@@ -166,9 +166,31 @@
     .tt-card .tt-info .tt-vname { font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tt-card .tt-info .tt-vauthor { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
     .tt-card .tt-info .tt-vmeta { font-size: 0.7rem; color: rgba(255,255,255,0.25); margin-top: 4px; display: flex; gap: 12px; }
-    .tt-card .tt-dlbtn { padding: 8px 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; font-weight: 600; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .tt-card .tt-btns { display: flex; gap: 6px; flex-shrink: 0; }
+    .tt-card .tt-dlbtn { padding: 8px 12px; border-radius: 10px; border: none; color: #fff; font-weight: 600; font-size: 0.7rem; cursor: pointer; transition: all 0.2s; }
     .tt-card .tt-dlbtn:hover { transform: scale(1.05); }
     .tt-card .tt-dlbtn:disabled { opacity: 0.4; cursor: wait; }
+    .tt-dlbtn-mp3 { background: linear-gradient(135deg, #ff0050, #00f2ea); }
+    .tt-dlbtn-mp4 { background: linear-gradient(135deg, #00f2ea, #8b5cf6); }
+    /* TRIMMER */
+    .tt-trim { margin-top: 14px; padding: 18px 20px; border-radius: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); }
+    .tt-trim-title { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .tt-trim-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .tt-trim-row label { font-size: 0.72rem; color: rgba(255,255,255,0.35); white-space: nowrap; }
+    .tt-trim-row input[type="number"] { width: 64px; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #e0e0e0; font-size: 0.82rem; font-family: inherit; outline: none; }
+    .tt-trim-row input[type="number"]:focus { border-color: #00f2ea; }
+    .tt-trim-slider { flex: 1; min-width: 120px; height: 6px; -webkit-appearance: none; appearance: none; background: rgba(255,255,255,0.08); border-radius: 3px; outline: none; cursor: pointer; }
+    .tt-trim-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #ff0050, #00f2ea); cursor: pointer; border: 2px solid rgba(255,255,255,0.2); }
+    .tt-trim-btn { padding: 8px 18px; border-radius: 10px; border: none; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+    .tt-trim-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,0,80,0.2); }
+    .tt-trim-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .tt-trim-preview { margin-top: 10px; display: none; }
+    .tt-trim-preview.open { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+    .tt-trim-preview video { width: 160px; border-radius: 10px; background: #000; }
+    .tt-trim-preview .tt-trim-info { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+    .tt-trim-progress { margin-top: 10px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; display: none; }
+    .tt-trim-progress.open { display: block; }
+    .tt-trim-progress .tt-trim-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 3px; transition: width 0.2s; }
     .tt-progress { margin-top: 12px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; display: none; }
     .tt-progress.open { display: block; }
     .tt-progress .tt-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 4px; transition: width 0.3s; }
@@ -594,10 +616,10 @@
 <section id="sTT" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
     <div class="section-title">
-      <span>&#127925;</span> TikTok &#8594; MP3
+      <span>&#127925;</span> TikTok &#8594; MP3/MP4
       <span style="font-size:0.65rem;background:linear-gradient(90deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">&#9889; โครตเทพ โครตสวย</span>
     </div>
-    <p class="section-sub">วางลิงก์ TikTok แล้วกดแปลง — ดาวน์โหลด MP3 คุณภาพสูง</p>
+    <p class="section-sub">วางลิงก์ TikTok — ดาวน์โหลด MP3 หรือ MP4 + ตัดต่อวิดีโอได้</p>
     <div class="tt-section">
       <div class="tt-hero">
         <div class="tt-icon">&#127925;</div>
@@ -622,14 +644,34 @@
         <div class="tt-card">
           <div class="tt-thumb">&#127908;</div>
           <div class="tt-info">
-            <div class="tt-vname" id="ttVName">TikTok Video Audio</div>
+            <div class="tt-vname" id="ttVName">TikTok Video</div>
             <div class="tt-vauthor" id="ttVAuthor">@tiktok</div>
             <div class="tt-vmeta">
               <span id="ttVDur">00:00</span>
               <span>&#9829; <span id="ttVLikes">--</span></span>
             </div>
           </div>
-          <button class="tt-dlbtn" id="ttDlBtn" onclick="downloadTT()">&#128190; ดาวน์โหลด</button>
+          <div class="tt-btns">
+            <button class="tt-dlbtn tt-dlbtn-mp3" id="ttDlBtn" onclick="downloadTT('mp3')">&#127925; MP3</button>
+            <button class="tt-dlbtn tt-dlbtn-mp4" id="ttVidBtn" onclick="downloadTT('mp4')" style="display:none;">&#127916; MP4</button>
+          </div>
+        </div>
+        <!-- Trimmer -->
+        <div class="tt-trim" id="ttTrim" style="display:none;">
+          <div class="tt-trim-title">&#9986; ตัดต่อวิดีโอ</div>
+          <div class="tt-trim-row">
+            <label>เริ่ม</label>
+            <input type="number" id="trimStart" min="0" step="0.5" value="0">
+            <label>จบ</label>
+            <input type="number" id="trimEnd" min="0" step="0.5" value="10">
+            <input type="range" class="tt-trim-slider" id="trimSlider" min="0" max="30" step="0.5" value="0">
+            <button class="tt-trim-btn" id="trimBtn" onclick="trimVideo()">&#9986; ตัด</button>
+          </div>
+          <div class="tt-trim-preview" id="trimPreview">
+            <video id="trimVideoEl" muted controls playsinline></video>
+            <div class="tt-trim-info" id="trimInfo"></div>
+          </div>
+          <div class="tt-trim-progress" id="trimProgress"><div class="tt-trim-bar" id="trimBar"></div></div>
         </div>
         <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
         <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
@@ -1300,8 +1342,8 @@
     localStorage.setItem('cm_fbUrl', url); updateFbLink(); alert('บันทึกลิงก์ Facebook แล้ว');
   }
   renderEmployees(); updateFbLink(); openDB().catch(() => {});
-  // TIKTOK MP3
-  let ttAudioBlob = null;
+  // TIKTOK MP3/MP4
+  let ttAudioBlob = null, ttVideoUrl = null;
   function setTTStatus(emoji, text) {
     const el = document.getElementById('ttStatus');
     document.getElementById('ttStatusEmoji').textContent = emoji;
@@ -1323,20 +1365,23 @@
     const btn = document.getElementById('ttConvertBtn');
     const preview = document.getElementById('ttPreview');
     const dlBtn = document.getElementById('ttDlBtn');
+    const vidBtn = document.getElementById('ttVidBtn');
+    const trim = document.getElementById('ttTrim');
     btn.disabled = true; btn.textContent = '⏳ กำลังแปลง...';
     preview.classList.remove('open');
+    trim.style.display = 'none';
     setTTProgress(0);
     setTTStatus('&#9889;', 'กำลังเชื่อมต่อ TikTok...');
     await delay(800); setTTProgress(20);
     try {
-      // ใช้ TikTok API จริง
       const formData = new URLSearchParams(); formData.append('url', url);
       const res = await fetch('https://www.tikwm.com/api/', { method: 'POST', body: formData });
       const json = await res.json();
       if (!json.data) throw new Error('API error');
       const data = json.data;
       const musicUrl = data.music_info?.play || data.music;
-      const title = data.title || 'TikTok Audio';
+      ttVideoUrl = data.play || data.wmplay || null;
+      const title = data.title || 'TikTok Video';
       const author = data.author?.nickname || 'tiktok';
       const dur = data.duration || 30;
       const likes = data.digg_count ? (data.digg_count >= 1000 ? (data.digg_count/1000).toFixed(1)+'K' : data.digg_count) : '--';
@@ -1344,14 +1389,22 @@
       document.getElementById('ttVAuthor').textContent = '@' + author;
       document.getElementById('ttVDur').textContent = formatTTTime(dur);
       document.getElementById('ttVLikes').textContent = likes;
-      setTTStatus('&#128270;', 'กำลังดาวน์โหลดเสียง...');
+      setTTStatus('&#128270;', 'กำลังดาวน์โหลด...');
       setTTProgress(50);
       const audioRes = await fetch(musicUrl);
       ttAudioBlob = await audioRes.blob();
       setTTProgress(100);
-      setTTStatus('&#9989;', 'แปลงสำเร็จ! ดาวน์โหลด MP3 ได้เลย');
+      setTTStatus('&#9989;', 'พร้อมดาวน์โหลด!');
       preview.classList.add('open');
       dlBtn.disabled = false;
+      if (ttVideoUrl) {
+        vidBtn.style.display = '';
+        trim.style.display = '';
+        document.getElementById('trimEnd').value = dur;
+        document.getElementById('trimSlider').max = dur;
+        document.getElementById('trimEnd').max = dur;
+        document.getElementById('trimSlider').value = 0;
+      } else { vidBtn.style.display = 'none'; }
     } catch (e) {
       console.error(e);
       setTTStatus('&#10060;', 'ดึงข้อมูลไม่ได้ — API อาจเปลี่ยนหรือลิงก์ไม่ถูกต้อง');
@@ -1361,13 +1414,73 @@
     }
     btn.disabled = false; btn.textContent = '&#9889; แปลง';
   }
-  function downloadTT() {
-    if (!ttAudioBlob) { alert('กรุณาแปลงก่อนดาวน์โหลด'); return; }
-    const ext = ttAudioBlob.type.includes('mp3') ? 'mp3' : (ttAudioBlob.type.includes('wav') ? 'wav' : 'mp3');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(ttAudioBlob);
-    a.download = 'tiktok-audio-' + Date.now() + '.' + ext;
-    a.click(); URL.revokeObjectURL(a.href);
+  function downloadTT(type) {
+    if (type === 'mp4') {
+      if (!ttVideoUrl) { alert('ไม่มีลิงก์วิดีโอ'); return; }
+      window.open(ttVideoUrl, '_blank');
+    } else {
+      if (!ttAudioBlob) { alert('กรุณาแปลงก่อนดาวน์โหลด'); return; }
+      const ext = ttAudioBlob.type.includes('mp3') ? 'mp3' : (ttAudioBlob.type.includes('wav') ? 'wav' : 'mp3');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(ttAudioBlob);
+      a.download = 'tiktok-audio-' + Date.now() + '.' + ext;
+      a.click(); URL.revokeObjectURL(a.href);
+    }
+  }
+  // slider syncing
+  document.getElementById('trimSlider').oninput = function() { document.getElementById('trimStart').value = this.value; };
+  document.getElementById('trimStart').oninput = function() { document.getElementById('trimSlider').value = this.value; };
+  async function trimVideo() {
+    if (!ttVideoUrl) { alert('ไม่มีวิดีโอ'); return; }
+    const start = parseFloat(document.getElementById('trimStart').value);
+    const end = parseFloat(document.getElementById('trimEnd').value);
+    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
+    const btn = document.getElementById('trimBtn');
+    const bar = document.getElementById('trimBar');
+    const prog = document.getElementById('trimProgress');
+    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
+    prog.classList.add('open'); bar.style.width = '0%';
+    const video = document.getElementById('trimVideoEl');
+    video.src = ttVideoUrl;
+    video.preload = 'auto';
+    await new Promise(r => { video.onloadedmetadata = r; });
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 640;
+    const ctx = canvas.getContext('2d');
+    const stream = canvas.captureStream(30);
+    const mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
+    let mime = '';
+    for (const mt of mimeTypes) { if (MediaRecorder.isTypeSupported(mt)) { mime = mt; break; } }
+    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.start();
+    video.currentTime = start;
+    video.play().catch(() => {});
+    const total = end - start;
+    video.ontimeupdate = () => {
+      const cur = video.currentTime || 0;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const pct = Math.min(100, ((cur - start) / total) * 100);
+      bar.style.width = pct + '%';
+      if (cur >= end) {
+        video.pause(); video.ontimeupdate = null;
+        video.onended = null;
+        recorder.stop();
+      }
+    };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+      const p = document.getElementById('trimPreview');
+      p.classList.add('open');
+      const v = document.getElementById('trimVideoEl');
+      v.src = URL.createObjectURL(blob);
+      v.play().catch(() => {});
+      document.getElementById('trimInfo').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="tiktok-trimmed-'+Date.now()+'.webm" style="color:#00f2ea;">&#128190; ดาวน์โหลดคลิปที่ตัดแล้ว</a>';
+      bar.style.width = '100%';
+      btn.disabled = false; btn.textContent = '&#9986; ตัด';
+    };
   }
   // AUTO-UPDATE
   (function() {
