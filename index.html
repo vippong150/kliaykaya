@@ -88,7 +88,7 @@
     .phone-preview .pm-notch { width: 60px; height: 16px; background: #000; border-radius: 0 0 10px 10px; flex-shrink: 0; }
     .phone-preview .pm-content { width: 100%; padding: 6px 8px 10px; display: flex; flex-direction: column; align-items: center; }
     .pm-video-wrap { width: 100%; aspect-ratio: 9/16; border-radius: 10px; overflow: hidden; position: relative; margin-bottom: 0; }
-    .pm-video-fallback { width: 100%; height: 100%; background: linear-gradient(160deg,rgba(26,26,62,0.36) 0%,rgba(45,27,78,0.24) 40%,rgba(26,42,78,0.18) 100%), url('product_upload_2.png'); background-size: cover; background-position: center; }
+    .pm-video-fallback { width: 100%; height: 100%; background: linear-gradient(160deg,rgba(26,26,62,0.36) 0%,rgba(45,27,78,0.24) 40%,rgba(26,42,78,0.18) 100%); background-size: cover; background-position: center; }
     .pm-playbtn { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); width: 38px; height: 38px; border-radius: 50%; background: rgba(18,216,255,0.28); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; font-size: 0.92rem; color: #fff; box-shadow: 0 0 26px rgba(18,216,255,0.32); }
     .pm-badge { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg,rgba(0,0,0,0.64) 0%,rgba(0,0,0,0.08) 100%); padding: 22px 10px 10px; display: flex; flex-direction: column; align-items: flex-start; }
     .pm-text { font-size: 0.65rem; font-weight: 700; color: #fff; line-height: 1.4; }
@@ -519,7 +519,7 @@
           <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
           <!-- Sample product (แก้รูปสินค้าได้ที่ product.png / จะเปลี่ยนตามรูปที่อัปโหลด) -->
           <div class="hero-sample" title="ตัวอย่างรูปสินค้า">
-            <img id="heroSampleImg" src="product_upload_2.png" alt="ตัวอย่างสินค้า">
+            <img id="heroSampleImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%231a1a3e'/%3E%3Ctext x='100' y='105' text-anchor='middle' font-size='14' fill='%23555'%3E\u0E23\u0E39\u0E1B\u0E2A\u0E34\u0E19\u0E04\u0E49\u0E32%3C/text%3E%3C/svg%3E" alt="ตัวอย่างสินค้า">
           </div>
           <!-- Arrow -->
           <div class="hero-arrow">&rsaquo;&rsaquo;</div>
@@ -1728,61 +1728,6 @@
       a.download = 'tiktok-audio-' + Date.now() + '.' + ext;
       a.click(); URL.revokeObjectURL(a.href);
     }
-  }
-  // slider syncing
-  document.getElementById('trimSlider').oninput = function() { document.getElementById('trimStart').value = this.value; };
-  document.getElementById('trimStart').oninput = function() { document.getElementById('trimSlider').value = this.value; };
-  async function trimVideo() {
-    if (!ttVideoUrl) { alert('ไม่มีวิดีโอ'); return; }
-    const start = parseFloat(document.getElementById('trimStart').value);
-    const end = parseFloat(document.getElementById('trimEnd').value);
-    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
-    const btn = document.getElementById('trimBtn');
-    const bar = document.getElementById('trimBar');
-    const prog = document.getElementById('trimProgress');
-    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
-    prog.classList.add('open'); bar.style.width = '0%';
-    const video = document.getElementById('trimVideoEl');
-    video.src = ttVideoUrl;
-    video.preload = 'auto';
-    await new Promise(r => { video.onloadedmetadata = r; });
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 640;
-    const ctx = canvas.getContext('2d');
-    const stream = canvas.captureStream(30);
-    const mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
-    let mime = '';
-    for (const mt of mimeTypes) { if (MediaRecorder.isTypeSupported(mt)) { mime = mt; break; } }
-    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
-    const chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.start();
-    video.currentTime = start;
-    video.play().catch(() => {});
-    const total = end - start;
-    video.ontimeupdate = () => {
-      const cur = video.currentTime || 0;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const pct = Math.min(100, ((cur - start) / total) * 100);
-      bar.style.width = pct + '%';
-      if (cur >= end) {
-        video.pause(); video.ontimeupdate = null;
-        video.onended = null;
-        recorder.stop();
-      }
-    };
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
-      const p = document.getElementById('trimPreview');
-      p.classList.add('open');
-      const v = document.getElementById('trimVideoEl');
-      v.src = URL.createObjectURL(blob);
-      v.play().catch(() => {});
-      document.getElementById('trimInfo').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="tiktok-trimmed-'+Date.now()+'.webm" style="color:#00f2ea;">&#128190; ดาวน์โหลดคลิปที่ตัดแล้ว</a>';
-      bar.style.width = '100%';
-      btn.disabled = false; btn.textContent = '&#9986; ตัด';
-    };
   }
   // TOOLS: MP3 Trimmer
   let mp3File = null;
