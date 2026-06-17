@@ -205,21 +205,38 @@
     .tool-upload.has-file { border-style: solid; border-color: #00f2ea; }
     @media (max-width:768px) { .tool-grid { grid-template-columns: 1fr; } }
     /* CLIP LIBRARY */
-    .clip-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .clip-count { font-size: 0.8rem; color: rgba(255,255,255,0.3); }
-    .clip-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 14px; }
+    .clip-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .clip-header-left { display: flex; align-items: center; gap: 12px; }
+    .clip-header-title { font-size: 1.1rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .clip-header-sub { font-size: 0.78rem; color: rgba(255,255,255,0.35); margin-bottom: 18px; }
+    .clip-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+    .clip-search { flex: 1; min-width: 160px; padding: 10px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04); color: #e0e0e0; font-size: 0.82rem; font-family: inherit; outline: none; transition: all 0.2s; }
+    .clip-search:focus { border-color: #00f2ea; }
+    .clip-search::placeholder { color: rgba(255,255,255,0.2); }
+    .clip-toolbar button { padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+    .clip-toolbar button:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+    .clip-toolbar .ct-del { color: #ff5050; border-color: rgba(255,80,80,0.15); }
+    .clip-toolbar .ct-del:hover { background: rgba(255,80,80,0.1); }
+    .clip-info-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; font-size: 0.78rem; color: rgba(255,255,255,0.3); flex-wrap: wrap; }
+    .clip-info-bar span { display: flex; align-items: center; gap: 4px; }
+    .clip-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(190px,1fr)); gap: 14px; }
     .clip-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; transition: all 0.25s; cursor: default; }
     .clip-item:hover { border-color: rgba(0,242,234,0.2); background: rgba(0,242,234,0.02); }
-    .clip-item .ci-icon { font-size: 1.8rem; margin-bottom: 8px; }
-    .clip-item .ci-name { font-size: 0.8rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .clip-item .ci-icon { font-size: 2rem; margin-bottom: 6px; }
+    .clip-item .ci-name { font-size: 0.82rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
     .clip-item .ci-meta { font-size: 0.68rem; color: rgba(255,255,255,0.3); margin-bottom: 10px; }
-    .clip-item .ci-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-    .clip-item .ci-actions button { padding: 4px 10px; border-radius: 8px; border: none; font-size: 0.68rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .clip-item .ci-actions { display: flex; gap: 6px; }
+    .clip-item .ci-actions button { padding: 5px 10px; border-radius: 8px; border: none; font-size: 0.68rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .clip-item .ci-dl { background: linear-gradient(135deg, #00f2ea, #12d8ff); color: #fff; }
     .clip-item .ci-dl:hover { opacity: 0.85; }
-    .clip-item .ci-del { background: rgba(255,80,80,0.1); color: #ff5050; }
-    .clip-item .ci-del:hover { background: rgba(255,80,80,0.2); }
+    .clip-item .ci-del { background: rgba(255,80,80,0.08); color: #ff5050; }
+    .clip-item .ci-del:hover { background: rgba(255,80,80,0.18); }
     .clip-empty { text-align: center; padding: 48px 20px; color: rgba(255,255,255,0.2); font-size: 0.9rem; grid-column: 1 / -1; }
+    .clip-pagination { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+    .clip-pagination button { padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); cursor: pointer; font-size: 0.75rem; }
+    .clip-pagination button:hover { border-color: #00f2ea; color: #00f2ea; }
+    .clip-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .clip-pagination .cp-active { color: #00f2ea; font-weight: 700; }
     .tt-progress { margin-top: 12px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; display: none; }
     .tt-progress.open { display: block; }
     .tt-progress .tt-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 4px; transition: width 0.3s; }
@@ -767,15 +784,24 @@
 <!-- CLIP LIBRARY SECTION -->
 <section id="sClip" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
-    <div class="section-title"><span>&#128451;</span> คลังคลิปของฉัน</div>
-    <p class="section-sub">ไฟล์ที่ตัดและดาวน์โหลดทั้งหมด — ดูและโหลดซ้ำได้</p>
     <div class="clip-header">
-      <span class="clip-count" id="clipCount">0 ไฟล์</span>
-      <button class="btn btn-sm btn-outline" onclick="clearAllClips()" style="color:#ff5050;border-color:rgba(255,80,80,0.2);">&#128465; ล้างทั้งหมด</button>
+      <div class="clip-header-title">&#128193; คลังที่ตัดแล้ว</div>
+    </div>
+    <div class="clip-header-sub">วิดีโอที่ตัดต่ออัตโนมัติ Auto Cut Engine &mdash; เพิ่มอัตโนมัติเมื่องานเสร็จ</div>
+    <div class="clip-toolbar">
+      <input class="clip-search" id="clipSearch" placeholder="&#128269; ค้นหาคลิป..." oninput="renderClips()">
+      <button onclick="renderClips()">&#128260;</button>
+      <button class="ct-del" onclick="clearAllClips()">&#128465; ล้างทั้งหมด</button>
+    </div>
+    <div class="clip-info-bar">
+      <span>&#128230; <span id="clipCount">0</span> รายการ</span>
+      <span>&#128196; <span id="clipPage">1/1</span> หน้า</span>
+      <span>แสดง <span id="clipRange">0-0</span> จาก <span id="clipTotal">0</span></span>
     </div>
     <div class="clip-grid" id="clipGrid">
       <div class="clip-empty">&#128193; ยังไม่มีคลิป — เมื่อคุณตัด MP3 หรือโหลด MP4 คลิปจะถูกเก็บไว้ที่นี่</div>
     </div>
+    <div class="clip-pagination" id="clipPagination"></div>
   </div>
 </section>
 
@@ -1661,19 +1687,40 @@
       clear() { clips = []; localStorage.setItem('vsa_clips', JSON.stringify(clips)); }
     };
   })();
+  let clipPage = 0; const CLIP_PER_PAGE = 12;
   function renderClips() {
     const grid = document.getElementById('clipGrid');
     const count = document.getElementById('clipCount');
-    const clips = clipDB.getAll();
-    count.textContent = clips.length + ' ไฟล์' + (clips.length > 1 ? '' : '');
-    if (clips.length === 0) { grid.innerHTML = '<div class="clip-empty">&#128193; ยังไม่มีคลิป — เมื่อคุณตัด MP3 หรือโหลด MP4 คลิปจะถูกเก็บไว้ที่นี่</div>'; return; }
-    grid.innerHTML = clips.map((c, i) => {
+    const pageEl = document.getElementById('clipPage');
+    const rangeEl = document.getElementById('clipRange');
+    const totalEl = document.getElementById('clipTotal');
+    const pagi = document.getElementById('clipPagination');
+    const search = (document.getElementById('clipSearch').value || '').toLowerCase();
+    let clips = clipDB.getAll().filter(c => !search || c.name.toLowerCase().includes(search));
+    const total = clips.length;
+    clips = clips.reverse();
+    const maxPage = Math.max(0, Math.ceil(total / CLIP_PER_PAGE) - 1);
+    if (clipPage > maxPage) clipPage = maxPage;
+    const start = clipPage * CLIP_PER_PAGE;
+    const end = Math.min(start + CLIP_PER_PAGE, total);
+    const page = clips.slice(start, end);
+    count.textContent = total;
+    pageEl.textContent = maxPage >= 0 ? (clipPage + 1) + '/' + (maxPage + 1) : '0/0';
+    totalEl.textContent = total;
+    rangeEl.textContent = total > 0 ? (start + 1) + '-' + end : '0-0';
+    if (total === 0) {
+      grid.innerHTML = '<div class="clip-empty">&#128193; ยังไม่มีคลิป' + (search ? ' — ไม่พบ "' + search + '"' : ' — เมื่อคุณตัด MP3 หรือโหลด MP4 คลิปจะถูกเก็บไว้ที่นี่') + '</div>';
+      pagi.innerHTML = ''; return;
+    }
+    grid.innerHTML = page.map((c, ri) => {
+      const realIdx = clipDB.getAll().indexOf(c);
       const icon = c.type === 'mp3' || c.type === 'wav' || c.type === 'audio' ? '&#127925;' : '&#127916;';
       const date = new Date(c.time);
       const dateStr = date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear()+' '+date.getHours()+':'+String(date.getMinutes()).padStart(2,'0');
       const sizeStr = c.size ? (c.size > 1024*1024 ? (c.size/1024/1024).toFixed(1)+' MB' : (c.size/1024).toFixed(0)+' KB') : '--';
-      return '<div class="clip-item"><div class="ci-icon">'+icon+'</div><div class="ci-name">'+c.name+'</div><div class="ci-meta">'+dateStr+' &bull; '+sizeStr+'</div><div class="ci-actions"><button class="ci-dl" onclick="reDownloadClip('+i+')">&#128190;</button><button class="ci-del" onclick="deleteClip('+i+')">&#10005;</button></div></div>';
+      return '<div class="clip-item"><div class="ci-icon">'+icon+'</div><div class="ci-name">'+c.name+'</div><div class="ci-meta">'+dateStr+' &bull; '+sizeStr+'</div><div class="ci-actions"><button class="ci-dl" onclick="reDownloadClip('+realIdx+')">&#128190;</button><button class="ci-del" onclick="deleteClip('+realIdx+')">&#10005;</button></div></div>';
     }).join('');
+    pagi.innerHTML = '<button onclick="clipPage=0;renderClips()" '+(clipPage<=0?'disabled':'')+'>&#9664;&#9664;</button><button onclick="clipPage=Math.max(0,clipPage-1);renderClips()" '+(clipPage<=0?'disabled':'')+'>&#9664;</button><span class="cp-active">'+(clipPage+1)+'/'+(maxPage+1)+'</span><button onclick="clipPage=Math.min(maxPage,clipPage+1);renderClips()" '+(clipPage>=maxPage?'disabled':'')+'>&#9654;</button><button onclick="clipPage=maxPage;renderClips()" '+(clipPage>=maxPage?'disabled':'')+'>&#9654;&#9654;</button>';
   }
   async function saveClipToDb(name, type, blob) {
     try { const dbId = await dbPut(blob); clipDB.add(name, type, blob.size, dbId); renderClips(); return dbId; } catch {}
