@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>โซเชียล — VideoSeller AI</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; }
+  .top-bar { background: #fff; border-bottom: 1px solid #ddd; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .tb-logo { font-size: 1.3rem; font-weight: 800; color: #1877f2; display: flex; align-items: center; gap: 6px; }
+  .tb-logo span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .tb-actions { display: flex; align-items: center; gap: 10px; }
+  .tb-btn { padding: 6px 14px; border-radius: 8px; border: none; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  .tb-btn-primary { background: #1877f2; color: #fff; }
+  .tb-btn-primary:hover { background: #166fe5; }
+  .tb-btn-outline { background: transparent; border: 1px solid #ddd; color: #606770; }
+  .tb-btn-outline:hover { background: #f0f2f5; }
+  .container { max-width: 640px; margin: 0 auto; padding: 16px; }
+  /* Profile card */
+  .profile-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 16px; }
+  .pc-cover { height: 180px; background: linear-gradient(135deg, #1877f2, #8b5cf6); position: relative; }
+  .pc-avatar { position: absolute; bottom: -40px; left: 24px; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 2.4rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; }
+  .pc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pc-info { padding: 44px 24px 16px; }
+  .pc-name { font-size: 1.2rem; font-weight: 700; color: #1c1e21; }
+  .pc-bio { font-size: 0.85rem; color: #606770; margin-top: 2px; }
+  .pc-edit-cover { position: absolute; top: 12px; right: 12px; padding: 6px 12px; border-radius: 8px; background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.7); font-size: 0.7rem; cursor: pointer; border: none; }
+  .pc-edit-cover:hover { background: rgba(0,0,0,0.5); color: #fff; }
+  /* Post box */
+  .post-box { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 16px; }
+  .pb-header { display: flex; align-items: center; gap: 10px; }
+  .pb-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; overflow: hidden; }
+  .pb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pb-input { flex: 1; padding: 10px 16px; border-radius: 20px; border: 1px solid #ddd; background: #f0f2f5; font-size: 0.9rem; outline: none; font-family: inherit; }
+  .pb-input:focus { border-color: #1877f2; background: #fff; }
+  .pb-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .pb-actions { display: flex; gap: 12px; }
+  .pb-btn { font-size: 0.82rem; color: #606770; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: all 0.15s; }
+  .pb-btn:hover { background: #f0f2f5; }
+  .pb-submit { padding: 8px 24px; border-radius: 8px; border: none; background: #1877f2; color: #fff; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+  .pb-submit:hover { background: #166fe5; }
+  .pb-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pb-img-preview { margin-top: 10px; position: relative; display: none; }
+  .pb-img-preview img { max-height: 240px; border-radius: 10px; width: 100%; object-fit: cover; }
+  .pb-img-close { position: absolute; top: 6px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.5); color: #fff; border: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  /* Post */
+  .post { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px; margin-bottom: 12px; }
+  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; overflow: hidden; }
+  .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .post-name { font-size: 0.9rem; font-weight: 600; color: #1c1e21; }
+  .post-name:hover { text-decoration: underline; cursor: pointer; }
+  .post-time { font-size: 0.7rem; color: #65676b; }
+  .post-text { font-size: 0.92rem; color: #1c1e21; line-height: 1.5; margin-bottom: 10px; white-space: pre-wrap; }
+  .post-img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+  .post-stats { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e4e6eb; margin-bottom: 6px; font-size: 0.78rem; color: #65676b; }
+  .post-actions { display: flex; gap: 4px; }
+  .post-action { flex: 1; text-align: center; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: #65676b; font-weight: 600; transition: all 0.15s; }
+  .post-action:hover { background: #f0f2f5; }
+  .post-action.liked { color: #1877f2; }
+  .post-action.liked::before { content: '❤️ '; }
+  .empty-feed { text-align: center; padding: 40px 20px; color: #65676b; font-size: 0.9rem; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  @media (max-width:600px) {
+    .pc-cover { height: 120px; }
+    .pc-avatar { width: 60px; height: 60px; font-size: 1.8rem; bottom: -30px; left: 16px; }
+    .pc-info { padding: 34px 16px 12px; }
+    .container { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-logo">&#127916; <span>VideoSeller AI</span></div>
+  <div class="tb-actions">
+    <a class="tb-btn tb-btn-outline" href="index.html">&#8592; กลับหน้าแรก</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Profile -->
+  <div class="profile-card">
+    <div class="pc-cover" id="pcCover">
+      <button class="pc-edit-cover" onclick="document.getElementById('coverColor').click()">🎨 เปลี่ยนสีปก</button>
+      <input type="color" id="coverColor" value="#1877f2" style="display:none">
+    </div>
+    <div class="pc-avatar" id="pcAvatar" onclick="document.getElementById('avatarInput').click()">
+      <span id="pcAvatarText">👤</span>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none">
+    </div>
+    <div class="pc-info">
+      <div class="pc-name" id="pcName">เพื่อนนักพัฒนา</div>
+      <div class="pc-bio" id="pcBio">นักสร้างคอนเทนต์ตัวจิ๋ว ✨</div>
+    </div>
+  </div>
+
+  <!-- Create Post -->
+  <div class="post-box">
+    <div class="pb-header">
+      <div class="pb-avatar" id="pbAvatarDisplay">👤</div>
+      <input class="pb-input" id="postInput" placeholder="คุณกำลังคิดอะไรอยู่..." maxlength="500">
+    </div>
+    <div class="pb-footer">
+      <div class="pb-actions">
+        <label class="pb-btn" for="postImgInput">🖼 รูปภาพ</label>
+        <input type="file" id="postImgInput" accept="image/*" style="display:none">
+        <span class="pb-btn" onclick="document.getElementById('postInput').value=''">🗑 ล้าง</span>
+      </div>
+      <button class="pb-submit" onclick="createPost()">โพสต์</button>
+    </div>
+    <div class="pb-img-preview" id="postImgPreview">
+      <img id="postImg">
+      <button class="pb-img-close" onclick="clearPostImg()">✕</button>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div id="feed"></div>
+</div>
+
+<script>
+  let posts = JSON.parse(localStorage.getItem('sc_posts') || '[]');
+  let profile = JSON.parse(localStorage.getItem('sc_profile') || '{"name":"เพื่อนนักพัฒนา","bio":"นักสร้างคอนเทนต์ตัวจิ๋ว ✨","cover":"#1877f2"}');
+
+  (function() {
+    const p = profile;
+    document.getElementById('pcName').textContent = p.name;
+    document.getElementById('pcBio').textContent = p.bio;
+    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + p.cover + ',' + (p.cover === '#1877f2' ? '#8b5cf6' : p.cover) + ')';
+    if (p.avatar) {
+      document.getElementById('pcAvatarText').innerHTML = '<img src="' + p.avatar + '">';
+      document.getElementById('pbAvatarDisplay').innerHTML = '<img src="' + p.avatar + '">';
+    }
+    renderFeed();
+  })();
+
+  document.getElementById('coverColor').onchange = function() {
+    profile.cover = this.value;
+    localStorage.setItem('sc_profile', JSON.stringify(profile));
+    document.getElementById('pcCover').style.background = 'linear-gradient(135deg,' + this.value + ',' + (this.value === '#1877f2' ? '#8b5cf6' : this.value) + ')';
+  };
+
+  document.getElementById('avatarInput').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = function(ev) {
+      profile.avatar = ev.target.result;
+      localStorage.setItem('sc_profile', JSON.stringify(profile));
+      const html = '<img src="' + ev.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+      document.getElementById('pcAvatarText').innerHTML = html;
+      document.getElementById('pbAvatarDisplay').innerHTML = html;
+    };
+    r.readAsDataURL(f);
+  };
+
+  document.getElementById('postImgInput').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = function(ev) {
+      document.getElementById('postImg').src = ev.target.result;
+      document.getElementById('postImgPreview').style.display = '';
+    };
+    r.readAsDataURL(f);
+  };
+
+  function clearPostImg() {
+    document.getElementById('postImgPreview').style.display = 'none';
+    document.getElementById('postImgInput').value = '';
+  }
+
+  function createPost() {
+    const input = document.getElementById('postInput');
+    const text = input.value.trim();
+    const img = document.getElementById('postImg');
+    if (!text && !img.src) return;
+    const post = { id: Date.now(), text, time: Date.now(), likes: 0, liked: false };
+    if (img.src && document.getElementById('postImgPreview').style.display !== 'none') { post.img = img.src; }
+    posts.unshift(post);
+    localStorage.setItem('sc_posts', JSON.stringify(posts));
+    input.value = '';
+    clearPostImg();
+    renderFeed();
+  }
+
+  function toggleLike(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    p.liked = !p.liked;
+    p.likes += p.liked ? 1 : -1;
+    localStorage.setItem('sc_posts', JSON.stringify(posts));
+    renderFeed();
+  }
+
+  function renderFeed() {
+    const feed = document.getElementById('feed');
+    if (!posts.length) { feed.innerHTML = '<div class="empty-feed">📝 ยังไม่มีโพสต์ — เขียนอะไรสักหน่อยสิ</div>'; return; }
+    feed.innerHTML = posts.map(p => {
+      const time = new Date(p.time);
+      const timeStr = time.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      return '<div class="post">' +
+        '<div class="post-header">' +
+          '<div class="post-avatar' + (profile.avatar ? '" style="background:none' : '') + '">' + (profile.avatar ? '<img src="' + profile.avatar + '">' : '👤') + '</div>' +
+          '<div><div class="post-name">' + esc(profile.name) + '</div><div class="post-time">' + timeStr + '</div></div>' +
+        '</div>' +
+        (p.text ? '<div class="post-text">' + esc(p.text) + '</div>' : '') +
+        (p.img ? '<img class="post-img" src="' + p.img + '">' : '') +
+        '<div class="post-stats">❤️ ' + (p.likes || 0) + ' ครั้ง</div>' +
+        '<div class="post-actions">' +
+          '<div class="post-action' + (p.liked ? ' liked' : '') + '" onclick="toggleLike(' + p.id + ')">' + (p.liked ? '❤️ ถูกใจ' : '🤍 ถูกใจ') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+</script>
+</body>
+</html>

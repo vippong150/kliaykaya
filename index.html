@@ -419,51 +419,6 @@
       .plat-item { padding: 12px 18px; font-size: 0.8rem; }
       .employee-grid { grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); }
     }
-    /* SOCIAL */
-    .sc-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; overflow: hidden; max-width: 680px; margin: 0 auto; }
-    .sc-cover { position: relative; height: 200px; background: linear-gradient(135deg,#1a1a3e,#2d1b69); overflow: hidden; }
-    .sc-cover-grad { position: absolute; inset: 0; background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6)); }
-    .sc-avatar { position: absolute; bottom: -40px; left: 24px; width: 80px; height: 80px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.15); background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 2.4rem; cursor: pointer; overflow: hidden; z-index: 2; }
-    .sc-avatar-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #fff; opacity: 0; transition: opacity 0.2s; border-radius: 50%; }
-    .sc-avatar:hover .sc-avatar-overlay { opacity: 1; }
-    .sc-profile-info { position: absolute; bottom: 12px; left: 118px; z-index: 2; }
-    .sc-name { font-size: 1.2rem; font-weight: 800; color: #fff; }
-    .sc-bio { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
-    .sc-cover-edit { position: absolute; top: 12px; right: 12px; z-index: 2; padding: 6px 14px; border-radius: 8px; background: rgba(0,0,0,0.3); backdrop-filter: blur(6px); color: rgba(255,255,255,0.4); font-size: 0.7rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); }
-    .sc-cover-edit:hover { color: #fff; background: rgba(0,0,0,0.5); }
-    .sc-body { padding: 48px 20px 20px; }
-    .sc-post-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; }
-    .sc-pb-header { display: flex; align-items: center; gap: 10px; }
-    .sc-pb-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-    .sc-pb-input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #e0e0e0; font-size: 0.85rem; outline: none; font-family: inherit; }
-    .sc-pb-input::placeholder { color: rgba(255,255,255,0.2); }
-    .sc-pb-input:focus { border-color: rgba(18,216,255,0.3); }
-    .sc-pb-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-    .sc-pb-actions { display: flex; gap: 10px; }
-    .sc-pb-btn { font-size: 0.78rem; color: rgba(255,255,255,0.3); cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; }
-    .sc-pb-btn:hover { color: #12d8ff; background: rgba(18,216,255,0.04); }
-    .sc-pb-submit { padding: 8px 22px; border-radius: 10px; border: none; background: linear-gradient(135deg,#12d8ff,#8b5cf6); color: #fff; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
-    .sc-pb-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-    .sc-post { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px; margin-bottom: 12px; animation: fadeSlideIn 0.35s ease-out; }
-    .sc-post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .sc-post-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#12d8ff,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-    .sc-post-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
-    .sc-post-time { font-size: 0.65rem; color: rgba(255,255,255,0.2); }
-    .sc-post-text { font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.5; margin-bottom: 10px; white-space: pre-wrap; }
-    .sc-post-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
-    .sc-post-actions { display: flex; gap: 12px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 10px; }
-    .sc-post-like { font-size: 0.78rem; color: rgba(255,255,255,0.3); cursor: pointer; padding: 4px 10px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
-    .sc-post-like:hover { color: #ff3366; background: rgba(255,51,102,0.04); }
-    .sc-post-like.liked { color: #ff3366; }
-    .sc-post-like.liked::before { content: '❤️ '; }
-    .sc-empty-feed { text-align: center; padding: 32px 20px; color: rgba(255,255,255,0.15); font-size: 0.85rem; }
-    @media (max-width:600px) {
-      .sc-cover { height: 140px; }
-      .sc-avatar { width: 60px; height: 60px; font-size: 1.8rem; bottom: -30px; left: 16px; }
-      .sc-profile-info { left: 90px; bottom: 8px; }
-      .sc-name { font-size: 1rem; }
-      .sc-body { padding: 38px 14px 14px; }
-    }
   </style>
 </head>
 <body>
@@ -473,11 +428,26 @@
 </video>
 <div class="overlay"></div>
 
+<!-- NAV -->
+<nav>
+  <div class="logo">&#127916; <span>VideoSeller AI</span></div>
+  <div class="menu">
+    <a onclick="scrollToEl('sFeatures')">ฟีเจอร์</a>
+    <a onclick="scrollToEl('sFeatures')">ตัวอย่างคลิป</a>
+    <a onclick="scrollToEl('sPricing')">ราคา</a>
+    <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
+    <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
+    <a onclick="scrollToEl('sTT')">TikTok MP3</a>
+    <a onclick="scrollToEl('sTools')">ตัดต่อ</a>
+    <a onclick="scrollToEl('sClip')">คลัง</a>
+    <a onclick="scrollToEl('music')">เพลง</a>
+    <a href="social.html" target="_blank">โซเชียล</a>
+    <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
+    <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">เริ่มใช้ฟรี</a>
+  </div>
+</nav>
+
 <!-- HERO -->
-<div style="position:fixed;top:14px;right:18px;z-index:999;">
-  <a id="authBtn" onclick="openModal('authModal')" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(5,8,20,0.5);backdrop-filter:blur(12px);color:rgba(255,255,255,0.8);font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;">เข้าสู่ระบบ</a>
-</div>
-<div class="hero" id="heroTop">
   <div class="hero-glow blue"></div>
   <div class="hero-glow purple"></div>
   <div class="container">
@@ -567,51 +537,6 @@
     </div>
   </div>
 </div>
-
-<!-- SOCIAL SECTION -->
-<section class="sec" id="sSocial" style="border-top:1px solid rgba(255,255,255,0.04);">
-  <div class="container">
-    <div class="sc-card">
-      <div class="sc-cover" id="scCover">
-        <div class="sc-cover-grad"></div>
-        <div class="sc-avatar" id="scAvatar" onclick="document.getElementById('scAvatarInput').click()">
-          <span id="scAvatarText">👤</span>
-          <div class="sc-avatar-overlay">เปลี่ยน</div>
-        </div>
-        <input type="file" id="scAvatarInput" accept="image/*" style="display:none">
-        <div class="sc-profile-info">
-          <div class="sc-name" id="scName">เพื่อนนักพัฒนา</div>
-          <div class="sc-bio" id="scBio">นักสร้างคอนเทนต์ตัวจิ๋ว ✨</div>
-        </div>
-        <div class="sc-cover-edit" onclick="document.getElementById('scCoverColor').click()">🎨 เปลี่ยนสีปก</div>
-        <input type="color" id="scCoverColor" value="#1a1a3e" style="display:none">
-      </div>
-      <div class="sc-body">
-        <!-- Create Post -->
-        <div class="sc-post-box">
-          <div class="sc-pb-header">
-            <span class="sc-pb-avatar">👤</span>
-            <input class="sc-pb-input" id="scPostInput" placeholder="คุณกำลังคิดอะไรอยู่..." maxlength="500">
-          </div>
-          <div class="sc-pb-footer">
-            <div class="sc-pb-actions">
-              <label class="sc-pb-btn" for="scPostImgInput">🖼 รูปภาพ</label>
-              <input type="file" id="scPostImgInput" accept="image/*" style="display:none" onchange="scPostImgPreview(this)">
-              <span class="sc-pb-btn" onclick="document.getElementById('scPostInput').value=''">🗑 ล้าง</span>
-            </div>
-            <button class="sc-pb-submit" onclick="scCreatePost()">โพสต์</button>
-          </div>
-          <div id="scPostImgPreview" style="display:none;margin-top:10px;position:relative;">
-            <img id="scPostImg" style="max-height:200px;border-radius:10px;width:100%;object-fit:cover;">
-            <span style="position:absolute;top:6px;right:8px;cursor:pointer;font-size:1.2rem;color:rgba(255,255,255,0.6);" onclick="scClearPostImg()">✕</span>
-          </div>
-        </div>
-        <!-- Feed -->
-        <div id="scFeed" style="margin-top:16px;"></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- SECTION: 3 STEPS -->
 <section class="sec" id="sFeatures">
@@ -1960,86 +1885,6 @@
       }, 20000);
     }
   })();
-  // SOCIAL
-  let scPosts = JSON.parse(localStorage.getItem('sc_posts') || '[]');
-  let scProfile = JSON.parse(localStorage.getItem('sc_profile') || '{"name":"เพื่อนนักพัฒนา","bio":"นักสร้างคอนเทนต์ตัวจิ๋ว ✨","cover":"#1a1a3e"}');
-  (function() {
-    const p = scProfile;
-    document.getElementById('scName').textContent = p.name;
-    document.getElementById('scBio').textContent = p.bio;
-    document.getElementById('scCover').style.background = 'linear-gradient(135deg,' + p.cover + ',' + p.cover.replace('1a','2d').replace('1a3e','1b69') + ')';
-    if (p.avatar) document.getElementById('scAvatarText').textContent = '';
-    renderFeed();
-  })();
-  document.getElementById('scCoverColor').onchange = function() {
-    scProfile.cover = this.value;
-    localStorage.setItem('sc_profile', JSON.stringify(scProfile));
-    document.getElementById('scCover').style.background = 'linear-gradient(135deg,' + this.value + ',' + this.value.replace('1a','2d').replace('1a3e','1b69') + ')';
-  };
-  document.getElementById('scAvatarInput').onchange = function(e) {
-    const f = e.target.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = function(ev) {
-      scProfile.avatar = ev.target.result;
-      localStorage.setItem('sc_profile', JSON.stringify(scProfile));
-      document.getElementById('scAvatarText').innerHTML = '<img src="' + ev.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
-    };
-    r.readAsDataURL(f);
-  };
-  function scPostImgPreview(el) {
-    const f = el.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = function(e) {
-      document.getElementById('scPostImg').src = e.target.result;
-      document.getElementById('scPostImgPreview').style.display = '';
-    };
-    r.readAsDataURL(f);
-  }
-  function scClearPostImg() {
-    document.getElementById('scPostImgPreview').style.display = 'none';
-    document.getElementById('scPostImgInput').value = '';
-  }
-  function scCreatePost() {
-    const input = document.getElementById('scPostInput');
-    const text = input.value.trim();
-    const imgEl = document.getElementById('scPostImg');
-    if (!text && !imgEl.src) return;
-    const post = { id: Date.now(), text, time: Date.now(), likes: 0, liked: false };
-    if (imgEl.src) { post.img = imgEl.src; }
-    scPosts.unshift(post);
-    localStorage.setItem('sc_posts', JSON.stringify(scPosts));
-    input.value = '';
-    scClearPostImg();
-    renderFeed();
-  }
-  function scToggleLike(id) {
-    const p = scPosts.find(x => x.id === id);
-    if (!p) return;
-    p.liked = !p.liked;
-    p.likes += p.liked ? 1 : -1;
-    localStorage.setItem('sc_posts', JSON.stringify(scPosts));
-    renderFeed();
-  }
-  function renderFeed() {
-    const feed = document.getElementById('scFeed');
-    if (!scPosts.length) { feed.innerHTML = '<div class="sc-empty-feed">📝 ยังไม่มีโพสต์ — เขียนอะไรสักหน่อยสิ</div>'; return; }
-    feed.innerHTML = scPosts.map(p => {
-      const time = new Date(p.time);
-      const timeStr = time.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-      return '<div class="sc-post">' +
-        '<div class="sc-post-header">' +
-          '<div class="sc-post-avatar">👤</div>' +
-          '<div><div class="sc-post-name">' + scProfile.name + '</div><div class="sc-post-time">' + timeStr + '</div></div>' +
-        '</div>' +
-        (p.text ? '<div class="sc-post-text">' + escHtml(p.text) + '</div>' : '') +
-        (p.img ? '<img class="sc-post-img" src="' + p.img + '">' : '') +
-        '<div class="sc-post-actions">' +
-          '<span class="sc-post-like' + (p.liked ? ' liked' : '') + '" onclick="scToggleLike(' + p.id + ')">' + (p.liked ? '❤️ ' : '🤍 ') + (p.likes || '') + '</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-  function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 </script>
 </body>
 </html>
