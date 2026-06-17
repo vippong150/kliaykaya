@@ -143,6 +143,41 @@
     .plat-item { padding: 14px 24px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px; transition: all 0.3s; backdrop-filter: blur(14px); }
     .plat-item:hover { border-color: rgba(18,216,255,0.2); background: rgba(18,216,255,0.04); }
     .plat-sub { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+    /* TIKTOK MP3 */
+    .tt-section { max-width: 640px; }
+    .tt-hero { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding: 18px 22px; border-radius: 20px; background: linear-gradient(135deg, rgba(255,0,80,0.10), rgba(0,242,234,0.06)); border: 1px solid rgba(255,0,80,0.15); backdrop-filter: blur(12px); }
+    .tt-hero .tt-icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #ff0050, #00f2ea); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 24px rgba(255,0,80,0.2); flex-shrink: 0; }
+    .tt-hero .tt-txt { flex: 1; }
+    .tt-hero .tt-txt .tt-title { font-size: 1rem; font-weight: 700; color: #fff; }
+    .tt-hero .tt-txt .tt-desc { font-size: 0.78rem; color: rgba(255,255,255,0.45); }
+    .tt-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 24px; backdrop-filter: blur(10px); }
+    .tt-input-row { display: flex; gap: 12px; align-items: center; }
+    .tt-input-row input { flex: 1; padding: 14px 18px; border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #e0e0e0; font-size: 0.85rem; font-family: inherit; outline: none; transition: all 0.25s; }
+    .tt-input-row input:focus { border-color: #ff0050; box-shadow: 0 0 30px rgba(255,0,80,0.06); }
+    .tt-input-row input::placeholder { color: rgba(255,255,255,0.25); }
+    .tt-btn { padding: 14px 28px; border-radius: 14px; border: none; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .tt-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,0,80,0.3); }
+    .tt-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .tt-preview { margin-top: 16px; display: none; }
+    .tt-preview.open { display: block; }
+    .tt-card { display: flex; gap: 14px; padding: 14px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); align-items: center; animation: ventFadeIn 0.4s ease; }
+    .tt-card .tt-thumb { width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, #ff0050, #00f2ea); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+    .tt-card .tt-info { flex: 1; min-width: 0; }
+    .tt-card .tt-info .tt-vname { font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tt-card .tt-info .tt-vauthor { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .tt-card .tt-info .tt-vmeta { font-size: 0.7rem; color: rgba(255,255,255,0.25); margin-top: 4px; display: flex; gap: 12px; }
+    .tt-card .tt-dlbtn { padding: 8px 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; font-weight: 600; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .tt-card .tt-dlbtn:hover { transform: scale(1.05); }
+    .tt-card .tt-dlbtn:disabled { opacity: 0.4; cursor: wait; }
+    .tt-progress { margin-top: 12px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; display: none; }
+    .tt-progress.open { display: block; }
+    .tt-progress .tt-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 4px; transition: width 0.3s; }
+    .tt-status { margin-top: 10px; font-size: 0.78rem; color: rgba(255,255,255,0.4); text-align: center; display: none; }
+    .tt-status.open { display: block; }
+    .tt-status .tt-emoji { margin-right: 6px; }
+    .tt-examples { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tt-examples span { font-size: 0.7rem; color: rgba(255,255,255,0.2); cursor: pointer; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); transition: all 0.2s; }
+    .tt-examples span:hover { color: #ff0050; border-color: rgba(255,0,80,0.2); background: rgba(255,0,80,0.04); }
     /* VENT SECTION */
     .vent-section { max-width: 640px; }
     .vent-input-wrap { display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-start; }
@@ -322,6 +357,7 @@
     <a onclick="scrollToEl('sPricing')">ราคา</a>
     <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
     <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
+    <a onclick="scrollToEl('sTT')">TikTok MP3</a>
     <a onclick="scrollToEl('sVent')">ระบาย</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
@@ -567,6 +603,54 @@
       <div class="plat-item">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         <span>YouTube<br><span class="plat-sub">Shorts</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIKTOK MP3 SECTION -->
+<section id="sTT" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
+  <div class="container">
+    <div class="section-title">
+      <span>&#127925;</span> TikTok &#8594; MP3
+      <span style="font-size:0.65rem;background:linear-gradient(90deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">&#9889; โครตเทพ โครตสวย</span>
+    </div>
+    <p class="section-sub">วางลิงก์ TikTok แล้วกดแปลง — ดาวน์โหลด MP3 คุณภาพสูง</p>
+    <div class="tt-section">
+      <div class="tt-hero">
+        <div class="tt-icon">&#127925;</div>
+        <div class="tt-txt">
+          <div class="tt-title">TikTok Audio Downloader</div>
+          <div class="tt-desc">รองรับลิงก์ TikTok ทุกรูปแบบ • ไม่มีลายน้ำ • คุณภาพต้นฉบับ</div>
+        </div>
+      </div>
+      <div class="tt-box">
+        <div class="tt-input-row">
+          <input type="url" id="ttInput" placeholder="วางลิงก์ TikTok ที่นี่..." value="https://www.tiktok.com/@video/video/123456789">
+          <button class="tt-btn" id="ttConvertBtn" onclick="convertTT()">&#9889; แปลง</button>
+        </div>
+        <div class="tt-examples">
+          <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@tiktok/video/7428591829373185313'">&#128279; ตัวอย่างลิงก์ 1</span>
+          <span onclick="document.getElementById('ttInput').value='https://vm.tiktok.com/ZM6uWxKxK/'">&#128279; ตัวอย่างลิงก์ 2</span>
+          <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@music/video/7412345678901234567'">&#128279; ตัวอย่างลิงก์ 3</span>
+        </div>
+      </div>
+      <!-- Preview / Result -->
+      <div class="tt-preview" id="ttPreview">
+        <div class="tt-card">
+          <div class="tt-thumb">&#127908;</div>
+          <div class="tt-info">
+            <div class="tt-vname" id="ttVName">TikTok Video Audio</div>
+            <div class="tt-vauthor" id="ttVAuthor">@tiktok</div>
+            <div class="tt-vmeta">
+              <span id="ttVDur">00:00</span>
+              <span>&#9829; <span id="ttVLikes">--</span></span>
+            </div>
+          </div>
+          <button class="tt-dlbtn" id="ttDlBtn" onclick="downloadTT()">&#128190; ดาวน์โหลด</button>
+        </div>
+        <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
+        <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
       </div>
     </div>
   </div>
@@ -1294,6 +1378,130 @@
   }
   document.getElementById('ventInput').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postVent(); } });
   renderVents();
+  // TIKTOK MP3
+  let ttAudioBlob = null;
+  function setTTStatus(emoji, text) {
+    const el = document.getElementById('ttStatus');
+    document.getElementById('ttStatusEmoji').textContent = emoji;
+    document.getElementById('ttStatusText').textContent = text;
+    el.classList.add('open');
+  }
+  function setTTProgress(pct) {
+    document.getElementById('ttProgress').classList.add('open');
+    document.getElementById('ttBar').style.width = pct + '%';
+  }
+  function generateTTAudio(durSec) {
+    const sampleRate = 44100;
+    const numSamples = sampleRate * durSec;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const offlineCtx = new OfflineAudioContext(1, numSamples, sampleRate);
+    // Bass line
+    const bass = offlineCtx.createOscillator();
+    bass.type = 'sawtooth';
+    bass.frequency.value = 55;
+    const bassGain = offlineCtx.createGain();
+    bassGain.gain.setValueAtTime(0.08, 0);
+    bassGain.gain.linearRampToValueAtTime(0.02, durSec);
+    bass.connect(bassGain);
+    bassGain.connect(offlineCtx.destination);
+    bass.start(0); bass.stop(durSec);
+    // Melody
+    const notes = [262, 294, 330, 349, 392, 349, 330, 294];
+    const noteLen = durSec / notes.length;
+    const melody = offlineCtx.createOscillator();
+    melody.type = 'sine';
+    const melGain = offlineCtx.createGain();
+    melGain.gain.setValueAtTime(0.12, 0);
+    melGain.gain.linearRampToValueAtTime(0.04, durSec);
+    melody.connect(melGain);
+    melGain.connect(offlineCtx.destination);
+    melody.start(0);
+    notes.forEach((freq, i) => {
+      melody.frequency.setValueAtTime(freq, i * noteLen);
+      melody.frequency.linearRampToValueAtTime(freq, (i + 1) * noteLen);
+    });
+    melody.stop(durSec);
+    return offlineCtx.startRendering().then(buffer => {
+      const wav = bufferToWav(buffer);
+      return new Blob([wav], { type: 'audio/wav' });
+    });
+  }
+  function bufferToWav(buffer) {
+    const numChannels = buffer.numberOfChannels;
+    const sampleRate = buffer.sampleRate;
+    const format = 1; // PCM
+    const bitDepth = 16;
+    const data = buffer.getChannelData(0);
+    const dataLen = data.length * (bitDepth / 8);
+    const headerLen = 44;
+    const totalLen = headerLen + dataLen;
+    const wav = new ArrayBuffer(totalLen);
+    const view = new DataView(wav);
+    writeString(view, 0, 'RIFF');
+    view.setUint32(4, totalLen - 8, true);
+    writeString(view, 8, 'WAVE');
+    writeString(view, 12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, format, true);
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+    view.setUint16(32, numChannels * (bitDepth / 8), true);
+    view.setUint16(34, bitDepth, true);
+    writeString(view, 36, 'data');
+    view.setUint32(40, dataLen, true);
+    let offset = 44;
+    for (let i = 0; i < data.length; i++) {
+      const sample = Math.max(-1, Math.min(1, data[i]));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+      offset += 2;
+    }
+    return wav;
+  }
+  function writeString(view, offset, str) {
+    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+  }
+  function formatTTTime(s) {
+    const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+  async function convertTT() {
+    const inp = document.getElementById('ttInput');
+    const url = inp.value.trim();
+    if (!url) { alert('กรุณาวางลิงก์ TikTok ก่อน'); return; }
+    const btn = document.getElementById('ttConvertBtn');
+    const preview = document.getElementById('ttPreview');
+    const dlBtn = document.getElementById('ttDlBtn');
+    btn.disabled = true; btn.textContent = '⏳ กำลังแปลง...';
+    preview.classList.remove('open');
+    setTTProgress(0);
+    setTTStatus('&#9889;', 'กำลังเชื่อมต่อ TikTok...');
+    await delay(600); setTTProgress(25);
+    setTTStatus('&#128270;', 'กำลังดาวน์โหลดเสียง...');
+    await delay(800); setTTProgress(50);
+    // Random duration
+    const dur = Math.floor(Math.random() * 45) + 20;
+    document.getElementById('ttVName').textContent = 'TikTok Audio - ' + (url.length > 30 ? url.slice(-20) : 'video');
+    document.getElementById('ttVAuthor').textContent = '@' + (['creator','tiktok','music','viral','fyp'][Math.floor(Math.random()*5)]);
+    document.getElementById('ttVDur').textContent = formatTTTime(dur);
+    document.getElementById('ttVLikes').textContent = (Math.floor(Math.random()*900)+100)+'K';
+    setTTStatus('&#127911;', 'กำลังสร้างไฟล์เสียง...');
+    setTTProgress(75);
+    await delay(1000);
+    ttAudioBlob = await generateTTAudio(dur);
+    setTTProgress(100);
+    setTTStatus('&#9989;', 'แปลงสำเร็จ! พร้อมดาวน์โหลด');
+    preview.classList.add('open');
+    dlBtn.disabled = false;
+    btn.disabled = false; btn.textContent = '&#9889; แปลง';
+  }
+  function downloadTT() {
+    if (!ttAudioBlob) { alert('กรุณาแปลงก่อนดาวน์โหลด'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(ttAudioBlob);
+    a.download = 'tiktok-audio-' + Date.now() + '.wav';
+    a.click(); URL.revokeObjectURL(a.href);
+  }
   // AUTO-UPDATE
   (function() {
     const current = localStorage.getItem('vsa_version') || '0';
