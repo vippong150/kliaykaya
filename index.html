@@ -193,17 +193,18 @@
     .tt-trim-progress.open { display: block; }
     .tt-trim-progress .tt-trim-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 3px; transition: width 0.2s; }
     /* TOOLS */
-    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
     .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 28px; backdrop-filter: blur(10px); }
-    .tool-card .tc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px; }
-    .tool-card .tc-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .tool-card .tc-desc { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+    .tool-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px; background: linear-gradient(135deg,rgba(255,0,80,0.15),rgba(255,0,80,0.04)); }
+    .tool-card-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .tool-card-desc { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
     .tool-upload { border: 1.5px dashed rgba(255,255,255,0.12); border-radius: 14px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.25s; }
     .tool-upload:hover { border-color: #00f2ea; background: rgba(0,242,234,0.03); }
     .tool-upload .tu-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.4; }
     .tool-upload .tu-txt { font-size: 0.82rem; color: rgba(255,255,255,0.3); }
     .tool-upload.has-file { border-style: solid; border-color: #00f2ea; }
     @media (max-width:768px) { .tool-grid { grid-template-columns: 1fr; } }
+    .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    @media (max-width:768px) { .tools-grid { grid-template-columns: 1fr; } }
     /* CLIP LIBRARY */
     .clip-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
     .clip-header-left { display: flex; align-items: center; gap: 12px; }
@@ -688,7 +689,7 @@
   </div>
 </section>
 
-<!-- TIKTOK MP3 SECTION -->
+<!-- TIKTOK + TOOLS SECTION -->
 <section id="sTT" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
     <div class="section-title">
@@ -696,62 +697,43 @@
       <span style="font-size:0.65rem;background:linear-gradient(90deg,#ff0050,#00f2ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">&#9889; โครตเทพ โครตสวย</span>
     </div>
     <p class="section-sub">วางลิงก์ TikTok — ดาวน์โหลด MP3 หรือ MP4 + ตัดต่อวิดีโอได้</p>
-    <div class="tt-section">
-      <div class="tt-hero">
-        <div class="tt-icon">&#127925;</div>
-        <div class="tt-txt">
-          <div class="tt-title">TikTok Audio Downloader</div>
-          <div class="tt-desc">รองรับลิงก์ TikTok ทุกรูปแบบ • ไม่มีลายน้ำ • คุณภาพต้นฉบับ</div>
+    <!-- TikTok Converter -->
+    <div class="tt-hero">
+      <div class="tt-icon">&#127925;</div>
+      <div class="tt-txt">
+        <div class="tt-title">TikTok Audio Downloader</div>
+        <div class="tt-desc">รองรับลิงก์ TikTok ทุกรูปแบบ • ไม่มีลายน้ำ • คุณภาพต้นฉบับ</div>
+      </div>
+    </div>
+    <div class="tt-box">
+      <div class="tt-input-row">
+        <input type="url" id="ttInput" placeholder="https://www.tiktok.com/@video/video/123456789" value="https://www.tiktok.com/@video/video/123456789">
+        <button class="tt-btn" id="ttConvertBtn" onclick="convertTT()">&#9889; แปลง</button>
+      </div>
+      <div class="tt-examples">
+        <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@tiktok/video/7428591829373185313'">&#128279; ตัวอย่างลิงก์ 1</span>
+        <span onclick="document.getElementById('ttInput').value='https://vm.tiktok.com/ZM6uWxKxK/'">&#128279; ตัวอย่างลิงก์ 2</span>
+        <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@music/video/7412345678901234567'">&#128279; ตัวอย่างลิงก์ 3</span>
+      </div>
+    </div>
+    <div class="tt-preview" id="ttPreview">
+      <div class="tt-card">
+        <div class="tt-thumb">&#127908;</div>
+        <div class="tt-info">
+          <div class="tt-vname" id="ttVName">TikTok Video</div>
+          <div class="tt-vauthor" id="ttVAuthor">@tiktok</div>
+          <div class="tt-vmeta">
+            <span id="ttVDur">00:00</span>
+            <span>&#9829; <span id="ttVLikes">--</span></span>
+          </div>
+        </div>
+        <div class="tt-btns">
+          <button class="tt-dlbtn tt-dlbtn-mp3" id="ttDlBtn" onclick="downloadTT('mp3')">&#127925; MP3</button>
+          <button class="tt-dlbtn tt-dlbtn-mp4" id="ttVidBtn" onclick="downloadTT('mp4')" style="display:none;">&#127916; MP4</button>
         </div>
       </div>
-      <div class="tt-box">
-        <div class="tt-input-row">
-          <input type="url" id="ttInput" placeholder="วางลิงก์ TikTok ที่นี่..." value="https://www.tiktok.com/@video/video/123456789">
-          <button class="tt-btn" id="ttConvertBtn" onclick="convertTT()">&#9889; แปลง</button>
-        </div>
-        <div class="tt-examples">
-          <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@tiktok/video/7428591829373185313'">&#128279; ตัวอย่างลิงก์ 1</span>
-          <span onclick="document.getElementById('ttInput').value='https://vm.tiktok.com/ZM6uWxKxK/'">&#128279; ตัวอย่างลิงก์ 2</span>
-          <span onclick="document.getElementById('ttInput').value='https://www.tiktok.com/@music/video/7412345678901234567'">&#128279; ตัวอย่างลิงก์ 3</span>
-        </div>
-      </div>
-      <!-- Preview / Result -->
-      <div class="tt-preview" id="ttPreview">
-        <div class="tt-card">
-          <div class="tt-thumb">&#127908;</div>
-          <div class="tt-info">
-            <div class="tt-vname" id="ttVName">TikTok Video</div>
-            <div class="tt-vauthor" id="ttVAuthor">@tiktok</div>
-            <div class="tt-vmeta">
-              <span id="ttVDur">00:00</span>
-              <span>&#9829; <span id="ttVLikes">--</span></span>
-            </div>
-          </div>
-          <div class="tt-btns">
-            <button class="tt-dlbtn tt-dlbtn-mp3" id="ttDlBtn" onclick="downloadTT('mp3')">&#127925; MP3</button>
-            <button class="tt-dlbtn tt-dlbtn-mp4" id="ttVidBtn" onclick="downloadTT('mp4')" style="display:none;">&#127916; MP4</button>
-          </div>
-        </div>
-        <!-- Trimmer -->
-        <div class="tt-trim" id="ttTrim" style="display:none;">
-          <div class="tt-trim-title">&#9986; ตัดต่อวิดีโอ</div>
-          <div class="tt-trim-row">
-            <label>เริ่ม</label>
-            <input type="number" id="trimStart" min="0" step="0.5" value="0">
-            <label>จบ</label>
-            <input type="number" id="trimEnd" min="0" step="0.5" value="10">
-            <input type="range" class="tt-trim-slider" id="trimSlider" min="0" max="30" step="0.5" value="0">
-            <button class="tt-trim-btn" id="trimBtn" onclick="trimVideo()">&#9986; ตัด</button>
-          </div>
-          <div class="tt-trim-preview" id="trimPreview">
-            <video id="trimVideoEl" muted controls playsinline></video>
-            <div class="tt-trim-info" id="trimInfo"></div>
-          </div>
-          <div class="tt-trim-progress" id="trimProgress"><div class="tt-trim-bar" id="trimBar"></div></div>
-        </div>
-        <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
-        <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
-      </div>
+      <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
+      <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
     </div>
   </div>
 </section>
@@ -761,12 +743,12 @@
   <div class="container">
     <div class="section-title"><span>&#128295;</span> เครื่องมือตัดต่อ</div>
     <p class="section-sub">ตัด MP3 หรือดาวน์โหลด MP4 ด้วยตัวเอง</p>
-    <div class="tool-grid">
+    <div class="tools-grid">
       <!-- MP3 TRIMMER -->
       <div class="tool-card">
-        <div class="tc-icon" style="background:linear-gradient(135deg,rgba(255,0,80,0.15),rgba(255,0,80,0.04));">&#127925;</div>
-        <div class="tc-title">ตัด MP3</div>
-        <div class="tc-desc">อัปโหลดไฟล์เสียง → เลือกช่วงที่ต้องการ → ดาวน์โหลด</div>
+        <div class="tool-card-icon">&#127925;</div>
+        <div class="tool-card-title">ตัด MP3</div>
+        <div class="tool-card-desc">อัปโหลดไฟล์เสียง → เลือกช่วงที่ต้องการ → ดาวน์โหลด</div>
         <div class="tool-upload" id="mp3Upload" onclick="document.getElementById('mp3Input').click()">
           <div class="tu-icon">&#128190;</div>
           <div class="tu-txt">คลิกเพื่อเลือกไฟล์ MP3 / WAV</div>
@@ -774,8 +756,8 @@
         <input type="file" id="mp3Input" accept="audio/*" style="display:none">
         <div id="mp3TrimArea" style="display:none;margin-top:14px;">
           <div class="tt-trim-row" style="margin-bottom:10px;">
-            <label>เริ่ม</label><input type="number" id="mp3Start" min="0" step="0.5" value="0">
-            <label>จบ</label><input type="number" id="mp3End" min="0" step="0.5" value="10">
+            <label style="color:rgba(255,255,255,0.4);font-size:0.75rem;">เริ่ม</label><input type="number" id="mp3Start" min="0" step="0.5" value="0">
+            <label style="color:rgba(255,255,255,0.4);font-size:0.75rem;">จบ</label><input type="number" id="mp3End" min="0" step="0.5" value="10">
             <input type="range" class="tt-trim-slider" id="mp3Slider" min="0" max="30" step="0.5" value="0">
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -788,9 +770,9 @@
       </div>
       <!-- MP4 DOWNLOADER -->
       <div class="tool-card">
-        <div class="tc-icon" style="background:linear-gradient(135deg,rgba(0,242,234,0.15),rgba(0,242,234,0.04));">&#127916;</div>
-        <div class="tc-title">โหลด MP4</div>
-        <div class="tc-desc">วางลิงก์วิดีโอ หรืออัปโหลดไฟล์ → กดดาวน์โหลด</div>
+        <div class="tool-card-icon" style="background:linear-gradient(135deg,rgba(0,242,234,0.15),rgba(0,242,234,0.04));">&#127916;</div>
+        <div class="tool-card-title">โหลด MP4</div>
+        <div class="tool-card-desc">วางลิงก์วิดีโอ หรืออัปโหลดไฟล์ → กดดาวน์โหลด</div>
         <div class="tt-input-row" style="margin-bottom:10px;">
           <input type="url" id="mp4UrlInput" placeholder="วางลิงก์วิดีโอที่นี่...">
           <button class="tt-btn" onclick="loadMp4Url()" style="padding:10px 18px;font-size:0.82rem;">&#128279; โหลด</button>
@@ -812,10 +794,8 @@
 <!-- CLIP LIBRARY SECTION -->
 <section id="sClip" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
-    <div class="clip-header">
-      <div class="clip-header-title">&#128193; คลังที่ตัดแล้ว</div>
-    </div>
-    <div class="clip-header-sub">วิดีโอที่ตัดต่ออัตโนมัติ Auto Cut Engine &mdash; เพิ่มอัตโนมัติเมื่องานเสร็จ</div>
+    <div class="section-title"><span>&#128193;</span> คลังที่ตัดแล้ว</div>
+    <p class="section-sub">วิดีโอที่ตัดต่ออัตโนมัติ Auto Cut Engine &mdash; เพิ่มอัตโนมัติเมื่องานเสร็จ</p>
     <div class="clip-toolbar">
       <input class="clip-search" id="clipSearch" placeholder="&#128269; ค้นหาคลิป..." oninput="renderClips()">
       <button onclick="renderClips()">&#128260;</button>
@@ -1140,8 +1120,8 @@
     const session = getSession();
     const btn = document.getElementById('authBtn');
     if (session) {
-      const badge = session.user === '1@1.1' ? '&#128272; DEV' : session.google ? 'G ' + session.user : session.user;
-      btn.innerHTML = '<span class="auth-badge logout" onclick="logout()">' + badge + ' (ออกจากระบบ)</span>';
+      const badge = session.user === '1@1.1' ? '🐱‍💻 ' + session.user : session.google ? 'G ' + session.user : session.user;
+      btn.innerHTML = '<span class="auth-badge logout" onclick="logout()">' + badge + '</span>';
       btn.onclick = null;
     } else {
       btn.innerHTML = 'เข้าสู่ระบบ';
