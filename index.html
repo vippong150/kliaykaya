@@ -192,6 +192,18 @@
     .tt-trim-progress { margin-top: 10px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; display: none; }
     .tt-trim-progress.open { display: block; }
     .tt-trim-progress .tt-trim-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 3px; transition: width 0.2s; }
+    /* TOOLS */
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 28px; backdrop-filter: blur(10px); }
+    .tool-card .tc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px; }
+    .tool-card .tc-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .tool-card .tc-desc { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+    .tool-upload { border: 1.5px dashed rgba(255,255,255,0.12); border-radius: 14px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.25s; }
+    .tool-upload:hover { border-color: #00f2ea; background: rgba(0,242,234,0.03); }
+    .tool-upload .tu-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.4; }
+    .tool-upload .tu-txt { font-size: 0.82rem; color: rgba(255,255,255,0.3); }
+    .tool-upload.has-file { border-style: solid; border-color: #00f2ea; }
+    @media (max-width:768px) { .tool-grid { grid-template-columns: 1fr; } }
     .tt-progress { margin-top: 12px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; display: none; }
     .tt-progress.open { display: block; }
     .tt-progress .tt-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0050, #00f2ea); border-radius: 4px; transition: width 0.3s; }
@@ -364,6 +376,7 @@
     <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
     <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
     <a onclick="scrollToEl('sTT')">TikTok MP3</a>
+    <a onclick="scrollToEl('sTools')">ตัดต่อ</a>
     <a onclick="scrollToEl('music')">เพลง</a>
     <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
     <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">เริ่มใช้ฟรี</a>
@@ -676,6 +689,71 @@
         </div>
         <div class="tt-progress" id="ttProgress"><div class="tt-bar" id="ttBar"></div></div>
         <div class="tt-status" id="ttStatus"><span class="tt-emoji" id="ttStatusEmoji">&#9889;</span><span id="ttStatusText">กำลังประมวลผล...</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS SECTION -->
+<section id="sTools" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
+  <div class="container">
+    <div class="section-title"><span>&#128295;</span> เครื่องมือตัดต่อ</div>
+    <p class="section-sub">ตัด MP3 หรือดาวน์โหลด MP4 ด้วยตัวเอง</p>
+    <div class="tool-grid">
+      <!-- MP3 TRIMMER -->
+      <div class="tool-card">
+        <div class="tc-icon" style="background:linear-gradient(135deg,rgba(255,0,80,0.15),rgba(255,0,80,0.04));">&#127925;</div>
+        <div class="tc-title">ตัด MP3</div>
+        <div class="tc-desc">อัปโหลดไฟล์เสียง → เลือกช่วงที่ต้องการ → ดาวน์โหลด</div>
+        <div class="tool-upload" id="mp3Upload" onclick="document.getElementById('mp3Input').click()">
+          <div class="tu-icon">&#128190;</div>
+          <div class="tu-txt">คลิกเพื่อเลือกไฟล์ MP3 / WAV</div>
+        </div>
+        <input type="file" id="mp3Input" accept="audio/*" style="display:none">
+        <div id="mp3TrimArea" style="display:none;margin-top:14px;">
+          <div class="tt-trim-row" style="margin-bottom:10px;">
+            <label>เริ่ม</label><input type="number" id="mp3Start" min="0" step="0.5" value="0">
+            <label>จบ</label><input type="number" id="mp3End" min="0" step="0.5" value="10">
+            <input type="range" class="tt-trim-slider" id="mp3Slider" min="0" max="30" step="0.5" value="0">
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span id="mp3Info" style="font-size:0.78rem;color:rgba(255,255,255,0.3);">&#127925; <span id="mp3Name">-</span> | <span id="mp3Dur">00:00</span></span>
+            <button class="tt-trim-btn" id="mp3TrimBtn" onclick="trimAudio()">&#9986; ตัด MP3</button>
+          </div>
+          <div class="tt-trim-progress" id="mp3Progress"><div class="tt-trim-bar" id="mp3Bar"></div></div>
+          <div class="tt-trim-preview" id="mp3Preview"><div class="tt-trim-info" id="mp3Result"></div></div>
+        </div>
+      </div>
+      <!-- MP4 DOWNLOADER -->
+      <div class="tool-card">
+        <div class="tc-icon" style="background:linear-gradient(135deg,rgba(0,242,234,0.15),rgba(0,242,234,0.04));">&#127916;</div>
+        <div class="tc-title">โหลด MP4</div>
+        <div class="tc-desc">วางลิงก์วิดีโอ หรืออัปโหลดไฟล์วิดีโอ</div>
+        <div class="tt-input-row" style="margin-bottom:10px;">
+          <input type="url" id="mp4UrlInput" placeholder="วางลิงก์วิดีโอที่นี่...">
+          <button class="tt-btn" onclick="loadMp4Url()" style="padding:10px 18px;font-size:0.82rem;">&#128279; โหลด</button>
+        </div>
+        <div class="tool-upload" id="mp4Upload" onclick="document.getElementById('mp4Input').click()" style="margin-bottom:10px;">
+          <div class="tu-icon">&#128190;</div>
+          <div class="tu-txt">หรืออัปโหลดไฟล์ MP4 / MOV</div>
+        </div>
+        <input type="file" id="mp4Input" accept="video/*" style="display:none">
+        <div id="mp4TrimArea" style="display:none;margin-top:10px;">
+          <div class="tt-trim-row" style="margin-bottom:10px;">
+            <label>ตัด</label><input type="number" id="mp4Start" min="0" step="0.5" value="0">
+            <label>ถึง</label><input type="number" id="mp4End" min="0" step="0.5" value="10">
+            <input type="range" class="tt-trim-slider" id="mp4Slider" min="0" max="30" step="0.5" value="0">
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span id="mp4Info" style="font-size:0.78rem;color:rgba(255,255,255,0.3);">&#127916; <span id="mp4Name">-</span> | <span id="mp4Dur">00:00</span></span>
+            <button class="tt-trim-btn" id="mp4TrimBtn" onclick="trimMp4()">&#9986; ตัด MP4</button>
+          </div>
+          <div class="tt-trim-progress" id="mp4Progress"><div class="tt-trim-bar" id="mp4Bar"></div></div>
+          <div class="tt-trim-preview" id="mp4Preview"><div class="tt-trim-info" id="mp4Result"></div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="tt-dlbtn tt-dlbtn-mp4" id="mp4DlBtn" onclick="downloadMp4()" style="display:none;">&#128190; ดาวน์โหลด MP4</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1481,6 +1559,174 @@
       document.getElementById('trimInfo').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="tiktok-trimmed-'+Date.now()+'.webm" style="color:#00f2ea;">&#128190; ดาวน์โหลดคลิปที่ตัดแล้ว</a>';
       bar.style.width = '100%';
       btn.disabled = false; btn.textContent = '&#9986; ตัด';
+    };
+  }
+  // TOOLS: MP3 Trimmer
+  let mp3File = null;
+  document.getElementById('mp3Input').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    mp3File = f;
+    const area = document.getElementById('mp3TrimArea');
+    area.style.display = '';
+    document.getElementById('mp3Upload').classList.add('has-file');
+    document.getElementById('mp3Name').textContent = f.name;
+    // Get duration via AudioContext
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const buf = await audioCtx.decodeAudioData(ev.target.result);
+      const dur = buf.duration;
+      document.getElementById('mp3Dur').textContent = formatTTTime(dur);
+      document.getElementById('mp3End').value = Math.ceil(dur);
+      document.getElementById('mp3End').max = Math.ceil(dur);
+      document.getElementById('mp3Slider').max = Math.ceil(dur);
+    };
+    reader.readAsArrayBuffer(f);
+  };
+  document.getElementById('mp3Slider').oninput = function() { document.getElementById('mp3Start').value = this.value; };
+  document.getElementById('mp3Start').oninput = function() { document.getElementById('mp3Slider').value = this.value; };
+  async function trimAudio() {
+    if (!mp3File) { alert('เลือกไฟล์ก่อน'); return; }
+    const start = parseFloat(document.getElementById('mp3Start').value);
+    const end = parseFloat(document.getElementById('mp3End').value);
+    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
+    const btn = document.getElementById('mp3TrimBtn');
+    const bar = document.getElementById('mp3Bar');
+    const prog = document.getElementById('mp3Progress');
+    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
+    prog.classList.add('open'); bar.style.width = '0%';
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await audioCtx.decodeAudioData(await mp3File.arrayBuffer());
+    const sr = buf.sampleRate;
+    const startSample = Math.floor(start * sr);
+    const endSample = Math.floor(end * sr);
+    const len = endSample - startSample;
+    const newBuf = audioCtx.createBuffer(1, len, sr);
+    const oldData = buf.getChannelData(0);
+    const newData = newBuf.getChannelData(0);
+    for (let i = 0; i < len; i++) newData[i] = oldData[startSample + i] || 0;
+    // Encode to WAV
+    const wav = bufferToWav(newBuf);
+    const blob = new Blob([wav], { type: 'audio/wav' });
+    const preview = document.getElementById('mp3Preview');
+    preview.classList.add('open');
+    document.getElementById('mp3Result').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="trimmed-'+Date.now()+'.wav" style="color:#00f2ea;">&#128190; ดาวน์โหลด MP3 ที่ตัดแล้ว</a>';
+    bar.style.width = '100%';
+    btn.disabled = false; btn.textContent = '&#9986; ตัด MP3';
+  }
+  function bufferToWav(buffer) {
+    const numChannels = buffer.numberOfChannels;
+    const sampleRate = buffer.sampleRate;
+    const bitDepth = 16;
+    const data = buffer.getChannelData(0);
+    const dataLen = data.length * (bitDepth / 8);
+    const headerLen = 44;
+    const totalLen = headerLen + dataLen;
+    const wav = new ArrayBuffer(totalLen);
+    const view = new DataView(wav);
+    const w = (v, o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    w(view, 0, 'RIFF'); view.setUint32(4, totalLen - 8, true);
+    w(view, 8, 'WAVE'); w(view, 12, 'fmt ');
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+    view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+    view.setUint16(32, numChannels * (bitDepth / 8), true); view.setUint16(34, bitDepth, true);
+    w(view, 36, 'data'); view.setUint32(40, dataLen, true);
+    let offset = 44;
+    for (let i = 0; i < data.length; i++) {
+      const s = Math.max(-1, Math.min(1, data[i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      offset += 2;
+    }
+    return wav;
+  }
+  // TOOLS: MP4 Downloader
+  let mp4Blob = null, mp4FileObj = null;
+  document.getElementById('mp4Input').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    mp4FileObj = f; mp4Blob = f;
+    loadMp4Meta(f.name, f);
+  };
+  async function loadMp4Url() {
+    const url = document.getElementById('mp4UrlInput').value.trim();
+    if (!url) { alert('ใส่ลิงก์ก่อน'); return; }
+    try {
+      const res = await fetch(url); mp4Blob = await res.blob();
+      mp4FileObj = new File([mp4Blob], 'video.mp4', { type: mp4Blob.type });
+      loadMp4Meta('video.mp4', mp4FileObj);
+    } catch { alert('ไม่สามารถโหลดวิดีโอจากลิงก์นี้ได้'); }
+  }
+  function loadMp4Meta(name, file) {
+    const area = document.getElementById('mp4TrimArea');
+    area.style.display = '';
+    document.getElementById('mp4Upload').classList.add('has-file');
+    document.getElementById('mp4Name').textContent = name;
+    document.getElementById('mp4DlBtn').style.display = '';
+    // Get duration
+    const url = URL.createObjectURL(file);
+    const v = document.createElement('video');
+    v.preload = 'metadata';
+    v.onloadedmetadata = function() {
+      const dur = v.duration;
+      document.getElementById('mp4Dur').textContent = formatTTTime(dur);
+      document.getElementById('mp4End').value = Math.ceil(dur);
+      document.getElementById('mp4End').max = Math.ceil(dur);
+      document.getElementById('mp4Slider').max = Math.ceil(dur);
+      URL.revokeObjectURL(url);
+    };
+    v.src = url;
+  }
+  document.getElementById('mp4Slider').oninput = function() { document.getElementById('mp4Start').value = this.value; };
+  document.getElementById('mp4Start').oninput = function() { document.getElementById('mp4Slider').value = this.value; };
+  function downloadMp4() {
+    if (!mp4Blob) { alert('ไม่มีไฟล์'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(mp4Blob);
+    a.download = 'video-' + Date.now() + '.mp4';
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+  async function trimMp4() {
+    if (!mp4Blob) { alert('ไม่มีวิดีโอ'); return; }
+    const start = parseFloat(document.getElementById('mp4Start').value);
+    const end = parseFloat(document.getElementById('mp4End').value);
+    if (start >= end) { alert('เวลาเริ่มต้องน้อยกว่าเวลาจบ'); return; }
+    const btn = document.getElementById('mp4TrimBtn');
+    const bar = document.getElementById('mp4Bar');
+    const prog = document.getElementById('mp4Progress');
+    btn.disabled = true; btn.textContent = '⏳ กำลังตัด...';
+    prog.classList.add('open'); bar.style.width = '0%';
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.crossOrigin = 'anonymous';
+    video.src = URL.createObjectURL(mp4Blob);
+    await new Promise(r => { video.onloadedmetadata = r; });
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    const stream = canvas.captureStream(30);
+    let mime = '';
+    for (const mt of ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4']) { if (MediaRecorder.isTypeSupported(mt)) { mime = mt; break; } }
+    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.start();
+    video.currentTime = start;
+    video.play().catch(() => {});
+    const total = end - start;
+    video.ontimeupdate = () => {
+      const cur = video.currentTime || 0;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      bar.style.width = Math.min(100, ((cur - start) / total) * 100) + '%';
+      if (cur >= end) { video.pause(); video.ontimeupdate = null; recorder.stop(); }
+    };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+      const preview = document.getElementById('mp4Preview');
+      preview.classList.add('open');
+      document.getElementById('mp4Result').innerHTML = '&#9989; ตัดเสร็จ! <a href="' + URL.createObjectURL(blob) + '" download="trimmed-'+Date.now()+'.webm" style="color:#00f2ea;">&#128190; ดาวน์โหลดคลิปที่ตัดแล้ว</a>';
+      bar.style.width = '100%';
+      btn.disabled = false; btn.textContent = '&#9986; ตัด MP4';
     };
   }
   // STAT COUNTER
