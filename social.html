@@ -258,6 +258,7 @@ const REACT_LABELS = { '👍':'Like','❤️':'Love','😂':'Haha','😮':'Wow',
 // Clean up invalid posts (broken blob URLs from old sessions)
 posts = posts.filter(p => {
   if (p.img && !p.img.startsWith('data:')) return false;
+  if (p.image && !p.image.startsWith('data:')) return false;
   if (p.video && !p.video.startsWith('data:')) return false;
   return true;
 });
