@@ -333,6 +333,15 @@
         </div>
       </div>
 
+      <div class="prod-field">
+        <label>🔑 Google AI Studio API Key (ของคุณเอง)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="password" id="prodApiKey" placeholder="AIza... ใช้ Key ของคุณ ไม่ต้องพึ่งแอดมิน" style="flex:1;">
+          <button class="btn-copy" id="saveKeyBtn" onclick="saveApiKey()" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(18,216,255,0.1);color:#12d8ff;cursor:pointer;font-weight:600;font-size:0.78rem;white-space:nowrap;">💾 บันทึก</button>
+        </div>
+        <div id="keyStatus" style="font-size:0.72rem;margin-top:4px;color:rgba(255,255,255,0.25);"></div>
+      </div>
+
       <div class="prod-row">
         <div class="prod-field">
           <label>สไตล์สคริปต์</label>
@@ -578,6 +587,41 @@ function showToast(msg, type) {
 // ── Product Creator ──
 let _prodImageData = null;
 let _lastScript = null;
+let _savedKey = '';
+
+async function saveApiKey() {
+  const s = getSession();
+  if (!s) { showToast('⚠️ ยังไม่ได้เข้าสู่ระบบ', 'error'); return; }
+  const key = document.getElementById('prodApiKey').value.trim();
+  try {
+    const r = await fetch(API_HOST + '/api/user/apikey', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: s.user, apiKey: key || null }),
+      mode: 'cors'
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    _savedKey = key;
+    document.getElementById('keyStatus').textContent = key ? '✅ บันทึก Key แล้ว' : '🗑️ ลบ Key แล้ว';
+    showToast(key ? '✅ บันทึก API Key แล้ว' : '🗑️ ลบ API Key แล้ว', key ? 'success' : 'error');
+  } catch (e) {
+    document.getElementById('keyStatus').textContent = '⚠️ ' + e.message;
+    showToast('❌ ' + e.message, 'error');
+  }
+}
+
+async function loadApiKey() {
+  const s = getSession();
+  if (!s) return;
+  try {
+    const r = await fetch(API_HOST + '/api/user/apikey/' + encodeURIComponent(s.user), { mode: 'cors' });
+    const d = await r.json();
+    if (d.ok && d.hasKey) {
+      _savedKey = 'saved'; // we know a key exists, user enters it manually
+      document.getElementById('keyStatus').textContent = '✅ มี Key บันทึกไว้แล้ว';
+    }
+  } catch {}
+}
 
 function onProdImage(e) {
   const file = e.target.files[0];
@@ -617,6 +661,9 @@ async function generateProductScript() {
   if (_prodImageData) product.imageUrl = _prodImageData;
 
   const body = { product, styleId: styleId || undefined, duration, autoSave: true };
+  const manualKey = document.getElementById('prodApiKey').value.trim();
+  if (manualKey) body.apiKey = manualKey;
+  else if (_savedKey && _savedKey !== 'saved') body.apiKey = _savedKey;
 
   try {
     const r = await fetch(API_HOST + '/api/ai-script/generate', {
@@ -698,6 +745,7 @@ function init() {
   const k = getPointsKey();
   if (!localStorage.getItem(k)) setPoints(100);
   refreshPointsUI();
+  loadApiKey();
 }
 init();
 </script>
