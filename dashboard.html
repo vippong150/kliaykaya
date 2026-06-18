@@ -717,11 +717,13 @@ async function generateProductScript() {
   if (cost > getPoints()) { showToast('⚠️ พ้อยไม่พอ คงเหลือ ' + getPoints() + ' ต้องใช้ ' + cost, 'error'); return; }
 
   const btn = document.getElementById('prodGenBtn');
+  const result = document.getElementById('prodResult');
   const scriptBox = document.getElementById('prodScriptText');
   const status = document.getElementById('prodStatus');
 
   btn.disabled = true;
   btn.innerHTML = '<div class="prod-spinner"></div> กำลังสร้างสคริปต์' + (useTTS ? ' + เสียง' : '') + '...';
+  result.style.display = 'none';
   status.style.display = 'none';
   _lastScript = null;
 
@@ -742,6 +744,7 @@ async function generateProductScript() {
     _lastScript = d.script;
     scriptBox.textContent = d.script.text;
     document.getElementById('prodGenTime').textContent = new Date().toLocaleString('th-TH');
+    result.style.display = '';
 
     if (cost > 0) {
       const pts = getPoints() - cost;
