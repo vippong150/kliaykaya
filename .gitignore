@@ -19,3 +19,8 @@ index.rar
 
 # Tunnel URL (local only)
 tunnel-url.txt
+
+# Large assets (too big for git)
+WebServer.rar
+index.rar
+ChatGPT*.png
