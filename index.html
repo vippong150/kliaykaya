@@ -79,8 +79,8 @@
     .hu-fmts { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-align: center; }
     /* arrow */
     /* sample product card (กลางระหว่างอัปโหลด -> มือถือ) */
-    .hero-sample { width: 78px; height: 108px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.14); background: rgba(15,18,35,0.18); box-shadow: 0 14px 30px rgba(0,0,0,0.12); flex-shrink: 0; transform: translateY(6px); }
-    .hero-sample img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-sample { width: 78px; height: 108px; border-radius: 18px; overflow: visible; border: 1px solid rgba(255,255,255,0.14); background: rgba(15,18,35,0.18); box-shadow: 0 14px 30px rgba(0,0,0,0.12); flex-shrink: 0; transform: translateY(6px); position: relative; }
+    .hero-sample img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 18px; }
 
     .hero-arrow { display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.72); font-size: 1.35rem; flex-shrink: 0; letter-spacing: -2px; text-shadow: 0 0 18px rgba(18,216,255,0.28); }
     /* phone preview */
@@ -93,6 +93,10 @@
     .pm-badge { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg,rgba(0,0,0,0.64) 0%,rgba(0,0,0,0.08) 100%); padding: 22px 10px 10px; display: flex; flex-direction: column; align-items: flex-start; }
     .pm-text { font-size: 0.65rem; font-weight: 700; color: #fff; line-height: 1.4; }
     .pm-cart-btn { margin-top: 5px; padding: 3px 8px; border-radius: 10px; background: #e53e3e; font-size: 0.58rem; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+    .dev-edit-btn { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #00f0ff; color: #000; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.3); transition: transform 0.15s; }
+    .dev-edit-btn:hover { transform: scale(1.2); }
+    .pm-video-wrap { position: relative; }
+    #pmVideo { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
     /* generate button */
     .hero-btn-wrap { width: 100%; margin-top: 10px; position: relative; z-index: 2; }
     .hero-btn { width: 100%; height: 52px; background: linear-gradient(90deg,#3dd9ff 0%,#7d6bff 48%,#ff4fd8 100%); border: none; border-radius: 16px; color: #fff; font-size: 0.98rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 28px rgba(61,217,255,0.22), 0 8px 18px rgba(125,107,255,0.18); transition: all 0.25s; letter-spacing: -0.01em; }
@@ -331,6 +335,7 @@
     .auth-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(0,240,255,0.1); border-radius: 20px; font-size: 0.78rem; color: #00f0ff; }
     .auth-badge.logout { cursor: pointer; }
     .auth-badge.logout:hover { background: rgba(255,51,102,0.15); color: #ff3366; }
+    .dev-only { display: none !important; }
     /* FIXED PLAYER */
     .fixed-player { position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; background: rgba(10,10,26,0.95); backdrop-filter: blur(16px); border-top: 1px solid rgba(0,240,255,0.15); padding: 10px 20px; display: none; align-items: center; gap: 14px; }
     .fixed-player.open { display: flex; }
@@ -419,6 +424,88 @@
       .plat-item { padding: 12px 18px; font-size: 0.8rem; }
       .employee-grid { grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); }
     }
+  /* ===== SS+ AUTH ===== */
+  .auth-modal-content { max-width: 440px; background: linear-gradient(160deg, rgba(10,12,30,0.96), rgba(16,10,40,0.92)); border: 1px solid rgba(255,255,255,0.06); border-radius: 28px; padding: 40px 36px 36px; position: relative; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 80px rgba(18,216,255,0.03); }
+  .auth-modal-content::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 20%, rgba(18,216,255,0.06), transparent 40%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.06), transparent 40%); pointer-events: none; }
+  .auth-modal-content::after { content: ''; position: absolute; inset: 0; border-radius: 28px; padding: 1px; background: linear-gradient(135deg, rgba(18,216,255,0.3), rgba(139,92,246,0.3), rgba(18,216,255,0.3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; animation: borderRotate 4s linear infinite; }
+  @keyframes borderRotate { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+  .auth-logo-ss { text-align: center; margin-bottom: 6px; position: relative; z-index: 1; }
+  .auth-logo-ss .al-icon-wrap { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 20px; background: linear-gradient(135deg, #12d8ff, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 8px 32px rgba(18,216,255,0.2), 0 0 60px rgba(139,92,246,0.1); animation: logoPulse 3s ease-in-out infinite; position: relative; }
+  @keyframes logoPulse { 0%, 100% { box-shadow: 0 8px 32px rgba(18,216,255,0.2), 0 0 60px rgba(139,92,246,0.1); } 50% { box-shadow: 0 8px 40px rgba(18,216,255,0.35), 0 0 80px rgba(139,92,246,0.2); } }
+  .auth-logo-ss .al-title-ss { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg,#fff,#6ed7ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .auth-logo-ss .al-sub-ss { font-size: 0.8rem; color: rgba(255,255,255,0.3); margin-top: 4px; }
+  .auth-tabs-ss { display: flex; position: relative; margin: 24px 0 28px; background: rgba(255,255,255,0.03); border-radius: 14px; padding: 4px; z-index: 1; }
+  .auth-tab-ss { flex: 1; text-align: center; padding: 10px 0; border-radius: 11px; font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); position: relative; z-index: 2; }
+  .auth-tab-ss.active { background: linear-gradient(135deg, rgba(18,216,255,0.15), rgba(139,92,246,0.15)); color: #fff; }
+  .auth-form-ss { position: relative; z-index: 1; }
+  .af-group-ss { margin-bottom: 20px; position: relative; }
+  .af-group-ss .af-label-ss { position: absolute; left: 16px; top: 14px; font-size: 0.82rem; color: rgba(255,255,255,0.25); pointer-events: none; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); background: transparent; padding: 0 4px; }
+  .af-group-ss .af-input-ss { width: 100%; padding: 16px 16px 14px; border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: #e0e0e0; font-size: 0.92rem; font-family: inherit; outline: none; transition: all 0.3s; }
+  .af-group-ss .af-input-ss:focus { border-color: #12d8ff; background: rgba(18,216,255,0.04); box-shadow: 0 0 24px rgba(18,216,255,0.06); }
+  .af-group-ss .af-input-ss:focus ~ .af-label-ss, .af-group-ss .af-input-ss.filled ~ .af-label-ss { top: -10px; left: 12px; font-size: 0.7rem; color: #12d8ff; background: rgba(10,12,30,0.95); padding: 0 6px; }
+  .af-group-ss .af-input-ss.filled:not(:focus) ~ .af-label-ss { color: rgba(255,255,255,0.3); }
+  .af-phone-row { display: flex; gap: 0; align-items: stretch; }
+  .af-phone-prefix { display: flex; align-items: center; gap: 4px; padding: 0 14px; background: rgba(255,255,255,0.04); border-radius: 14px 0 0 14px; border: 1.5px solid rgba(255,255,255,0.08); border-right: none; font-size: 0.92rem; color: rgba(255,255,255,0.5); font-weight: 600; white-space: nowrap; }
+  .af-phone-row .af-input-ss { border-radius: 0 14px 14px 0; }
+  .af-send-otp { padding: 0 18px; border-radius: 14px; border: 1.5px solid rgba(18,216,255,0.2); background: rgba(18,216,255,0.08); color: #12d8ff; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 6px; margin-left: 8px; }
+  .af-send-otp:hover { background: rgba(18,216,255,0.15); border-color: #12d8ff; }
+  .af-send-otp:disabled { opacity: 0.4; cursor: not-allowed; }
+  .af-otp-ss { display: flex; gap: 10px; justify-content: center; margin: 18px 0 10px; }
+  .af-otp-ss input { width: 46px; height: 52px; text-align: center; border-radius: 12px; border: 2px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #fff; font-size: 1.3rem; font-weight: 700; outline: none; transition: all 0.2s; }
+  .af-otp-ss input:focus { border-color: #12d8ff; box-shadow: 0 0 20px rgba(18,216,255,0.12); transform: translateY(-2px); }
+  .af-otp-ss input.filled { border-color: #12d8ff; background: rgba(18,216,255,0.08); }
+  .af-google-ss { width: 100%; padding: 14px; border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .af-google-ss:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+  .af-google-ss .gg-icon { width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #222; flex-shrink: 0; }
+  .af-submit-ss { width: 100%; padding: 15px; border-radius: 14px; border: none; background: linear-gradient(135deg, #12d8ff, #8b5cf6); color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; position: relative; z-index: 1; overflow: hidden; }
+  .af-submit-ss:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(18,216,255,0.25); }
+  .af-submit-ss:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .af-submit-ss .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .af-divider-ss { display: flex; align-items: center; gap: 14px; margin: 16px 0; color: rgba(255,255,255,0.12); font-size: 0.75rem; z-index: 1; position: relative; }
+  .af-divider-ss::before, .af-divider-ss::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+  .af-msg-ss { text-align: center; font-size: 0.78rem; margin-top: 10px; min-height: 22px; transition: all 0.3s; z-index: 1; position: relative; }
+  .af-msg-ss.success { color: #12d8ff; }
+  .af-msg-ss.error { color: #ff5050; animation: shake 0.4s ease; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .auth-loading { position: absolute; inset: 0; background: rgba(5,8,20,0.7); backdrop-filter: blur(4px); border-radius: 28px; display: none; align-items: center; justify-content: center; z-index: 10; }
+  .auth-loading.open { display: flex; }
+  .auth-loading .al-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.05); border-top-color: #12d8ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  /* Validation states */
+  .af-input-ss.err { border-color: #ff5050 !important; box-shadow: 0 0 20px rgba(255,80,80,0.1) !important; }
+  .af-input-ss.ok { border-color: #12d8ff !important; }
+  .af-group-ss .af-hint { position: absolute; right: 14px; bottom: -18px; font-size: 0.6rem; color: rgba(255,255,255,0.15); transition: all 0.3s; pointer-events: none; white-space: nowrap; }
+  .af-group-ss .af-hint.err { color: #ff5050; }
+  .af-group-ss .af-hint.ok { color: #12d8ff; }
+  /* Maintenance overlay */
+  .af-maint { position: relative; pointer-events: none; opacity: 0.5; }
+  .af-maint::after { content: '🚧 ปิดปรับปรุง'; position: absolute; top: -8px; right: -6px; background: linear-gradient(135deg,#ff6b35,#ff2d55); color: #fff; font-size: 0.5rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 10px rgba(255,45,85,0.3); letter-spacing: 0.3px; }
+  /* Success celebration */
+  @keyframes popIn { 0% { transform: scale(0.3) rotate(-10deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+  @keyframes floatDot { 0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; } 50% { transform: translateY(-20px) scale(1.3); opacity: 0.8; } }
+  .af-success-icon { display: inline-block; font-size: 2.2rem; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; margin-bottom: 6px; }
+  .af-dot { position: absolute; width: 4px; height: 4px; border-radius: 50%; animation: floatDot 2s ease-in-out infinite; pointer-events: none; }
+  /* Tab slide */
+  .auth-form-ss { animation: fadeUp 0.35s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  /* Maintenance button style for Google */
+  .af-google-ss.maint { pointer-events: none; opacity: 0.45; filter: grayscale(0.6); }
+  /* Password eye toggle */
+  .af-pw-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.2); font-size: 1rem; cursor: pointer; padding: 4px; z-index: 3; line-height: 1; transition: color 0.2s; }
+  .af-pw-toggle:hover { color: rgba(255,255,255,0.5); }
+  /* Remember me */
+  .af-remember { display: flex; align-items: center; gap: 8px; margin: 4px 0 16px; font-size: 0.78rem; color: rgba(255,255,255,0.35); cursor: pointer; user-select: none; }
+  .af-remember input[type=checkbox] { width: 16px; height: 16px; accent-color: #12d8ff; cursor: pointer; border-radius: 4px; }
+  /* Logout button */
+  .auth-logout-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: rgba(255,80,80,0.08); border: 1px solid rgba(255,80,80,0.12); color: #ff6b6b; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .auth-logout-btn:hover { background: rgba(255,80,80,0.15); }
+  /* New user bonus */
+  .bonus-banner { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.04)); border: 1px solid rgba(255,215,0,0.15); margin-bottom: 20px; animation: bonusGlow 3s ease-in-out infinite; }
+  @keyframes bonusGlow { 0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.05); } 50% { box-shadow: 0 0 40px rgba(255,215,0,0.12); } }
+  .bonus-banner .bb-icon { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#ffd700,#ff8c00); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .bonus-banner .bb-text { flex: 1; }
+  .bonus-banner .bb-title { font-size: 0.9rem; font-weight: 700; color: #ffd700; }
+  .bonus-banner .bb-desc { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
   </style>
 </head>
 <body>
@@ -437,10 +524,10 @@
     <a onclick="scrollToEl('sPricing')">ราคา</a>
     <a onclick="scrollToEl('sFeatures')">วิธีใช้งาน</a>
     <a onclick="scrollToEl('sPlatforms')">คำถามที่พบบ่อย</a>
-    <a onclick="scrollToEl('sTT')">TikTok MP3</a>
-    <a onclick="scrollToEl('sTools')">ตัดต่อ</a>
-    <a onclick="scrollToEl('sClip')">คลัง</a>
-    <a onclick="scrollToEl('music')">เพลง</a>
+    <a id="navTT" class="dev-only" onclick="scrollToEl('sTT')">TikTok MP3</a>
+    <a id="navTools" class="dev-only" onclick="scrollToEl('sTools')">ตัดต่อ</a>
+    <a id="navClip" class="dev-only" onclick="scrollToEl('sClip')">คลัง</a>
+    <a id="navMusic" class="dev-only" onclick="scrollToEl('music')">เพลง</a>
     <a href="social.html" target="_blank">โซเชียล</a>
     <a id="authBtn" class="btn-nav-login" onclick="openModal('authModal')">เข้าสู่ระบบ</a>
     <a class="btn-nav-cta" onclick="scrollToEl('heroTop')">เริ่มใช้ฟรี</a>
@@ -487,9 +574,12 @@
             <div class="hu-fmts">PNG &bull; JPG &bull; WEBP &bull; สูงสุด 10MB</div>
           </div>
           <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
-          <!-- Sample product (แก้รูปสินค้าได้ที่ product.png / จะเปลี่ยนตามรูปที่อัปโหลด) -->
-          <div class="hero-sample" title="ตัวอย่างรูปสินค้า">
+          <input type="file" id="sampleImgInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+          <input type="file" id="sampleVidInput" accept="video/mp4,video/quicktime,video/x-msvideo" style="display:none">
+          <!-- Sample product (DEV: click to change) -->
+          <div class="hero-sample" id="sampleImgWrap" title="ตัวอย่างสินค้า">
             <img id="heroSampleImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%231a1a3e'/%3E%3Ctext x='100' y='105' text-anchor='middle' font-size='14' fill='%23555'%3E\u0E23\u0E39\u0E1B\u0E2A\u0E34\u0E19\u0E04\u0E49\u0E32%3C/text%3E%3C/svg%3E" alt="ตัวอย่างสินค้า">
+            <div class="dev-edit-btn" id="sampleImgEdit" style="top:-6px;right:-6px;" title="เปลี่ยนรูปตัวอย่าง">&#9998;</div>
           </div>
           <!-- Arrow -->
           <div class="hero-arrow">&rsaquo;&rsaquo;</div>
@@ -497,13 +587,16 @@
           <div class="phone-preview">
             <div class="pm-notch"></div>
             <div class="pm-content">
-              <div class="pm-video-wrap">
+              <div class="pm-video-wrap" id="pmVideoWrap">
                 <div class="pm-video-fallback" id="pmFallback"></div>
-                <div class="pm-playbtn">&#9654;</div>
+                <video id="pmVideo" muted playsinline style="display:none;"></video>
+                <div class="pm-playbtn" id="pmPlayBtn">&#9654;</div>
                 <div class="pm-badge">
-                  <div class="pm-text">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
+                  <div class="pm-text" id="pmText">ผิวใสใน 7 วัน<br>หน้าเนียนเด้ง</div>
                   <div class="pm-cart-btn">&#128722;</div>
                 </div>
+                <div class="dev-edit-btn" id="sampleVidEdit" style="top:4px;right:30px;" title="เปลี่ยนวิดีโอตัวอย่าง">&#127916;</div>
+                <div class="dev-edit-btn" id="sampleTextEdit" style="top:4px;right:4px;" title="แก้ไขข้อความ">&#9998;</div>
               </div>
             </div>
           </div>
@@ -690,7 +783,7 @@
 </section>
 
 <!-- TIKTOK + TOOLS SECTION -->
-<section id="sTT" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
+<section id="sTT" class="sec dev-only" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
     <div class="section-title">
       <span>&#127925;</span> TikTok &#8594; MP3/MP4
@@ -734,7 +827,7 @@
 </section>
 
 <!-- TOOLS SECTION -->
-<section id="sTools" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
+<section id="sTools" class="sec dev-only" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
     <div class="section-title"><span>&#128295;</span> เครื่องมือตัดต่อ</div>
     <p class="section-sub">ตัด MP3 หรือดาวน์โหลด MP4 ด้วยตัวเอง</p>
@@ -787,7 +880,7 @@
 </section>
 
 <!-- CLIP LIBRARY SECTION -->
-<section id="sClip" class="sec" style="border-top:1px solid rgba(255,255,255,0.04);">
+<section id="sClip" class="sec dev-only" style="border-top:1px solid rgba(255,255,255,0.04);">
   <div class="container">
     <div class="section-title"><span>&#128193;</span> คลังที่ตัดแล้ว</div>
     <p class="section-sub">วิดีโอที่ตัดต่ออัตโนมัติ Auto Cut Engine &mdash; เพิ่มอัตโนมัติเมื่องานเสร็จ</p>
@@ -809,7 +902,7 @@
 </section>
 
 <!-- MUSIC SECTION -->
-<section id="music" style="background:rgba(255,255,255,0.01);">
+<section id="music" class="dev-only" style="background:rgba(255,255,255,0.01);">
   <div class="container">
     <div class="section-title"><span>&#127926;</span> เครื่องเล่นเพลง</div>
     <div class="section-sub">เพลงเล่นต่อเนื่องทุกหน้า — DEV เท่านั้นที่อัปโหลดเพลงได้</div>
@@ -845,7 +938,7 @@
 </section>
 
 <!-- FIXED PLAYER -->
-<div class="fixed-player" id="fixedPlayer">
+<div class="fixed-player dev-only" id="fixedPlayer">
   <div class="fp-cover" id="fpCover">&#127925;</div>
   <div class="fp-info">
     <div class="fp-name" id="fpName">—</div>
@@ -888,7 +981,6 @@
     <div class="employee-grid" id="employeeGrid"></div>
   </div>
 </section>
-
 <!-- FOOTER -->
 <footer>
   <div class="container" style="text-align:center;">
@@ -908,66 +1000,65 @@
 
 <!-- MODALS -->
 <div class="modal" id="authModal">
-  <div class="modal-content">
+  <div class="modal-content auth-modal-content">
     <span class="modal-close" onclick="closeModal('authModal')">&times;</span>
-    <div class="auth-logo">
-      <div class="al-icon">&#128272;</div>
-      <div class="al-title">VideoSeller AI</div>
-      <div class="al-sub">เข้าสู่ระบบเพื่อใช้งาน</div>
+    <div class="auth-loading" id="authLoading"><div class="al-spinner"></div></div>
+    <!-- LOGO -->
+    <div class="auth-logo-ss">
+      <div class="al-icon-wrap">&#127916;</div>
+      <div class="al-title-ss">VideoSeller AI</div>
+      <div class="al-sub-ss" id="authSub">เข้าสู่ระบบเพื่อใช้งาน</div>
     </div>
-    <div class="auth-tabs">
-      <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">เข้าสู่ระบบ</div>
-      <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">สมัครสมาชิก</div>
+    <!-- TABS -->
+    <div class="auth-tabs-ss">
+      <div class="auth-tab-ss active" id="tabLogin" onclick="switchAuthTab('login')">เข้าสู่ระบบ</div>
+      <div class="auth-tab-ss" id="tabRegister" onclick="switchAuthTab('register')">สมัครสมาชิก</div>
     </div>
-    <!-- LOGIN FORM -->
-    <div class="auth-form" id="loginForm">
-      <div class="af-group">
-        <label>อีเมล / ชื่อผู้ใช้</label>
-        <input class="af-input" id="loginUser" placeholder="DEV: 1@1.1" autocomplete="off">
+    <!-- LOGIN -->
+    <div class="auth-form-ss" id="loginForm">
+      <div class="af-group-ss">
+        <input class="af-input-ss" id="loginUser" placeholder=" " autocomplete="off" oninput="validateLoginInput(this)">
+        <label class="af-label-ss" for="loginUser">ชื่อผู้ใช้ / ID</label>
+        <span class="af-hint" id="loginUserHint">&#9888; อย่างน้อย 10 ตัว</span>
       </div>
-      <div class="af-group">
-        <label>รหัสผ่าน</label>
-        <input class="af-input" id="loginPass" type="password" placeholder="DEV: 1" autocomplete="off">
+      <div class="af-group-ss">
+        <input class="af-input-ss" id="loginPass" type="password" placeholder=" " autocomplete="off" oninput="validateLoginInput(this)">
+        <label class="af-label-ss" for="loginPass">รหัสผ่าน</label>
+        <span class="af-hint" id="loginPassHint">&#9888; อย่างน้อย 6 ตัว</span>
+        <button class="af-pw-toggle" type="button" onmousedown="togglePassword('loginPass',this)" tabindex="-1">👁️</button>
       </div>
-      <button class="af-btn" onclick="handleLogin()">&#128273; เข้าสู่ระบบ</button>
-      <div class="af-divider">หรือ</div>
-      <button class="af-btn" style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.08);color:#e0e0e0;font-weight:600;" onclick="handleGoogleLogin()">
-        <span style="display:inline-flex;align-items:center;gap:8px;justify-content:center;">
-          <span style="background:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#222;">G</span>
-          เข้าสู่ระบบด้วย Google
-        </span>
+      <label class="af-remember">
+        <input type="checkbox" id="rememberMe" checked> จดจำรหัสผ่าน
+      </label>
+      <button class="af-submit-ss" id="loginBtn" onclick="handleLogin()">&#128273; เข้าสู่ระบบ</button>
+      <div class="af-divider-ss">หรือ</div>
+      <button class="af-google-ss maint" id="googleBtn">
+        <span class="gg-icon">G</span>
+        เข้าสู่ระบบด้วย Google
       </button>
-      <div class="af-msg" id="loginMsg"></div>
+      <div class="af-msg-ss" id="loginMsg"></div>
     </div>
-    <!-- REGISTER FORM -->
-    <div class="auth-form" id="registerForm" style="display:none;">
-      <div class="af-group">
-        <label>เบอร์โทรศัพท์</label>
-        <div class="af-row">
-          <span style="display:flex;align-items:center;gap:4px;padding:0 10px;background:rgba(255,255,255,0.04);border-radius:12px 0 0 12px;border:1.5px solid rgba(255,255,255,0.08);border-right:none;font-size:0.9rem;color:rgba(255,255,255,0.5);font-weight:600;">+66</span>
-          <input class="af-input" id="regPhone" placeholder="99-xxx-xxxx" style="flex:1;border-radius:0 12px 12px 0;">
-          <button class="af-btn-outline" id="sendOtpBtn" onclick="sendOtp()">&#128222; ส่ง OTP</button>
-        </div>
+    <!-- REGISTER -->
+    <div class="auth-form-ss" id="registerForm" style="display:none;">
+      <div class="af-group-ss">
+        <input class="af-input-ss" id="regUser" placeholder=" " autocomplete="off" oninput="validateRegInput(this)">
+        <label class="af-label-ss" for="regUser">ตั้งชื่อผู้ใช้ / ID</label>
+        <span class="af-hint" id="regUserHint">&#9888; ต้องอย่างน้อย 10 ตัว</span>
       </div>
-      <div class="af-otp" id="otpBox" style="display:none;">
-        <input type="text" maxlength="1" class="otp-input" data-idx="0" oninput="otpInput(this,0)">
-        <input type="text" maxlength="1" class="otp-input" data-idx="1" oninput="otpInput(this,1)">
-        <input type="text" maxlength="1" class="otp-input" data-idx="2" oninput="otpInput(this,2)">
-        <input type="text" maxlength="1" class="otp-input" data-idx="3" oninput="otpInput(this,3)">
-        <input type="text" maxlength="1" class="otp-input" data-idx="4" oninput="otpInput(this,4)">
-        <input type="text" maxlength="1" class="otp-input" data-idx="5" oninput="otpInput(this,5)">
+      <div class="af-group-ss">
+        <input class="af-input-ss" id="regPass" type="password" placeholder=" " autocomplete="off" oninput="validateRegInput(this)">
+        <label class="af-label-ss" for="regPass">ตั้งรหัสผ่าน</label>
+        <span class="af-hint" id="regPassHint">&#9888; ต้องอย่างน้อย 6 ตัว</span>
+        <button class="af-pw-toggle" type="button" onmousedown="togglePassword('regPass',this)" tabindex="-1">👁️</button>
       </div>
-      <!-- OTP WAITING STATE: animated dots -->
-      <div id="otpWaiting" style="display:none;text-align:center;padding:6px 0 2px;font-size:0.78rem;color:rgba(255,255,255,0.35);">
-        &#9203; กำลังส่งรหัส OTP <span class="otp-dots"><span>.</span><span>.</span><span>.</span></span>
+      <div class="af-group-ss">
+        <input class="af-input-ss" id="regPassConfirm" type="password" placeholder=" " autocomplete="off" oninput="validateRegInput(this)">
+        <label class="af-label-ss" for="regPassConfirm">ยืนยันรหัสผ่าน</label>
+        <span class="af-hint" id="regConfirmHint">&#9888; กรอกรหัสผ่านอีกครั้ง</span>
+        <button class="af-pw-toggle" type="button" onmousedown="togglePassword('regPassConfirm',this)" tabindex="-1">👁️</button>
       </div>
-      <div class="af-group" id="regPassGroup" style="display:none;">
-        <label>ตั้งรหัสผ่าน</label>
-        <input class="af-input" id="regNewPass" type="password" placeholder="อย่างน้อย 4 ตัวอักษร" autocomplete="off">
-      </div>
-      <div class="af-msg" id="regMsg"></div>
-      <button class="af-btn" id="regSubmitBtn" onclick="handleRegister()" style="display:none;">&#9989; สมัครสมาชิก</button>
-      <div class="af-msg" id="regOtpMsg"></div>
+      <button class="af-submit-ss" id="regSubmitBtn" onclick="handleRegister()">&#9989; สมัครสมาชิก</button>
+      <div class="af-msg-ss" id="regMsg"></div>
     </div>
   </div>
 </div>
@@ -1004,127 +1095,199 @@
   // SCROLL
   function scrollToEl(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
   // MODAL
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-  document.querySelectorAll('.modal').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
-  // AUTH
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    if (id === 'authModal') { resetLoginForm(); resetRegForm(); }
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    if (id === 'authModal') onAuthModalClose();
+  }
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) { m.classList.remove('open'); if (m.id === 'authModal') onAuthModalClose(); } });
+  });
+  function onAuthModalClose() {
+    if (currentAuthTab === 'register') resetRegForm();
+    clearMsg('loginMsg'); clearMsg('regMsg');
+  }
+  // AUTH — localStorage (ID ≥10, Pass ≥6)
   (function() {
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
     if (!users.find(u => u.user === '1@1.1')) { users.push({ user: '1@1.1', pass: '1' }); localStorage.setItem('cm_users', JSON.stringify(users)); }
   })();
-  function getSession() { return JSON.parse(localStorage.getItem('cm_session')); }
-  function isDev() { const s = getSession(); return s && s.user === '1@1.1'; }
+  function isDev() { const s = getSession(); return s && (s.user === '1@1.1' || s.user === 'vippong12000'); }
   let currentAuthTab = 'login';
   function switchAuthTab(tab) {
     currentAuthTab = tab;
-    document.getElementById('tabLogin').className = 'auth-tab' + (tab === 'login' ? ' active' : '');
-    document.getElementById('tabRegister').className = 'auth-tab' + (tab === 'register' ? ' active' : '');
+    document.getElementById('tabLogin').className = 'auth-tab-ss' + (tab === 'login' ? ' active' : '');
+    document.getElementById('tabRegister').className = 'auth-tab-ss' + (tab === 'register' ? ' active' : '');
     document.getElementById('loginForm').style.display = tab === 'login' ? '' : 'none';
     document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+    document.getElementById('authSub').textContent = tab === 'login' ? 'เข้าสู่ระบบเพื่อใช้งาน' : 'สมัครสมาชิกฟรี';
+    if (tab === 'register') resetRegForm(); else resetLoginForm();
+    clearMsg('loginMsg'); clearMsg('regMsg');
   }
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    if (el) { el.innerHTML = text; el.className = 'af-msg-ss' + (type ? ' ' + type : ''); }
+  }
+  function clearMsg(id) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.className = 'af-msg-ss'; }
+  }
+  // Password toggle
+  function togglePassword(id, btn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isPass = el.type === 'password';
+    el.type = isPass ? 'text' : 'password';
+    btn.textContent = isPass ? '🙈' : '👁️';
+  }
+  // Session helpers
+  function getSession() {
+    try {
+      const raw = sessionStorage.getItem('cm_session') || localStorage.getItem('cm_session');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function setSession(obj, remember) {
+    if (remember) {
+      localStorage.setItem('cm_session', JSON.stringify(obj));
+      sessionStorage.removeItem('cm_session');
+    } else {
+      sessionStorage.setItem('cm_session', JSON.stringify(obj));
+      localStorage.removeItem('cm_session');
+    }
+  }
+  function clearSession() {
+    localStorage.removeItem('cm_session');
+    sessionStorage.removeItem('cm_session');
+  }
+  // Input validation helpers
+  function valUser(v) { return v.length >= 10; }
+  function valPass(v) { return v.length >= 6; }
+  function setHint(el, ok, msg) {
+    const hint = el.parentElement.querySelector('.af-hint');
+    if (!hint) return;
+    const f = el.value.trim() !== '';
+    if (!f) { hint.textContent = '⚠️ ' + msg; hint.className = 'af-hint'; el.className = 'af-input-ss'; return; }
+    hint.textContent = ok ? '✅ ' + msg : '⚠️ ' + msg;
+    hint.className = 'af-hint' + (ok ? ' ok' : ' err');
+    el.className = 'af-input-ss' + (ok ? ' ok' : ' err') + ' filled';
+  }
+  function validateLoginInput(el) {
+    const id = el.id;
+    if (id === 'loginUser') {
+      const v = el.value.trim();
+      el.classList.toggle('filled', v !== '');
+      setHint(el, valUser(v), v.length + '/' + Math.max(10, v.length) + ' ตัว');
+    } else if (id === 'loginPass') {
+      const v = el.value.trim();
+      el.classList.toggle('filled', v !== '');
+      setHint(el, valPass(v), v.length + '/' + Math.max(6, v.length) + ' ตัว');
+    }
+  }
+  function validateRegInput(el) {
+    const id = el.id;
+    el.classList.toggle('filled', el.value.trim() !== '');
+    if (id === 'regUser') {
+      const v = el.value.trim();
+      setHint(el, valUser(v), v.length + '/' + Math.max(10, v.length) + ' ตัว');
+    } else if (id === 'regPass') {
+      const v = el.value.trim();
+      setHint(el, valPass(v), v.length + '/' + Math.max(6, v.length) + ' ตัว');
+      const c = document.getElementById('regPassConfirm');
+      if (c.value.trim()) validateRegInput(c);
+    } else if (id === 'regPassConfirm') {
+      const p = document.getElementById('regPass').value.trim();
+      const v = el.value.trim();
+      const match = v === p && valPass(v);
+      setHint(el, match, match ? 'รหัสผ่านตรงกัน' : 'รหัสผ่านไม่ตรงกัน');
+    }
+  }
+  // Login
   function handleLogin() {
     const user = document.getElementById('loginUser').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
-    const msg = document.getElementById('loginMsg');
-    if (!user || !pass) { msg.textContent = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'; msg.className = 'af-msg error'; return; }
+    if (!valUser(user)) { showMsg('loginMsg', 'ID ต้องอย่างน้อย 10 ตัวอักษร', 'error'); return; }
+    if (!valPass(pass)) { showMsg('loginMsg', 'รหัสผ่านต้องอย่างน้อย 6 ตัวอักษร', 'error'); return; }
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
     const found = users.find(u => u.user === user && u.pass === pass);
-    if (!found) { msg.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'; msg.className = 'af-msg error'; return; }
-    localStorage.setItem('cm_session', JSON.stringify(found));
-    closeModal('authModal');
-    document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
-    msg.textContent = ''; msg.className = 'af-msg';
-    updateAuthUI(); updateMusicUI(); updateEmployeeUI();
-  }
-  function handleGoogleLogin() {
-    const msg = document.getElementById('loginMsg');
-    msg.textContent = '⏳ กำลังเชื่อมต่อ Google...'; msg.className = 'af-msg';
-    setTimeout(() => {
-      // Simulate Google login popup
-      const email = 'user_' + Date.now().toString(36) + '@gmail.com';
-      localStorage.setItem('cm_session', JSON.stringify({ user: email, google: true }));
+    if (found) {
+      const remember = document.getElementById('rememberMe').checked;
+      setSession(found, remember);
       closeModal('authModal');
-      document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
-      msg.textContent = ''; msg.className = 'af-msg';
-      updateAuthUI(); updateMusicUI(); updateEmployeeUI();
-    }, 1200);
-  }
-  function autoFillOtp(otp) {
-    const inputs = document.querySelectorAll('.otp-input');
-    otp.split('').forEach((d, i) => { inputs[i].value = d; inputs[i].classList.add('filled'); });
-    document.getElementById('regPassGroup').style.display = '';
-    document.getElementById('regSubmitBtn').style.display = '';
-    document.getElementById('regMsg').innerHTML = document.getElementById('regMsg').innerHTML.replace('👆 คลิกเพื่อเติม', '✅');
-  }
-  let otpSent = false;
-  function sendOtp() {
-    const raw = document.getElementById('regPhone').value.trim().replace(/^0+/, '');
-    const fullPhone = '+66' + raw;
-    const msg = document.getElementById('regMsg');
-    if (!raw) { msg.textContent = 'กรุณากรอกเบอร์โทรศัพท์'; msg.className = 'af-msg error'; return; }
-    if (raw.length < 8 || raw.length > 10) { msg.textContent = 'เบอร์โทรศัพท์ไม่ถูกต้อง'; msg.className = 'af-msg error'; return; }
-    document.getElementById('otpBox').style.display = 'flex';
-    document.getElementById('otpWaiting').style.display = '';
-    document.getElementById('sendOtpBtn').textContent = '⏳ กำลังส่ง...';
-    document.getElementById('sendOtpBtn').disabled = true;
-    setTimeout(() => {
-      otpSent = true;
-      document.getElementById('otpWaiting').style.display = 'none';
-      document.getElementById('sendOtpBtn').textContent = '✅ ส่งแล้ว';
-      document.getElementById('sendOtpBtn').disabled = true;
-      const demoOtp = String(Math.floor(100000 + Math.random() * 900000));
-      msg.innerHTML = 'รหัส OTP 6 หลักถูกส่งไปที่ ' + fullPhone + '<br><span style="font-size:1.1rem;font-weight:700;color:#12d8ff;letter-spacing:4px;cursor:pointer;" onclick="autoFillOtp(\'' + demoOtp + '\')">' + demoOtp + ' 👆 คลิกเพื่อเติม</span>';
-      msg.className = 'af-msg success';
-    }, 2500);
-  }
-  function otpInput(el, idx) {
-    if (el.value) { el.classList.add('filled'); const next = el.parentElement.querySelector('[data-idx="' + (idx+1) + '"]'); if (next) next.focus(); }
-    // Check if all filled
-    const inputs = document.querySelectorAll('.otp-input');
-    const allFilled = Array.from(inputs).every(i => i.value);
-    if (allFilled) {
-      document.getElementById('regPassGroup').style.display = '';
-      document.getElementById('regSubmitBtn').style.display = '';
+      location.href = 'dashboard.html';
+      return;
     }
+    showMsg('loginMsg', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
   }
+  // Register
   function handleRegister() {
-    const raw = document.getElementById('regPhone').value.trim().replace(/^0+/, '');
-    const fullPhone = '+66' + raw;
-    const pass = document.getElementById('regNewPass').value.trim();
-    const msg = document.getElementById('regOtpMsg');
-    if (!otpSent) { msg.textContent = 'กรุณาขอ OTP ก่อน'; msg.className = 'af-msg error'; return; }
-    const inputs = document.querySelectorAll('.otp-input');
-    const otp = Array.from(inputs).map(i => i.value).join('');
-    if (otp.length < 6) { msg.textContent = 'กรุณากรอกรหัส OTP ให้ครบ'; msg.className = 'af-msg error'; return; }
-    if (!pass || pass.length < 4) { msg.textContent = 'รหัสผ่านต้องอย่างน้อย 4 ตัวอักษร'; msg.className = 'af-msg error'; return; }
+    const user = document.getElementById('regUser').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    const confirm = document.getElementById('regPassConfirm').value.trim();
+    if (!valUser(user)) { showMsg('regMsg', 'ID ต้องอย่างน้อย 10 ตัวอักษร', 'error'); return; }
+    if (!valPass(pass)) { showMsg('regMsg', 'รหัสผ่านต้องอย่างน้อย 6 ตัวอักษร', 'error'); return; }
+    if (pass !== confirm) { showMsg('regMsg', 'รหัสผ่านไม่ตรงกัน', 'error'); return; }
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
-    if (users.find(u => u.user === fullPhone)) { msg.textContent = 'เบอร์นี้ลงทะเบียนแล้ว'; msg.className = 'af-msg error'; return; }
-    users.push({ user: fullPhone, pass, phone: fullPhone }); localStorage.setItem('cm_users', JSON.stringify(users));
-    localStorage.setItem('cm_session', JSON.stringify({ user: fullPhone }));
+    if (users.find(u => u.user === user)) { showMsg('regMsg', 'ชื่อผู้ใช้นี้มีอยู่แล้ว', 'error'); return; }
+    users.push({ user, pass });
+    localStorage.setItem('cm_users', JSON.stringify(users));
+    setSession({ user }, true);
     closeModal('authModal');
-    document.getElementById('regPhone').value = ''; document.getElementById('regNewPass').value = '';
-    msg.textContent = ''; msg.className = 'af-msg';
-    inputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
-    document.getElementById('regPassGroup').style.display = 'none';
-    document.getElementById('regSubmitBtn').style.display = 'none';
-    document.getElementById('otpWaiting').style.display = 'none';
-    document.getElementById('sendOtpBtn').textContent = '📞 ส่ง OTP';
-    document.getElementById('sendOtpBtn').disabled = false;
-    updateAuthUI(); updateMusicUI(); updateEmployeeUI();
+    location.href = 'dashboard.html';
+  }
+  function resetLoginForm() {
+    const defaults = { loginUser: '⚠️ อย่างน้อย 10 ตัว', loginPass: '⚠️ อย่างน้อย 6 ตัว' };
+    Object.keys(defaults).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.className = 'af-input-ss'; el.classList.remove('filled','ok','err');
+        const h = el.parentElement.querySelector('.af-hint');
+        if (h) { h.className = 'af-hint'; h.textContent = defaults[id]; }
+      }
+    });
+    clearMsg('loginMsg');
+  }
+  function resetRegForm() {
+    const defaults = { regUser: '⚠️ ต้องอย่างน้อย 10 ตัว', regPass: '⚠️ ต้องอย่างน้อย 6 ตัว', regPassConfirm: '⚠️ กรอกรหัสผ่านอีกครั้ง' };
+    Object.keys(defaults).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.className = 'af-input-ss'; el.classList.remove('filled','ok','err');
+        const h = el.parentElement.querySelector('.af-hint');
+        if (h) { h.className = 'af-hint'; h.textContent = defaults[id]; }
+      }
+    });
+    clearMsg('regMsg');
+  }
+  function updateDevUI() {
+    const show = isDev();
+    document.querySelectorAll('.dev-only').forEach(el => {
+      el.classList.toggle('dev-only', !show);
+    });
+    // Show/hide DEV edit buttons on preview
+    document.querySelectorAll('.dev-edit-btn').forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
   }
   function updateAuthUI() {
     const session = getSession();
     const btn = document.getElementById('authBtn');
     if (session) {
-      const badge = session.user === '1@1.1' ? '🐱‍💻 ' + session.user : session.google ? 'G ' + session.user : session.user;
-      btn.innerHTML = '<span class="auth-badge logout" onclick="logout()">' + badge + '</span>';
+      const display = session.user;
+      const icon = session.user === '1@1.1' ? '🐱‍💻' : '👤';
+      btn.innerHTML = '<span class="auth-badge">' + icon + ' ' + display.substring(0, 16) + '</span> <a class="auth-logout-btn" onclick="logout()">ออกจากระบบ</a>';
       btn.onclick = null;
     } else {
       btn.innerHTML = 'เข้าสู่ระบบ';
       btn.onclick = function() { openModal('authModal'); };
     }
+    updateDevUI();
   }
-  function logout() { localStorage.removeItem('cm_session'); updateAuthUI(); updateMusicUI(); updateEmployeeUI(); }
+  function logout() {
+    clearSession();
+    location.reload();
+  }
   updateAuthUI();
 
   // VIDEO GENERATOR
@@ -1203,6 +1366,85 @@
     a.click(); URL.revokeObjectURL(a.href);
   }
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // DEV SAMPLE EDITING
+  function saveSampleData(key, data) { try { localStorage.setItem(key, data); } catch (e) {} }
+  function loadSampleData(key) { return localStorage.getItem(key); }
+
+  function loadSamplePreview() {
+    const savedText = loadSampleData('vsa_sample_text');
+    if (savedText) document.getElementById('pmText').innerHTML = savedText;
+
+    const savedImg = loadSampleData('vsa_sample_img');
+    if (savedImg) document.getElementById('heroSampleImg').src = savedImg;
+
+    const savedVidId = loadSampleData('vsa_sample_vid_id');
+    if (savedVidId) {
+      openDB().then(() => dbGet(parseInt(savedVidId))).then(data => {
+        if (data) { showSampleVideo(data); }
+      }).catch(() => {});
+    }
+  }
+
+  function showSampleVideo(dataUrl) {
+    const fb = document.getElementById('pmFallback');
+    const vid = document.getElementById('pmVideo');
+    fb.style.display = 'none';
+    vid.style.display = 'block';
+    vid.src = dataUrl;
+    vid.loop = true;
+    vid.muted = true;
+    vid.playsinline = true;
+    vid.play().catch(() => {});
+    document.getElementById('pmPlayBtn').style.display = 'none';
+  }
+
+  document.getElementById('sampleImgInput').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      document.getElementById('heroSampleImg').src = ev.target.result;
+      saveSampleData('vsa_sample_img', ev.target.result);
+    };
+    reader.readAsDataURL(f);
+  };
+
+  document.getElementById('sampleVidInput').onchange = function(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+      try {
+        const dbId = await dbPut(ev.target.result);
+        saveSampleData('vsa_sample_vid_id', String(dbId));
+        showSampleVideo(ev.target.result);
+      } catch (err) { alert('บันทึกวิดีโอไม่สำเร็จ: ' + err.message); }
+    };
+    reader.readAsDataURL(f);
+  };
+
+  document.getElementById('sampleImgEdit').onclick = function(e) {
+    e.stopPropagation();
+    if (!isDev()) return;
+    document.getElementById('sampleImgInput').click();
+  };
+
+  document.getElementById('sampleVidEdit').onclick = function(e) {
+    e.stopPropagation();
+    if (!isDev()) return;
+    document.getElementById('sampleVidInput').click();
+  };
+
+  document.getElementById('sampleTextEdit').onclick = function(e) {
+    e.stopPropagation();
+    if (!isDev()) return;
+    const current = document.getElementById('pmText').innerHTML.replace(/<br>/g, '\n');
+    const val = prompt('แก้ไขข้อความตัวอย่าง (ใช้ Enter ขึ้นบรรทัดใหม่):', current);
+    if (val !== null) {
+      const html = val.replace(/\n/g, '<br>');
+      document.getElementById('pmText').innerHTML = html;
+      saveSampleData('vsa_sample_text', html);
+    }
+  };
 
   // INDEXEDDB
   let db; let dbPromise = null;
@@ -1568,7 +1810,7 @@
     if (url && !url.startsWith('https://')) { alert('กรุณาใส่ลิงก์ที่ขึ้นต้นด้วย https://'); return; }
     localStorage.setItem('cm_fbUrl', url); updateFbLink(); alert('บันทึกลิงก์ Facebook แล้ว');
   }
-  renderEmployees(); updateFbLink(); openDB().catch(() => {});
+  renderEmployees(); updateFbLink(); openDB().catch(() => {}); loadSamplePreview();
   // TIKTOK MP3/MP4
   let ttAudioBlob = null, ttVideoUrl = null;
   function setTTStatus(emoji, text) {

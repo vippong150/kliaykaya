@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VideoSeller AI - Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%F0%9F%8E%AC%3C/text%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #070a15; color: #e0e0e0; overflow: hidden; height: 100vh; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(18,216,255,0.25); border-radius: 3px; }
+    #bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.95; filter: saturate(1.1) contrast(1.08) brightness(1.04); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 20% 16%, rgba(18,216,255,0.10) 0%, transparent 30%),
+                  radial-gradient(circle at 80% 20%, rgba(139,92,246,0.08) 0%, transparent 26%),
+                  linear-gradient(180deg, rgba(4,8,18,0.15) 0%, rgba(7,10,21,0.20) 50%, rgba(7,10,21,0.35) 100%);
+      z-index: 1; pointer-events: none; }
+
+    /* Floating top bar */
+    .top-bar { position: fixed; top: 24px; left: 32px; right: 32px; z-index: 100; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; }
+    .top-bar > * { pointer-events: auto; }
+    .welcome { text-align: left; }
+    .welcome h1 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 2px; letter-spacing: -0.3px; }
+    .welcome h1 span { background: linear-gradient(90deg,#fff,#7ad0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .welcome p { font-size: 0.82rem; color: rgba(255,255,255,0.35); font-weight: 400; }
+    .user-pill { display: flex; align-items: center; gap: 10px; background: rgba(12,14,28,0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); border-radius: 100px; padding: 6px 8px 6px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    .user-pill .uname { font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.8); }
+    .user-pill .upoints { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 100px; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.10); font-size: 0.72rem; font-weight: 700; color: #ffd700; }
+    .user-pill .logout-btn { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 100px; background: rgba(255,80,80,0.08); border: 1px solid rgba(255,80,80,0.10); color: #ff6b6b; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .user-pill .logout-btn:hover { background: rgba(255,80,80,0.15); }
+
+    /* Center content */
+    #main { position: relative; z-index: 2; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 24px 100px; overflow-y: auto; }
+
+    .greeting-pill { background: rgba(12,14,28,0.40); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.04); border-radius: 100px; padding: 10px 24px; font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-bottom: 40px; }
+    .greeting-pill strong { color: rgba(255,255,255,0.7); font-weight: 500; }
+
+    .points-glass { background: rgba(12,14,28,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; padding: 36px 56px; text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
+    .points-glass .plabel { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.2); font-weight: 600; margin-bottom: 8px; }
+    .points-glass .pnum { font-size: 4.2rem; font-weight: 900; background: linear-gradient(135deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; letter-spacing: -2px; }
+    .points-glass .punit { font-size: 1rem; color: rgba(255,255,255,0.25); font-weight: 600; margin-top: 4px; }
+    .points-glass .pstatus { margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .points-glass .pstatus .claim-btn { padding: 10px 24px; border-radius: 100px; border: none; background: linear-gradient(135deg,#12d8ff,#8b5cf6); color: #fff; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(18,216,255,0.15); }
+    .points-glass .pstatus .claim-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(18,216,255,0.25); }
+    .points-glass .pstatus .claim-btn:disabled { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.2); cursor: not-allowed; transform: none; box-shadow: none; }
+    .points-glass .pstatus .cinfo { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+    .points-glass .pstatus .cinfo strong { color: rgba(255,255,255,0.6); }
+
+    /* Bottom action bar */
+    .action-bar { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 8px; background: rgba(12,14,28,0.50); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.05); border-radius: 100px; padding: 6px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+    .action-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 100px; border: none; background: transparent; color: rgba(255,255,255,0.5); font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.25s; font-family: inherit; }
+    .action-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .action-btn .ab-icon { font-size: 1.1rem; }
+    .action-btn.active { background: rgba(18,216,255,0.12); color: #12d8ff; }
+    .action-btn.primary { background: linear-gradient(135deg,#12d8ff,#8b5cf6); color: #fff; box-shadow: 0 4px 16px rgba(18,216,255,0.15); }
+    .action-btn.primary:hover { box-shadow: 0 6px 24px rgba(18,216,255,0.25); transform: translateY(-1px); }
+
+    /* ===== Vault Section ===== */
+    .vault-section { display: none; width: 100%; max-width: 1200px; margin: 0 auto; padding-top: 10px; }
+    .vault-section.active { display: block; }
+    .dash-home { display: flex; flex-direction: column; align-items: center; }
+    .dash-home.hidden { display: none; }
+
+    .vault-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .vault-header h2 { font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .vault-header h2 span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .vault-search { flex: 1; min-width: 180px; position: relative; }
+    .vault-search input {
+      width: 100%; padding: 10px 16px 10px 38px; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.05);
+      color: #e0e0f0; font-size: 0.82rem; outline: none; font-family: inherit;
+      transition: all 0.3s;
+    }
+    .vault-search input:focus { border-color: rgba(18,216,255,0.3); background: rgba(255,255,255,0.08); }
+    .vault-search .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+    .vault-stats { font-size: 0.78rem; color: rgba(255,255,255,0.35); white-space: nowrap; }
+    .vault-stats strong { color: #12d8ff; }
+
+    /* Grid */
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px; width: 100%;
+    }
+    .vclip-card {
+      background: rgba(12,14,28,0.45); backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06); border-radius: 18px;
+      overflow: hidden; cursor: pointer; transition: all 0.3s;
+    }
+    .vclip-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(18,216,255,0.25);
+      box-shadow: 0 8px 30px rgba(18,216,255,0.08);
+    }
+    .vclip-card .thumb {
+      aspect-ratio: 9 / 16; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #11162e, #0f1328);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vclip-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .vclip-card .thumb .fallback { font-size: 2.2rem; color: rgba(18,216,255,0.2); font-weight: 700; }
+    .vclip-card .thumb .play-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .vclip-card:hover .play-overlay { opacity: 1; }
+    .vclip-card .thumb .play-overlay .play-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(18,216,255,0.85);
+      border: none; color: white; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .vclip-card .info { padding: 10px 12px; }
+    .vclip-card .info .title {
+      font-size: 0.78rem; font-weight: 600; color: #e0e0f0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .vclip-card .info .meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 4px; font-size: 0.68rem; color: rgba(255,255,255,0.35);
+    }
+    .vclip-card .info .meta .employee { color: #12d8ff; }
+
+    /* Pagination */
+    .vault-pages { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 20px; }
+    .vault-pages button {
+      padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);
+      background: transparent; color: rgba(255,255,255,0.4); cursor: pointer;
+      font-size: 0.78rem; transition: all 0.2s; font-family: inherit;
+    }
+    .vault-pages button:hover:not(:disabled) { border-color: rgba(18,216,255,0.3); color: #12d8ff; }
+    .vault-pages button.active { background: rgba(18,216,255,0.12); color: #12d8ff; border-color: rgba(18,216,255,0.2); }
+    .vault-pages button:disabled { opacity: 0.2; cursor: default; }
+
+    /* Video Modal */
+    .vmodal {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .vmodal.active { display: flex; }
+    .vmodal-content { position: relative; max-width: 92vw; max-height: 90vh; border-radius: 18px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.8); }
+    .vmodal-content video { display: block; max-width: 92vw; max-height: 85vh; border-radius: 14px; }
+    .vmodal-close {
+      position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+      border-radius: 50%; background: rgba(0,0,0,0.6); border: none;
+      color: white; font-size: 1.1rem; cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vmodal-close:hover { background: rgba(255,80,80,0.6); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 90px; right: 32px;
+      padding: 10px 20px; border-radius: 12px;
+      font-size: 0.82rem; font-weight: 500;
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s ease; z-index: 3000;
+      background: rgba(12,14,28,0.7); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(110,231,160,0.3); color: #6ee7a0; }
+    .toast.error { border-color: rgba(255,80,80,0.3); color: #ff6b6b; }
+
+    /* Empty state */
+    .vault-empty {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.3);
+    }
+    .vault-empty .icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.5; }
+    .vault-empty h3 { font-size: 1rem; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+
+    /* Loading */
+    .vault-loading { display: flex; align-items: center; justify-content: center; padding: 60px; grid-column: 1 / -1; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .vault-loading .spinner { width: 32px; height: 32px; border: 3px solid rgba(18,216,255,0.1); border-top-color: #12d8ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+    @media (max-width:768px) {
+      .top-bar { left: 16px; right: 16px; top: 16px; flex-direction: column; gap: 12px; }
+      .user-pill { align-self: flex-end; padding: 4px 6px 4px 12px; }
+      .user-pill .uname { font-size: 0.72rem; }
+      .welcome h1 { font-size: 1.2rem; }
+      .points-glass { padding: 28px 32px; }
+      .points-glass .pnum { font-size: 3.2rem; }
+      .action-bar { bottom: 20px; gap: 4px; padding: 4px; }
+      .action-btn { padding: 8px 14px; font-size: 0.72rem; }
+      .action-btn .ab-icon { font-size: 1rem; }
+      .greeting-pill { font-size: 0.75rem; padding: 8px 18px; }
+      .vault-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+      .vault-header { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop playsinline>
+  <source src="video-bg.mp4?t=20260612" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <div class="welcome">
+    <h1>สวัสดี <span id="dashUserName">เพื่อน</span> 👋</h1>
+    <p>ยินดีต้อนรับสู่ VideoSeller AI</p>
+  </div>
+  <div class="user-pill">
+    <span class="uname" id="authName">👤</span>
+    <span class="upoints">💎 <span id="navPointsNum">0</span></span>
+    <a class="logout-btn" href="profile.html" style="background: rgba(18,216,255,0.1); color: #12d8ff; margin-right: 4px;">โปรไฟล์</a>
+    <a class="logout-btn" onclick="logout()">ออกจากระบบ</a>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <!-- Dashboard Home -->
+  <div class="dash-home" id="dashHome">
+    <div class="greeting-pill">✨ คุณมี <strong id="pointsDisplay">0</strong> พ้อย — ใช้สร้างวิดีโอโปรโมทสินค้าได้เลย!</div>
+    <div class="points-glass">
+      <div class="plabel">พ้อยของคุณ</div>
+      <div class="pnum" id="pointsBigNum">0</div>
+      <div class="punit">💎 พ้อย</div>
+      <div class="pstatus">
+        <button class="claim-btn" id="claimBtn" onclick="claimDailyPoints()">🎁 รับพ้อยรายวัน</button>
+        <span class="cinfo">📅 รับฟรี! <strong id="dailyBonusRange">10-30</strong> พ้อย/วัน</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Vault -->
+  <div class="vault-section" id="vaultSection">
+    <div class="vault-header">
+      <h2>📁 <span>คลังวิดีโอ</span></h2>
+      <div class="vault-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="vaultSearch" placeholder="ค้นหาวิดีโอ..." oninput="loadVault(1)">
+      </div>
+      <div class="vault-stats">
+        ทั้งหมด <strong id="vaultTotal">0</strong> · หน้า <strong id="vaultPage">1</strong>/<strong id="vaultPages">1</strong>
+      </div>
+    </div>
+    <div class="vault-grid" id="vaultGrid">
+      <div class="vault-loading"><div class="spinner"></div></div>
+    </div>
+    <div class="vault-pages" id="vaultPages"></div>
+  </div>
+</div>
+
+<!-- Bottom action bar -->
+<div class="action-bar">
+  <button class="action-btn primary" onclick="showHome()">
+    <span class="ab-icon">🏠</span> หน้าแรก
+  </button>
+  <button class="action-btn" id="vaultBtn" onclick="showVault()">
+    <span class="ab-icon">📁</span> คลังวิดีโอ
+  </button>
+  <button class="action-btn" onclick="location.href='profile.html'">
+    <span class="ab-icon">💎</span> โปรไฟล์
+  </button>
+  <button class="action-btn" onclick="location.href='social.html'">
+    <span class="ab-icon">🌐</span> โซเชียล
+  </button>
+</div>
+
+<!-- Video Player Modal -->
+<div class="vmodal" id="vmodal" onclick="if(event.target===this)closeVModal()">
+  <div class="vmodal-content">
+    <button class="vmodal-close" onclick="closeVModal()">✕</button>
+    <video id="vmodalVideo" controls autoplay></video>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VAULT_LIMIT = 30;
+let vaultPage = 1, vaultTotal = 0, vaultTotalPages = 1;
+const API_HOST = localStorage.getItem('api_host') || 'http://localhost:8080';
+
+// ── Session ──
+function getSession() {
+  try {
+    const raw = sessionStorage.getItem('cm_session') || localStorage.getItem('cm_session');
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function clearSession() {
+  localStorage.removeItem('cm_session');
+  sessionStorage.removeItem('cm_session');
+}
+function getPointsKey() { const s = getSession(); return s ? 'cm_points_' + s.user : null; }
+function getClaimKey() { const s = getSession(); return s ? 'cm_lastclaim_' + s.user : null; }
+function getPoints() {
+  const k = getPointsKey(); if (!k) return 0;
+  return parseInt(localStorage.getItem(k) || '0');
+}
+function setPoints(n) {
+  const k = getPointsKey(); if (!k) return;
+  localStorage.setItem(k, String(n));
+}
+function canClaimDaily() {
+  const k = getClaimKey(); if (!k) return false;
+  const last = localStorage.getItem(k);
+  if (!last) return true;
+  return last !== new Date().toDateString();
+}
+function refreshPointsUI() {
+  const p = getPoints();
+  document.getElementById('navPointsNum').textContent = p.toLocaleString();
+  document.getElementById('pointsDisplay').textContent = p.toLocaleString();
+  document.getElementById('pointsBigNum').textContent = p.toLocaleString();
+}
+function claimDailyPoints() {
+  if (!canClaimDaily()) return;
+  const bonus = Math.floor(Math.random() * 21) + 10;
+  setPoints(getPoints() + bonus);
+  const k = getClaimKey();
+  if (k) localStorage.setItem(k, new Date().toDateString());
+  refreshPointsUI();
+  const btn = document.getElementById('claimBtn');
+  btn.innerHTML = '🎉 +' + bonus + ' พ้อย!';
+  btn.disabled = true;
+  setTimeout(() => { btn.innerHTML = '✅ ได้รับแล้ว'; }, 1500);
+}
+function logout() {
+  clearSession();
+  location.href = 'index.html';
+}
+
+// ── Navigation ──
+function showHome() {
+  document.getElementById('dashHome').classList.remove('hidden');
+  document.getElementById('vaultSection').classList.remove('active');
+  document.getElementById('vaultBtn').classList.remove('active');
+}
+function showVault() {
+  document.getElementById('dashHome').classList.add('hidden');
+  document.getElementById('vaultSection').classList.add('active');
+  document.getElementById('vaultBtn').classList.add('active');
+  loadVault(1);
+}
+
+// ── Video Vault ──
+async function loadVault(p) {
+  vaultPage = p || 1;
+  const search = (document.getElementById('vaultSearch').value || '').trim();
+  const params = new URLSearchParams({ page: vaultPage, limit: VAULT_LIMIT });
+  if (search) params.set('search', search);
+  try {
+    const r = await fetch(API_HOST + '/api/clips?' + params.toString(), { mode: 'cors' });
+    const d = await r.json();
+    if (!d.success) throw new Error(d.message);
+    renderVault(d);
+  } catch(e) {
+    document.getElementById('vaultGrid').innerHTML = '<div class="vault-empty"><div class="icon">⚠️</div><h3>ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์หลังบ้าน</h3><p>กรุณาตรวจสอบว่า WebServer หลักเปิดอยู่ที่ ' + API_HOST + '<br>' + e.message + '</p></div>';
+  }
+}
+
+function renderVault(d) {
+  const grid = document.getElementById('vaultGrid');
+  const clips = d.clips || [];
+  vaultTotal = d.total || 0;
+  vaultTotalPages = d.totalPages || 1;
+  vaultPage = d.page || 1;
+
+  document.getElementById('vaultTotal').textContent = vaultTotal;
+  document.getElementById('vaultPage').textContent = vaultPage;
+  document.getElementById('vaultPages').textContent = vaultTotalPages;
+
+  if (!clips.length) {
+    grid.innerHTML = '<div class="vault-empty"><div class="icon">📁</div><h3>ยังไม่มีวิดีโอ</h3><p>รอรับคลิปจากเซิร์ฟเวอร์หลัก หรือส่งคลิปจากหลังบ้าน</p></div>';
+    document.getElementById('vaultPages').innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = clips.map(c => {
+    const firstLetter = (c.title || 'V')[0].toUpperCase();
+    const date = new Date(c.createdAt).toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric' });
+    const fullUrl = c.url.startsWith('http') ? c.url : API_HOST + c.url;
+    const thumbUrl = c.thumbnail ? (c.thumbnail.startsWith('http') ? c.thumbnail : API_HOST + c.thumbnail) : '';
+    return '<div class="vclip-card" onclick="playVaultVideo(\'' + fullUrl + '\')">' +
+      '<div class="thumb">' +
+        (thumbUrl ? '<img src="' + thumbUrl + '" alt="' + c.title + '" loading="lazy">' : '<div class="fallback">' + firstLetter + '</div>') +
+        '<div class="play-overlay"><button class="play-btn" onclick="event.stopPropagation();playVaultVideo(\'' + fullUrl + '\')">▶</button></div>' +
+      '</div>' +
+      '<div class="info">' +
+        '<div class="title" title="' + c.title.replace(/"/g,'&quot;') + '">' + c.title + '</div>' +
+        '<div class="meta"><span class="employee">' + (c.employeeName || 'ระบบ') + '</span><span>' + date + '</span></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  renderVaultPages();
+}
+
+function renderVaultPages() {
+  const el = document.getElementById('vaultPages');
+  if (vaultTotalPages <= 1) { el.innerHTML = ''; return; }
+  let html = '<button onclick="loadVault(' + (vaultPage - 1) + ')" ' + (vaultPage <= 1 ? 'disabled' : '') + '>‹</button>';
+  const start = Math.max(1, vaultPage - 2);
+  const end = Math.min(vaultTotalPages, vaultPage + 2);
+  for (let i = start; i <= end; i++) {
+    html += '<button onclick="loadVault(' + i + ')" class="' + (i === vaultPage ? 'active' : '') + '">' + i + '</button>';
+  }
+  html += '<button onclick="loadVault(' + (vaultPage + 1) + ')" ' + (vaultPage >= vaultTotalPages ? 'disabled' : '') + '>›</button>';
+  el.innerHTML = html;
+}
+
+function playVaultVideo(url) {
+  const modal = document.getElementById('vmodal');
+  const video = document.getElementById('vmodalVideo');
+  video.src = url;
+  modal.classList.add('active');
+}
+
+function closeVModal() {
+  const modal = document.getElementById('vmodal');
+  const video = document.getElementById('vmodalVideo');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('active');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVModal(); });
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Init ──
+function init() {
+  const s = getSession();
+  if (!s) { location.href = 'index.html'; return; }
+  document.getElementById('dashUserName').textContent = s.user.substring(0, 16);
+  const icon = (s.user === '1@1.1' || s.user === 'vippong12000') ? '🐱‍💻' : '👤';
+  document.getElementById('authName').textContent = icon + ' ' + s.user.substring(0, 16);
+  const k = getPointsKey();
+  if (!localStorage.getItem(k)) setPoints(100);
+  refreshPointsUI();
+}
+init();
+</script>
+</body>
+</html>
