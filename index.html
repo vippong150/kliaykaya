@@ -1110,7 +1110,8 @@
     if (currentAuthTab === 'register') resetRegForm();
     clearMsg('loginMsg'); clearMsg('regMsg');
   }
-  // AUTH — localStorage (ID ≥10, Pass ≥6)
+  // AUTH — server-first via API_HOST, fallback localStorage
+  const API_HOST = localStorage.getItem('api_host') || 'http://localhost:8080';
   (function() {
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
     if (!users.find(u => u.user === '1@1.1')) { users.push({ user: '1@1.1', pass: '1' }); localStorage.setItem('cm_users', JSON.stringify(users)); }
@@ -1206,15 +1207,31 @@
     }
   }
   // Login
-  function handleLogin() {
+  async function handleLogin() {
     const user = document.getElementById('loginUser').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     if (!valUser(user)) { showMsg('loginMsg', 'ID ต้องอย่างน้อย 10 ตัวอักษร', 'error'); return; }
     if (!valPass(pass)) { showMsg('loginMsg', 'รหัสผ่านต้องอย่างน้อย 6 ตัวอักษร', 'error'); return; }
+    const remember = document.getElementById('rememberMe').checked;
+    // Try server-side auth first
+    try {
+      const r = await fetch(API_HOST + '/api/auth/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass }),
+        mode: 'cors'
+      });
+      const d = await r.json();
+      if (d.success) {
+        setSession({ user: d.user.username, token: d.token, serverAuth: true }, remember);
+        closeModal('authModal');
+        location.href = 'dashboard.html';
+        return;
+      }
+    } catch (_) { /* server offline — fallback below */ }
+    // Fallback: localStorage auth
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
     const found = users.find(u => u.user === user && u.pass === pass);
     if (found) {
-      const remember = document.getElementById('rememberMe').checked;
       setSession(found, remember);
       closeModal('authModal');
       location.href = 'dashboard.html';
@@ -1223,13 +1240,31 @@
     showMsg('loginMsg', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
   }
   // Register
-  function handleRegister() {
+  async function handleRegister() {
     const user = document.getElementById('regUser').value.trim();
     const pass = document.getElementById('regPass').value.trim();
     const confirm = document.getElementById('regPassConfirm').value.trim();
     if (!valUser(user)) { showMsg('regMsg', 'ID ต้องอย่างน้อย 10 ตัวอักษร', 'error'); return; }
     if (!valPass(pass)) { showMsg('regMsg', 'รหัสผ่านต้องอย่างน้อย 6 ตัวอักษร', 'error'); return; }
     if (pass !== confirm) { showMsg('regMsg', 'รหัสผ่านไม่ตรงกัน', 'error'); return; }
+    // Try server-side register first
+    try {
+      const r = await fetch(API_HOST + '/api/auth/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass }),
+        mode: 'cors'
+      });
+      const d = await r.json();
+      if (d.success) {
+        setSession({ user: d.user.username, serverAuth: true }, true);
+        closeModal('authModal');
+        location.href = 'dashboard.html';
+        return;
+      }
+      if (d.message) showMsg('regMsg', d.message, 'error');
+      return;
+    } catch (_) { /* server offline — fallback below */ }
+    // Fallback: localStorage register
     const users = JSON.parse(localStorage.getItem('cm_users') || '[]');
     if (users.find(u => u.user === user)) { showMsg('regMsg', 'ชื่อผู้ใช้นี้มีอยู่แล้ว', 'error'); return; }
     users.push({ user, pass });

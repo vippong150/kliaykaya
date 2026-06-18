@@ -1,2 +1,21 @@
+# Dependencies
+node_modules/
+package-lock.json
+package.json
+
+# Server (not needed on static GitHub Pages)
+server.js
+
+# Runtime data
+editedClips.json
+dev_account.txt
+
+# Archives
 WebServer.rar
+index.rar
+
+# Editor
+.vscode/
+
+# Tunnel URL (local only)
 tunnel-url.txt

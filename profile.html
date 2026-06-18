@@ -57,7 +57,7 @@
 <script>
   function getSession() {
     try {
-      const raw = sessionStorage.getItem('cm_session') || localStorage.getItem('cm_session');
+      const raw = localStorage.getItem('cm_session') || sessionStorage.getItem('cm_session');
       return raw ? JSON.parse(raw) : null;
     } catch (e) { return null; }
   }
