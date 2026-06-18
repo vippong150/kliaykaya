@@ -742,7 +742,7 @@ async function generateProductScript() {
     if (!d.ok) throw new Error(d.error || 'สร้างสคริปต์ไม่สำเร็จ');
 
     _lastScript = d.script;
-    scriptBox.textContent = d.script.text;
+    scriptBox.textContent = d.script.text || '(สคริปต์ว่าง — ตรวจสอบ API Key ว่าถูกต้องหรือไม่)';
     document.getElementById('prodGenTime').textContent = new Date().toLocaleString('th-TH');
     result.style.display = '';
 
@@ -779,6 +779,7 @@ async function generateProductScript() {
 
     showToast('✅ เสร็จสิ้น!', 'success');
   } catch (err) {
+    result.style.display = '';
     status.style.display = 'flex';
     status.className = 'prod-status error';
     status.innerHTML = '⚠️ ' + err.message;
