@@ -298,6 +298,84 @@
     </div>
     <div class="vault-pages" id="vaultPages"></div>
   </div>
+
+  <!-- Product Creator Section -->
+  <div class="prod-section" id="prodSection">
+    <div class="prod-card">
+      <h2>🛒 <span>สร้างสินค้าในคลิปเดียว</span></h2>
+      <p style="color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:20px;">ป้อนข้อมูลสินค้า แนบภาพ แล้วกดสร้าง — AI จะเขียนสคริปต์ขายสินค้าให้อัตโนมัติ</p>
+
+      <div class="prod-row">
+        <div class="prod-field" style="flex:2">
+          <label>ชื่อสินค้า</label>
+          <input type="text" id="prodName" placeholder="เช่น เซรั่มบำรุงผิวหน้า วิตามินซี">
+        </div>
+        <div class="prod-field" style="flex:1">
+          <label>ราคา</label>
+          <input type="text" id="prodPrice" placeholder="เช่น 299 บาท">
+        </div>
+      </div>
+
+      <div class="prod-field">
+        <label>รายละเอียดร้านค้า / จุดขาย</label>
+        <textarea id="prodDesc" placeholder="เช่น ร้านของเราคัดสรรสินค้าคุณภาพดี ส่งเร็ว มีบริการเก็บเงินปลายทาง..."></textarea>
+      </div>
+
+      <div class="prod-field">
+        <label>รูปสินค้า (แนบเพื่อให้ AI เห็นสินค้าจริง)</label>
+        <div class="prod-img-upload" id="prodImgUpload">
+          <input type="file" accept="image/*" id="prodImgInput" onchange="onProdImage(event)">
+          <div class="upload-hint">
+            <div class="icon">📸</div>
+            <div>คลิกเพื่อเลือกรูป หรือลากวาง<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.2)">รองรับ JPG, PNG</span></div>
+          </div>
+          <img id="prodImgPreview" style="display:none">
+        </div>
+      </div>
+
+      <div class="prod-row">
+        <div class="prod-field">
+          <label>สไตล์สคริปต์</label>
+          <select id="prodStyle">
+            <option value="">สุ่ม</option>
+            <option value="review">⭐ รีวิวสินค้า</option>
+            <option value="storytelling">📖 เล่าเรื่อง</option>
+            <option value="problem-solution">💡 ปัญหาและวิธีแก้</option>
+            <option value="hype">🔥 ป้ายยา</option>
+            <option value="experience">💬 แชร์ประสบการณ์</option>
+            <option value="before-after">🔄 เปรียบเทียบก่อน-หลัง</option>
+          </select>
+        </div>
+        <div class="prod-field">
+          <label>ความยาว (วินาที)</label>
+          <select id="prodDuration">
+            <option value="15">15 วิ</option>
+            <option value="20">20 วิ</option>
+            <option value="30" selected>30 วิ</option>
+            <option value="45">45 วิ</option>
+            <option value="60">60 วิ</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="prod-generate-btn" id="prodGenBtn" onclick="generateProductScript()">
+        ▶️ เริ่มสร้างสคริปต์
+      </button>
+
+      <div id="prodResult" class="prod-result" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+          <h3 style="font-size:0.95rem;color:#fff;font-weight:600;">📜 สคริปต์ที่สร้าง</h3>
+          <span id="prodGenTime" style="font-size:0.72rem;color:rgba(255,255,255,0.25);"></span>
+        </div>
+        <div class="prod-script-box" id="prodScriptText"></div>
+        <div class="prod-actions">
+          <button class="btn-tts" id="prodTtsBtn" onclick="sendToTTS()">🔊 ส่งสร้างเสียง</button>
+          <button class="btn-copy" onclick="copyScript()">📋 คัดลอก</button>
+        </div>
+        <div id="prodStatus" class="prod-status" style="display:none"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Bottom action bar -->
@@ -317,84 +395,6 @@
   <button class="action-btn" onclick="location.href='social.html'">
     <span class="ab-icon">🌐</span> โซเชียล
   </button>
-</div>
-
-<!-- Product Creator Section -->
-<div class="prod-section" id="prodSection">
-  <div class="prod-card">
-    <h2>🛒 <span>สร้างสินค้าในคลิปเดียว</span></h2>
-    <p style="color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:20px;">ป้อนข้อมูลสินค้า แนบภาพ แล้วกดสร้าง — AI จะเขียนสคริปต์ขายสินค้าให้อัตโนมัติ</p>
-
-    <div class="prod-row">
-      <div class="prod-field" style="flex:2">
-        <label>ชื่อสินค้า</label>
-        <input type="text" id="prodName" placeholder="เช่น เซรั่มบำรุงผิวหน้า วิตามินซี">
-      </div>
-      <div class="prod-field" style="flex:1">
-        <label>ราคา</label>
-        <input type="text" id="prodPrice" placeholder="เช่น 299 บาท">
-      </div>
-    </div>
-
-    <div class="prod-field">
-      <label>รายละเอียดร้านค้า / จุดขาย</label>
-      <textarea id="prodDesc" placeholder="เช่น ร้านของเราคัดสรรสินค้าคุณภาพดี ส่งเร็ว มีบริการเก็บเงินปลายทาง..."></textarea>
-    </div>
-
-    <div class="prod-field">
-      <label>รูปสินค้า (แนบเพื่อให้ AI เห็นสินค้าจริง)</label>
-      <div class="prod-img-upload" id="prodImgUpload">
-        <input type="file" accept="image/*" id="prodImgInput" onchange="onProdImage(event)">
-        <div class="upload-hint">
-          <div class="icon">📸</div>
-          <div>คลิกเพื่อเลือกรูป หรือลากวาง<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.2)">รองรับ JPG, PNG</span></div>
-        </div>
-        <img id="prodImgPreview" style="display:none">
-      </div>
-    </div>
-
-    <div class="prod-row">
-      <div class="prod-field">
-        <label>สไตล์สคริปต์</label>
-        <select id="prodStyle">
-          <option value="">สุ่ม</option>
-          <option value="review">⭐ รีวิวสินค้า</option>
-          <option value="storytelling">📖 เล่าเรื่อง</option>
-          <option value="problem-solution">💡 ปัญหาและวิธีแก้</option>
-          <option value="hype">🔥 ป้ายยา</option>
-          <option value="experience">💬 แชร์ประสบการณ์</option>
-          <option value="before-after">🔄 เปรียบเทียบก่อน-หลัง</option>
-        </select>
-      </div>
-      <div class="prod-field">
-        <label>ความยาว (วินาที)</label>
-        <select id="prodDuration">
-          <option value="15">15 วิ</option>
-          <option value="20">20 วิ</option>
-          <option value="30" selected>30 วิ</option>
-          <option value="45">45 วิ</option>
-          <option value="60">60 วิ</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="prod-generate-btn" id="prodGenBtn" onclick="generateProductScript()">
-      ▶️ เริ่มสร้างสคริปต์
-    </button>
-
-    <div id="prodResult" class="prod-result" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
-        <h3 style="font-size:0.95rem;color:#fff;font-weight:600;">📜 สคริปต์ที่สร้าง</h3>
-        <span id="prodGenTime" style="font-size:0.72rem;color:rgba(255,255,255,0.25);"></span>
-      </div>
-      <div class="prod-script-box" id="prodScriptText"></div>
-      <div class="prod-actions">
-        <button class="btn-tts" id="prodTtsBtn" onclick="sendToTTS()">🔊 ส่งสร้างเสียง</button>
-        <button class="btn-copy" onclick="copyScript()">📋 คัดลอก</button>
-      </div>
-      <div id="prodStatus" class="prod-status" style="display:none"></div>
-    </div>
-  </div>
 </div>
 
 <!-- Video Player Modal -->
