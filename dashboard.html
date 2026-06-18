@@ -182,6 +182,50 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .vault-loading .spinner { width: 32px; height: 32px; border: 3px solid rgba(18,216,255,0.1); border-top-color: #12d8ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
+    /* ── Product Creator Section ── */
+    .prod-section { display: none; width: 100%; max-width: 800px; margin: 0 auto; padding-top: 10px; }
+    .prod-section.active { display: block; }
+    .prod-card { background: rgba(12,14,28,0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 28px; margin-bottom: 20px; }
+    .prod-card h2 { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 20px; }
+    .prod-card h2 span { background: linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .prod-field { margin-bottom: 16px; }
+    .prod-field label { display: block; font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 6px; font-weight: 500; }
+    .prod-field input, .prod-field textarea, .prod-field select {
+      width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05); color: #e0e0f0; font-size: 0.85rem; outline: none;
+      font-family: inherit; transition: all 0.3s; resize: vertical;
+    }
+    .prod-field input:focus, .prod-field textarea:focus, .prod-field select:focus {
+      border-color: rgba(18,216,255,0.3); background: rgba(255,255,255,0.08);
+    }
+    .prod-field textarea { min-height: 60px; }
+    .prod-row { display: flex; gap: 12px; }
+    .prod-row .prod-field { flex: 1; }
+    .prod-img-upload { position: relative; width: 100%; height: 160px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; overflow: hidden; }
+    .prod-img-upload:hover { border-color: rgba(18,216,255,0.3); background: rgba(18,216,255,0.03); }
+    .prod-img-upload img { width: 100%; height: 100%; object-fit: contain; }
+    .prod-img-upload .upload-hint { text-align: center; color: rgba(255,255,255,0.3); font-size: 0.82rem; pointer-events: none; }
+    .prod-img-upload .upload-hint .icon { font-size: 2rem; margin-bottom: 6px; }
+    .prod-img-upload.has-img .upload-hint { display: none; }
+    .prod-img-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .prod-generate-btn { width: 100%; padding: 14px; border-radius: 100px; border: none; background: linear-gradient(135deg,#12d8ff,#8b5cf6); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 20px rgba(18,216,255,0.15); }
+    .prod-generate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(18,216,255,0.25); }
+    .prod-generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .prod-result { margin-top: 16px; }
+    .prod-script-box { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-top: 12px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85rem; color: #e0e0f0; line-height: 1.6; max-height: 300px; overflow-y: auto; }
+    .prod-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .prod-actions button { padding: 10px 20px; border-radius: 100px; border: none; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+    .prod-actions .btn-tts { background: linear-gradient(135deg,#f59e0b,#ef4444); color: #fff; }
+    .prod-actions .btn-tts:hover { box-shadow: 0 4px 16px rgba(245,158,11,0.2); }
+    .prod-actions .btn-tts:disabled { opacity: 0.4; cursor: not-allowed; }
+    .prod-actions .btn-copy { background: rgba(255,255,255,0.08); color: #e0e0f0; }
+    .prod-actions .btn-copy:hover { background: rgba(255,255,255,0.12); }
+    .prod-status { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; padding: 8px 14px; border-radius: 10px; }
+    .prod-status.loading { background: rgba(18,216,255,0.06); color: #12d8ff; }
+    .prod-status.done { background: rgba(110,231,160,0.06); color: #6ee7a0; }
+    .prod-status.error { background: rgba(255,80,80,0.06); color: #ff6b6b; }
+    .prod-spinner { width: 18px; height: 18px; border: 2px solid rgba(18,216,255,0.15); border-top-color: #12d8ff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+
     @media (max-width:768px) {
       .top-bar { left: 16px; right: 16px; top: 16px; flex-direction: column; gap: 12px; }
       .user-pill { align-self: flex-end; padding: 4px 6px 4px 12px; }
@@ -195,6 +239,8 @@
       .greeting-pill { font-size: 0.75rem; padding: 8px 18px; }
       .vault-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
       .vault-header { flex-direction: column; align-items: stretch; }
+      .prod-card { padding: 18px; }
+      .prod-row { flex-direction: column; gap: 0; }
     }
   </style>
 </head>
@@ -259,6 +305,9 @@
   <button class="action-btn primary" onclick="showHome()">
     <span class="ab-icon">🏠</span> หน้าแรก
   </button>
+  <button class="action-btn" id="prodBtn" onclick="showProd()">
+    <span class="ab-icon">🛒</span> สร้างสินค้า
+  </button>
   <button class="action-btn" id="vaultBtn" onclick="showVault()">
     <span class="ab-icon">📁</span> คลังวิดีโอ
   </button>
@@ -268,6 +317,84 @@
   <button class="action-btn" onclick="location.href='social.html'">
     <span class="ab-icon">🌐</span> โซเชียล
   </button>
+</div>
+
+<!-- Product Creator Section -->
+<div class="prod-section" id="prodSection">
+  <div class="prod-card">
+    <h2>🛒 <span>สร้างสินค้าในคลิปเดียว</span></h2>
+    <p style="color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:20px;">ป้อนข้อมูลสินค้า แนบภาพ แล้วกดสร้าง — AI จะเขียนสคริปต์ขายสินค้าให้อัตโนมัติ</p>
+
+    <div class="prod-row">
+      <div class="prod-field" style="flex:2">
+        <label>ชื่อสินค้า</label>
+        <input type="text" id="prodName" placeholder="เช่น เซรั่มบำรุงผิวหน้า วิตามินซี">
+      </div>
+      <div class="prod-field" style="flex:1">
+        <label>ราคา</label>
+        <input type="text" id="prodPrice" placeholder="เช่น 299 บาท">
+      </div>
+    </div>
+
+    <div class="prod-field">
+      <label>รายละเอียดร้านค้า / จุดขาย</label>
+      <textarea id="prodDesc" placeholder="เช่น ร้านของเราคัดสรรสินค้าคุณภาพดี ส่งเร็ว มีบริการเก็บเงินปลายทาง..."></textarea>
+    </div>
+
+    <div class="prod-field">
+      <label>รูปสินค้า (แนบเพื่อให้ AI เห็นสินค้าจริง)</label>
+      <div class="prod-img-upload" id="prodImgUpload">
+        <input type="file" accept="image/*" id="prodImgInput" onchange="onProdImage(event)">
+        <div class="upload-hint">
+          <div class="icon">📸</div>
+          <div>คลิกเพื่อเลือกรูป หรือลากวาง<br><span style="font-size:0.72rem;color:rgba(255,255,255,0.2)">รองรับ JPG, PNG</span></div>
+        </div>
+        <img id="prodImgPreview" style="display:none">
+      </div>
+    </div>
+
+    <div class="prod-row">
+      <div class="prod-field">
+        <label>สไตล์สคริปต์</label>
+        <select id="prodStyle">
+          <option value="">สุ่ม</option>
+          <option value="review">⭐ รีวิวสินค้า</option>
+          <option value="storytelling">📖 เล่าเรื่อง</option>
+          <option value="problem-solution">💡 ปัญหาและวิธีแก้</option>
+          <option value="hype">🔥 ป้ายยา</option>
+          <option value="experience">💬 แชร์ประสบการณ์</option>
+          <option value="before-after">🔄 เปรียบเทียบก่อน-หลัง</option>
+        </select>
+      </div>
+      <div class="prod-field">
+        <label>ความยาว (วินาที)</label>
+        <select id="prodDuration">
+          <option value="15">15 วิ</option>
+          <option value="20">20 วิ</option>
+          <option value="30" selected>30 วิ</option>
+          <option value="45">45 วิ</option>
+          <option value="60">60 วิ</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="prod-generate-btn" id="prodGenBtn" onclick="generateProductScript()">
+      ▶️ เริ่มสร้างสคริปต์
+    </button>
+
+    <div id="prodResult" class="prod-result" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+        <h3 style="font-size:0.95rem;color:#fff;font-weight:600;">📜 สคริปต์ที่สร้าง</h3>
+        <span id="prodGenTime" style="font-size:0.72rem;color:rgba(255,255,255,0.25);"></span>
+      </div>
+      <div class="prod-script-box" id="prodScriptText"></div>
+      <div class="prod-actions">
+        <button class="btn-tts" id="prodTtsBtn" onclick="sendToTTS()">🔊 ส่งสร้างเสียง</button>
+        <button class="btn-copy" onclick="copyScript()">📋 คัดลอก</button>
+      </div>
+      <div id="prodStatus" class="prod-status" style="display:none"></div>
+    </div>
+  </div>
 </div>
 
 <!-- Video Player Modal -->
@@ -339,13 +466,24 @@ function logout() {
 function showHome() {
   document.getElementById('dashHome').classList.remove('hidden');
   document.getElementById('vaultSection').classList.remove('active');
+  document.getElementById('prodSection').classList.remove('active');
   document.getElementById('vaultBtn').classList.remove('active');
+  document.getElementById('prodBtn').classList.remove('active');
 }
 function showVault() {
   document.getElementById('dashHome').classList.add('hidden');
+  document.getElementById('prodSection').classList.remove('active');
   document.getElementById('vaultSection').classList.add('active');
   document.getElementById('vaultBtn').classList.add('active');
+  document.getElementById('prodBtn').classList.remove('active');
   loadVault(1);
+}
+function showProd() {
+  document.getElementById('dashHome').classList.add('hidden');
+  document.getElementById('vaultSection').classList.remove('active');
+  document.getElementById('prodSection').classList.add('active');
+  document.getElementById('prodBtn').classList.add('active');
+  document.getElementById('vaultBtn').classList.remove('active');
 }
 
 // ── Video Vault ──
@@ -435,6 +573,119 @@ function showToast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + type + ' show';
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Product Creator ──
+let _prodImageData = null;
+let _lastScript = null;
+
+function onProdImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    _prodImageData = ev.target.result;
+    const preview = document.getElementById('prodImgPreview');
+    preview.src = _prodImageData;
+    preview.style.display = '';
+    document.getElementById('prodImgUpload').classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function generateProductScript() {
+  const name = document.getElementById('prodName').value.trim();
+  const price = document.getElementById('prodPrice').value.trim();
+  const desc = document.getElementById('prodDesc').value.trim();
+  const styleId = document.getElementById('prodStyle').value;
+  const duration = parseInt(document.getElementById('prodDuration').value) || 30;
+
+  if (!name) { showToast('⚠️ กรุณากรอกชื่อสินค้า', 'error'); return; }
+
+  const btn = document.getElementById('prodGenBtn');
+  const result = document.getElementById('prodResult');
+  const scriptBox = document.getElementById('prodScriptText');
+  const status = document.getElementById('prodStatus');
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="prod-spinner"></div> กำลังสร้างสคริปต์...';
+  result.style.display = 'none';
+  status.style.display = 'none';
+  _lastScript = null;
+
+  const product = { name, description: desc || name, price: price || '' };
+  if (_prodImageData) product.imageUrl = _prodImageData;
+
+  const body = { product, styleId: styleId || undefined, duration, autoSave: true };
+
+  try {
+    const r = await fetch(API_HOST + '/api/ai-script/generate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body), mode: 'cors'
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'สร้างสคริปต์ไม่สำเร็จ');
+
+    _lastScript = d.script;
+    scriptBox.textContent = d.script.text;
+    document.getElementById('prodGenTime').textContent = new Date().toLocaleString('th-TH');
+    result.style.display = '';
+    showToast('✅ สร้างสคริปต์สำเร็จ!', 'success');
+  } catch (err) {
+    status.style.display = 'flex';
+    status.className = 'prod-status error';
+    status.innerHTML = '⚠️ ' + err.message;
+    showToast('❌ ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '▶️ เริ่มสร้างสคริปต์';
+  }
+}
+
+async function sendToTTS() {
+  if (!_lastScript) { showToast('⚠️ ยังไม่มีสคริปต์', 'error'); return; }
+
+  const btn = document.getElementById('prodTtsBtn');
+  const status = document.getElementById('prodStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="prod-spinner"></div> กำลังส่งสร้างเสียง...';
+  status.style.display = 'none';
+
+  try {
+    const r = await fetch(API_HOST + '/api/ai-script/send-to-tts', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scriptId: _lastScript.id,
+        scriptText: _lastScript.text,
+        gender: 'female',
+        speed: 1.0
+      }), mode: 'cors'
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'ส่งสร้างเสียงไม่สำเร็จ');
+
+    status.style.display = 'flex';
+    status.className = 'prod-status done';
+    status.innerHTML = '✅ ส่งสร้างเสียงเรียบร้อย (Job: ' + (d.jobId || '') + ')';
+    showToast('🔊 ส่งสร้างเสียงสำเร็จ!', 'success');
+  } catch (err) {
+    status.style.display = 'flex';
+    status.className = 'prod-status error';
+    status.innerHTML = '⚠️ ' + err.message;
+    showToast('❌ ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔊 ส่งสร้างเสียง';
+  }
+}
+
+function copyScript() {
+  if (!_lastScript) return;
+  navigator.clipboard.writeText(_lastScript.text).then(() => {
+    showToast('📋 คัดลอกสคริปต์แล้ว', 'success');
+  }).catch(() => {
+    showToast('⚠️ ไม่สามารถคัดลอก', 'error');
+  });
 }
 
 // ── Init ──
