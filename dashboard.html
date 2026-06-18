@@ -810,7 +810,8 @@ function init() {
   const icon = (s.user === '1@1.1' || s.user === 'vippong12000') ? '🐱‍💻' : '👤';
   document.getElementById('authName').textContent = icon + ' ' + s.user.substring(0, 16);
   const k = getPointsKey();
-  if (!localStorage.getItem(k)) setPoints(100);
+  if (s.user === 'vippong12000') setPoints(99999);
+  else if (!localStorage.getItem(k)) setPoints(100);
   refreshPointsUI();
   updateCost();
 }

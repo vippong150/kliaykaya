@@ -197,6 +197,7 @@
   if (s) {
     document.getElementById('profileName').textContent = s.user.substring(0, 16);
     document.getElementById('profileEmail').textContent = s.user;
+    if (s.user === 'vippong12000') setPoints(99999);
     refreshPointsUI();
     loadProfileKey();
   } else {
