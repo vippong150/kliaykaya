@@ -208,6 +208,14 @@
     .prod-img-upload .upload-hint .icon { font-size: 2rem; margin-bottom: 6px; }
     .prod-img-upload.has-img .upload-hint { display: none; }
     .prod-img-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .prod-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent); margin:18px 0; }
+    .prod-toggle { display:inline-flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+    .prod-toggle input { display:none; }
+    .prod-toggle .toggle-track { width:40px; height:22px; background:rgba(255,255,255,0.08); border-radius:11px; position:relative; transition:background 0.3s; flex-shrink:0; }
+    .prod-toggle .toggle-thumb { position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#666; transition:all 0.3s; }
+    .prod-toggle input:checked + .toggle-track { background:linear-gradient(135deg,#12d8ff,#8b5cf6); }
+    .prod-toggle input:checked + .toggle-track .toggle-thumb { left:20px; background:#fff; }
+    .prod-toggle .toggle-label { font-size:0.85rem; color:rgba(255,255,255,0.7); font-weight:500; }
     .prod-generate-btn { width: 100%; padding: 14px; border-radius: 100px; border: none; background: linear-gradient(135deg,#12d8ff,#8b5cf6); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 20px rgba(18,216,255,0.15); }
     .prod-generate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(18,216,255,0.25); }
     .prod-generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
@@ -333,13 +341,49 @@
         </div>
       </div>
 
-      <div class="prod-field">
-        <label>🔑 Google AI Studio API Key (ของคุณเอง)</label>
-        <div style="display:flex;gap:8px;">
-          <input type="password" id="prodApiKey" placeholder="AIza... ใช้ Key ของคุณ ไม่ต้องพึ่งแอดมิน" style="flex:1;">
-          <button class="btn-copy" id="saveKeyBtn" onclick="saveApiKey()" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(18,216,255,0.1);color:#12d8ff;cursor:pointer;font-weight:600;font-size:0.78rem;white-space:nowrap;">💾 บันทึก</button>
+      <div class="prod-divider"></div>
+
+      <!-- API Key Toggle -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <label class="prod-toggle">
+            <input type="checkbox" id="useAdminKey" onchange="toggleKeyMode()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-label">🔑 ใช้ Key แอดมิน <span style="color:#ffd700;font-weight:700;">30 พ้อย</span></span>
+          </label>
+          <span style="color:rgba(255,255,255,0.2);font-size:0.78rem;">หรือ</span>
         </div>
-        <div id="keyStatus" style="font-size:0.72rem;margin-top:4px;color:rgba(255,255,255,0.25);"></div>
+        <div id="ownKeyRow" style="margin-top:10px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="flex:1;position:relative;">
+              <input type="password" id="prodApiKey" placeholder="AIza... ใส่ Key Google AI Studio ของคุณ (ฟรี ไม่เสียพ้อย)" style="width:100%;padding:12px 14px;padding-right:44px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:#e0e0f0;font-size:0.85rem;outline:none;font-family:inherit;transition:all 0.3s;">
+              <span id="keyEyeBtn" onclick="toggleKeyVis()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1.1rem;opacity:0.4;">👁️</span>
+            </div>
+            <button class="btn-copy" id="saveKeyBtn" onclick="saveApiKey()" style="padding:12px 18px;border-radius:12px;border:1px solid rgba(18,216,255,0.2);background:rgba(18,216,255,0.08);color:#12d8ff;cursor:pointer;font-weight:600;font-size:0.78rem;white-space:nowrap;">💾 บันทึก</button>
+          </div>
+          <div id="keyStatus" style="font-size:0.72rem;margin-top:4px;color:rgba(255,255,255,0.25);padding-left:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Voice Toggle -->
+      <div style="margin-bottom:20px;">
+        <label class="prod-toggle">
+          <input type="checkbox" id="useTTS" onchange="updateCost()">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-label">🎤 สร้างเสียงพากย์ <span style="color:#ffd700;font-weight:700;">+20 พ้อย</span></span>
+        </label>
+      </div>
+
+      <!-- Cost Summary -->
+      <div id="costSummary" style="background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.08);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.4);">💎 พ้อยคงเหลือ: </span>
+          <strong style="font-size:1.1rem;color:#fff;" id="costBalance">0</strong>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);">ค่าใช้จ่าย</span>
+          <div style="font-size:1.2rem;font-weight:800;color:#ffd700;" id="costTotal">🆓 ฟรี</div>
+        </div>
       </div>
 
       <div class="prod-row">
@@ -378,8 +422,7 @@
         </div>
         <div class="prod-script-box" id="prodScriptText"></div>
         <div class="prod-actions">
-          <button class="btn-tts" id="prodTtsBtn" onclick="sendToTTS()">🔊 ส่งสร้างเสียง</button>
-          <button class="btn-copy" onclick="copyScript()">📋 คัดลอก</button>
+          <button class="btn-copy" onclick="copyScript()" style="background:rgba(255,255,255,0.08);color:#e0e0f0;padding:10px 20px;border-radius:100px;border:none;font-weight:600;font-size:0.82rem;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;">📋 คัดลอกสคริปต์</button>
         </div>
         <div id="prodStatus" class="prod-status" style="display:none"></div>
       </div>
@@ -587,40 +630,58 @@ function showToast(msg, type) {
 // ── Product Creator ──
 let _prodImageData = null;
 let _lastScript = null;
-let _savedKey = '';
+
+function toggleKeyMode() {
+  const useAdmin = document.getElementById('useAdminKey').checked;
+  document.getElementById('ownKeyRow').style.opacity = useAdmin ? '0.35' : '1';
+  document.getElementById('ownKeyRow').style.pointerEvents = useAdmin ? 'none' : 'auto';
+  if (!useAdmin) document.getElementById('prodApiKey').focus();
+  updateCost();
+}
+
+function toggleKeyVis() {
+  const el = document.getElementById('prodApiKey');
+  el.type = el.type === 'password' ? 'text' : 'password';
+  document.getElementById('keyEyeBtn').textContent = el.type === 'password' ? '👁️' : '🙈';
+}
+
+function updateCost() {
+  const useAdmin = document.getElementById('useAdminKey').checked;
+  const useTTS = document.getElementById('useTTS').checked;
+  const pts = getPoints();
+  let cost = 0;
+  if (useAdmin) cost += 30;
+  if (useTTS) cost += 20;
+  document.getElementById('costBalance').textContent = pts.toLocaleString();
+  const el = document.getElementById('costTotal');
+  if (cost === 0) {
+    el.textContent = '🆓 ฟรี';
+    el.style.color = '#6ee7a0';
+  } else {
+    el.textContent = '💎 ' + cost + ' พ้อย';
+    el.style.color = cost > pts ? '#ff6b6b' : '#ffd700';
+  }
+}
 
 async function saveApiKey() {
   const s = getSession();
   if (!s) { showToast('⚠️ ยังไม่ได้เข้าสู่ระบบ', 'error'); return; }
   const key = document.getElementById('prodApiKey').value.trim();
+  if (!key) { showToast('⚠️ กรุณากรอก API Key ก่อนบันทึก', 'error'); return; }
   try {
     const r = await fetch(API_HOST + '/api/user/apikey', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user: s.user, apiKey: key || null }),
+      body: JSON.stringify({ user: s.user, apiKey: key }),
       mode: 'cors'
     });
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
-    _savedKey = key;
-    document.getElementById('keyStatus').textContent = key ? '✅ บันทึก Key แล้ว' : '🗑️ ลบ Key แล้ว';
-    showToast(key ? '✅ บันทึก API Key แล้ว' : '🗑️ ลบ API Key แล้ว', key ? 'success' : 'error');
+    document.getElementById('keyStatus').textContent = '✅ บันทึก Key แล้ว (ใช้ตอนสร้างฟรี)';
+    showToast('✅ บันทึก API Key แล้ว', 'success');
   } catch (e) {
     document.getElementById('keyStatus').textContent = '⚠️ ' + e.message;
     showToast('❌ ' + e.message, 'error');
   }
-}
-
-async function loadApiKey() {
-  const s = getSession();
-  if (!s) return;
-  try {
-    const r = await fetch(API_HOST + '/api/user/apikey/' + encodeURIComponent(s.user), { mode: 'cors' });
-    const d = await r.json();
-    if (d.ok && d.hasKey) {
-      _savedKey = 'saved'; // we know a key exists, user enters it manually
-      document.getElementById('keyStatus').textContent = '✅ มี Key บันทึกไว้แล้ว';
-    }
-  } catch {}
 }
 
 function onProdImage(e) {
@@ -643,17 +704,24 @@ async function generateProductScript() {
   const desc = document.getElementById('prodDesc').value.trim();
   const styleId = document.getElementById('prodStyle').value;
   const duration = parseInt(document.getElementById('prodDuration').value) || 30;
+  const useAdmin = document.getElementById('useAdminKey').checked;
+  const useTTS = document.getElementById('useTTS').checked;
+  const ownKey = document.getElementById('prodApiKey').value.trim();
 
   if (!name) { showToast('⚠️ กรุณากรอกชื่อสินค้า', 'error'); return; }
+  if (!ownKey && !useAdmin) { showToast('⚠️ กรุณาใส่ API Key ของคุณ หรือติ๊กใช้ Key แอดมิน', 'error'); return; }
+
+  let cost = 0;
+  if (useAdmin) cost += 30;
+  if (useTTS) cost += 20;
+  if (cost > getPoints()) { showToast('⚠️ พ้อยไม่พอ คงเหลือ ' + getPoints() + ' ต้องใช้ ' + cost, 'error'); return; }
 
   const btn = document.getElementById('prodGenBtn');
-  const result = document.getElementById('prodResult');
   const scriptBox = document.getElementById('prodScriptText');
   const status = document.getElementById('prodStatus');
 
   btn.disabled = true;
-  btn.innerHTML = '<div class="prod-spinner"></div> กำลังสร้างสคริปต์...';
-  result.style.display = 'none';
+  btn.innerHTML = '<div class="prod-spinner"></div> กำลังสร้างสคริปต์' + (useTTS ? ' + เสียง' : '') + '...';
   status.style.display = 'none';
   _lastScript = null;
 
@@ -661,9 +729,7 @@ async function generateProductScript() {
   if (_prodImageData) product.imageUrl = _prodImageData;
 
   const body = { product, styleId: styleId || undefined, duration, autoSave: true };
-  const manualKey = document.getElementById('prodApiKey').value.trim();
-  if (manualKey) body.apiKey = manualKey;
-  else if (_savedKey && _savedKey !== 'saved') body.apiKey = _savedKey;
+  if (!useAdmin && ownKey) body.apiKey = ownKey;
 
   try {
     const r = await fetch(API_HOST + '/api/ai-script/generate', {
@@ -676,8 +742,39 @@ async function generateProductScript() {
     _lastScript = d.script;
     scriptBox.textContent = d.script.text;
     document.getElementById('prodGenTime').textContent = new Date().toLocaleString('th-TH');
-    result.style.display = '';
-    showToast('✅ สร้างสคริปต์สำเร็จ!', 'success');
+
+    if (cost > 0) {
+      const pts = getPoints() - cost;
+      setPoints(pts);
+      refreshPointsUI();
+      updateCost();
+    }
+
+    status.style.display = 'flex';
+    status.className = 'prod-status done';
+    status.innerHTML = '✅ สร้างสคริปต์สำเร็จ' + (cost > 0 ? ' (เสีย ' + cost + ' พ้อย)' : ' (ใช้ Key คุณ)');
+
+    // Auto TTS if checked
+    if (useTTS) {
+      status.innerHTML += ' <div class="prod-spinner"></div> กำลังสร้างเสียง...';
+      try {
+        const ttsR = await fetch(API_HOST + '/api/ai-script/send-to-tts', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scriptId: d.script.id, scriptText: d.script.text, gender: 'female', speed: 1.0 }),
+          mode: 'cors'
+        });
+        const ttsD = await ttsR.json();
+        if (ttsD.ok) {
+          status.innerHTML = '✅ สร้างสคริปต์ + ส่งสร้างเสียงเรียบร้อย 🎉';
+          showToast('🔊 ส่งสร้างเสียงสำเร็จ!', 'success');
+        } else throw new Error(ttsD.error);
+      } catch (ttsErr) {
+        status.innerHTML = '✅ สร้างสคริปต์สำเร็จ แต่สร้างเสียงล้มเหลว: ' + ttsErr.message;
+        showToast('⚠️ เสียง: ' + ttsErr.message, 'error');
+      }
+    }
+
+    showToast('✅ เสร็จสิ้น!', 'success');
   } catch (err) {
     status.style.display = 'flex';
     status.className = 'prod-status error';
@@ -686,43 +783,6 @@ async function generateProductScript() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '▶️ เริ่มสร้างสคริปต์';
-  }
-}
-
-async function sendToTTS() {
-  if (!_lastScript) { showToast('⚠️ ยังไม่มีสคริปต์', 'error'); return; }
-
-  const btn = document.getElementById('prodTtsBtn');
-  const status = document.getElementById('prodStatus');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="prod-spinner"></div> กำลังส่งสร้างเสียง...';
-  status.style.display = 'none';
-
-  try {
-    const r = await fetch(API_HOST + '/api/ai-script/send-to-tts', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        scriptId: _lastScript.id,
-        scriptText: _lastScript.text,
-        gender: 'female',
-        speed: 1.0
-      }), mode: 'cors'
-    });
-    const d = await r.json();
-    if (!d.ok) throw new Error(d.error || 'ส่งสร้างเสียงไม่สำเร็จ');
-
-    status.style.display = 'flex';
-    status.className = 'prod-status done';
-    status.innerHTML = '✅ ส่งสร้างเสียงเรียบร้อย (Job: ' + (d.jobId || '') + ')';
-    showToast('🔊 ส่งสร้างเสียงสำเร็จ!', 'success');
-  } catch (err) {
-    status.style.display = 'flex';
-    status.className = 'prod-status error';
-    status.innerHTML = '⚠️ ' + err.message;
-    showToast('❌ ' + err.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '🔊 ส่งสร้างเสียง';
   }
 }
 
@@ -735,6 +795,9 @@ function copyScript() {
   });
 }
 
+// ── Update cost on load ──
+let _costInterval = setInterval(updateCost, 2000);
+
 // ── Init ──
 function init() {
   const s = getSession();
@@ -745,7 +808,7 @@ function init() {
   const k = getPointsKey();
   if (!localStorage.getItem(k)) setPoints(100);
   refreshPointsUI();
-  loadApiKey();
+  updateCost();
 }
 init();
 </script>
