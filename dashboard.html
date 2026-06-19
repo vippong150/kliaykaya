@@ -249,7 +249,26 @@
       .vault-header { flex-direction: column; align-items: stretch; }
       .prod-card { padding: 18px; }
       .prod-row { flex-direction: column; gap: 0; }
+      .iv-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
     }
+    /* Image Vault */
+    .iv-section { display:none; width:100%; max-width:1200px; margin:0 auto; padding-top:10px; }
+    .iv-section.active { display:block; }
+    .iv-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+    .iv-header h2 { font-size:1.3rem; font-weight:700; color:#fff; }
+    .iv-header h2 span { background:linear-gradient(90deg,#12d8ff,#8b5cf6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .iv-stats { font-size:0.78rem; color:rgba(255,255,255,0.35); }
+    .iv-stats strong { color:#12d8ff; }
+    .iv-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; width:100%; }
+    .iv-card { background:rgba(12,14,28,0.45); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.06); border-radius:14px; overflow:hidden; cursor:pointer; transition:all 0.3s; }
+    .iv-card:hover { transform:translateY(-3px); border-color:rgba(18,216,255,0.25); box-shadow:0 8px 30px rgba(18,216,255,0.08); }
+    .iv-card .iv-thumb { width:100%; aspect-ratio:1; background:linear-gradient(135deg,#11162e,#0f1328); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .iv-card .iv-thumb img { width:100%; height:100%; object-fit:cover; }
+    .iv-card .iv-info { padding:8px 10px; }
+    .iv-card .iv-info .iv-title { font-size:0.72rem; font-weight:500; color:rgba(255,255,255,0.7); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .iv-card .iv-info .iv-meta { font-size:0.65rem; color:rgba(255,255,255,0.3); margin-top:2px; }
+    .iv-empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:rgba(255,255,255,0.3); }
+    .iv-empty .icon { font-size:3rem; margin-bottom:12px; opacity:0.5; }
   </style>
 </head>
 <body>
@@ -428,6 +447,16 @@
       </div>
     </div>
   </div>
+
+  <!-- Image Vault Section -->
+  <div class="prod-section" id="imgVaultSection">
+    <div class="prod-card">
+      <h2>🖼️ <span>คลังเก็บภาพพนักงาน</span></h2>
+      <div id="imgVaultGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:20px;">
+        <div class="vault-loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Bottom action bar -->
@@ -437,6 +466,12 @@
   </button>
   <button class="action-btn" id="prodBtn" onclick="showProd()">
     <span class="ab-icon">🛒</span> สร้างสินค้า
+  </button>
+  <button class="action-btn" id="imgBtn" onclick="showImgVault()">
+    <span class="ab-icon">🖼️</span> คลังเก็บภาพ
+  </button>
+  <button class="action-btn" id="imgBtn" onclick="showImgVault()">
+    <span class="ab-icon">🖼️</span> คลังเก็บภาพ
   </button>
   <button class="action-btn" id="vaultBtn" onclick="showVault()">
     <span class="ab-icon">📁</span> คลังวิดีโอ
@@ -530,12 +565,40 @@ function showVault() {
   document.getElementById('prodBtn').classList.remove('active');
   loadVault(1);
 }
-function showProd() {
+function showImgVault() {
   document.getElementById('dashHome').classList.add('hidden');
   document.getElementById('vaultSection').classList.remove('active');
-  document.getElementById('prodSection').classList.add('active');
-  document.getElementById('prodBtn').classList.add('active');
+  document.getElementById('prodSection').classList.remove('active');
+  document.getElementById('imgVaultSection').classList.add('active');
+  document.getElementById('imgBtn').classList.add('active');
   document.getElementById('vaultBtn').classList.remove('active');
+  document.getElementById('prodBtn').classList.remove('active');
+  loadImgVault();
+}
+
+async function loadImgVault() {
+  const grid = document.getElementById('imgVaultGrid');
+  grid.innerHTML = '<div class="vault-loading"><div class="spinner"></div></div>';
+  try {
+    const r = await fetch(API_HOST + '/api/ai-script/image-vault', { mode: 'cors' });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    
+    if (!d.images || d.images.length === 0) {
+      grid.innerHTML = '<div class="vault-empty"><h3>ยังไม่มีรูปภาพ</h3></div>';
+      return;
+    }
+    
+    grid.innerHTML = d.images.map(img => `
+      <div style="background:rgba(255,255,255,0.05);border-radius:12px;overflow:hidden;padding:4px;">
+        <img src="${img.data}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;">
+        <div style="font-size:0.7rem;padding:6px;text-align:center;color:rgba(255,255,255,0.5);">${img.name || 'ไม่มีชื่อ'}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    grid.innerHTML = '<div class="vault-empty"><h3>โหลดภาพล้มเหลว</h3></div>';
+    showToast('❌ ' + e.message, 'error');
+  }
 }
 
 // ── Video Vault ──
